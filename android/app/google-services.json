@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "29260306181",
+    "firebase_url": "https://crossplatformdiscussionapp.firebaseio.com",
+    "project_id": "crossplatformdiscussionapp",
+    "storage_bucket": "crossplatformdiscussionapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29260306181:android:e889ba6c1d6b55100e496c",
+        "android_client_info": {
+          "package_name": "com.example.disc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29260306181-e6jka95ssgrt36o9ppicfu56h179l4fl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiB-XWp_pJBYRBjab-rdiWuu4QQ7UpG7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29260306181-e6jka95ssgrt36o9ppicfu56h179l4fl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
