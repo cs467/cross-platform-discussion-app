@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>29260306181-ikv44d76fvg1vtg1jss2vkhudhh7st15.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.29260306181-ikv44d76fvg1vtg1jss2vkhudhh7st15</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBA9Q8d7gUjQsH0A-htfFBr8_Mf2F6BG58</string>
+	<key>GCM_SENDER_ID</key>
+	<string>29260306181</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ios.disc</string>
+	<key>PROJECT_ID</key>
+	<string>crossplatformdiscussionapp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>crossplatformdiscussionapp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:29260306181:ios:9725504de49b5a000e496c</string>
+	<key>DATABASE_URL</key>
+	<string>https://crossplatformdiscussionapp.firebaseio.com</string>
+</dict>
+</plist>
