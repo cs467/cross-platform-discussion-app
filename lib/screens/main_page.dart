@@ -18,7 +18,12 @@ class MyHomePage extends StatelessWidget {
           children: <Widget>[
             AddResponse(),
             Container(
-              child: Text("Main Screen")
+              child: Center(
+                child: Text(
+                  "Main Screen",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
             FeedbackHistory(),
           ],
