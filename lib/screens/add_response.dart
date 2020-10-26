@@ -5,8 +5,6 @@ class AddResponse extends StatelessWidget {
   final String userID = "z0gzldjEEk6bq1DKOVxl";
   final String responseText = "T is awesome. So is U!";
 
-  // AddResponse();
-
   @override
   Widget build(BuildContext context) {
 
