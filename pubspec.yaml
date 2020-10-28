@@ -21,8 +21,12 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+
+  # cloud_firestore: ^0.14.1
   flutter:
     sdk: flutter
+  
+  dynamic_theme: ^1.0.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -32,8 +36,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  
-  dynamic_theme: ^1.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

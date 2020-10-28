@@ -6,13 +6,12 @@ import 'package:disc/home_page.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   static final routes = {
     LoginPage.routeName: (context) => LoginPage(),
     HomePage.routeName: (context) => HomePage()
   };
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return DynamicTheme(
       defaultBrightness: Brightness.light,
