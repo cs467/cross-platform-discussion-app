@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -66,12 +68,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 25) {
     statsList.add(
       Container(
-        color: Colors.green[200],
-        child: Center(
-          child: Text(
-            "25 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/green_crown.png'),
+            Text(
+              "25 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -80,12 +84,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 50) {
     statsList.add(
       Container(
-        color: Colors.blue[200],
-        child: Center(
-          child: Text(
-            "50 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/blue_crown.png'),
+            Text(
+              "50 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -94,12 +100,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 100) {
     statsList.add(
       Container(
-        color: Colors.red[300],
-        child: Center(
-          child: Text(
-            "100 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/red_crown.png'),
+            Text(
+              "100 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -108,12 +116,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 150) {
     statsList.add(
       Container(
-        color: Colors.brown[300],
-        child: Center(
-          child: Text(
-            "150 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/brown_crown.png'),
+            Text(
+              "150 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -122,12 +132,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 200) {
     statsList.add(
       Container(
-        color: Colors.grey[400],
-        child: Center(
-          child: Text(
-            "200 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/silver_crown.png'),
+            Text(
+              "200 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -136,12 +148,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (likes >= 250) {
     statsList.add(
       Container(
-        color: Colors.amber,
-        child: Center(
-          child: Text(
-            "250 Likes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/crowns/gold_crown.png'),
+            Text(
+              "250 Likes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],  
         ),
       ),
     );
@@ -150,12 +164,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (streaks >= 25) {
     statsList.add(
       Container(
-        color: Colors.green[200],
-        child: Center(
-          child: Text(
-            "25 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/smiling.png'),
+            Text(
+              "25 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -164,12 +180,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (streaks >= 50) {
     statsList.add(
       Container(
-        color: Colors.blue[200],
-        child: Center(
-          child: Text(
-            "50 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/sunglasses.png'),
+            Text(
+              "50 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -178,12 +196,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (streaks >= 100) {
     statsList.add(
       Container(
-        color: Colors.red[300],
-        child: Center(
-          child: Text(
-            "100 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/big_eyes.png'),
+            Text(
+              "100 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -192,12 +212,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (streaks >= 150) {
     statsList.add(
       Container(
-        color: Colors.brown[300],
-        child: Center(
-          child: Text(
-            "150 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/heart_eyes.png'),
+            Text(
+              "150 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -206,12 +228,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
     if (streaks >= 200) {
     statsList.add(
       Container(
-        color: Colors.grey[400],
-        child: Center(
-          child: Text(
-            "200 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/star_eyes.png'),
+            Text(
+              "200 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -220,12 +244,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
     if (streaks >= 250) {
     statsList.add(
       Container(
-        color: Colors.amber,
-        child: Center(
-          child: Text(
-            "250 Posting Day Streaks",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/faces/partying.png'),
+            Text(
+              "250 Streaks",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -234,12 +260,14 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
   if (dislikes < 10) {
     statsList.add(
       Container(
-        color: Colors.pink[200],
-        child: Center(
-          child: Text(
-            "Less than 10 dislikes",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        child: Column(
+          children: [
+            Image.asset('assets/cats/kissing_cat.png'),
+            Text(
+              "Few dislikes",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
@@ -249,9 +277,9 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
 }
 
 Widget _buildGrid(List<Container> statsList) => GridView.extent(
-        maxCrossAxisExtent: 100,
-        padding: const EdgeInsets.all(15),
-        mainAxisSpacing: 50,
-        crossAxisSpacing: 50,
+        maxCrossAxisExtent: 130,
+        padding: const EdgeInsets.all(0),
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
         children: statsList,
 );
