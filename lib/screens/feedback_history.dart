@@ -8,7 +8,6 @@ var dislikes;
 var streaks;
 
 class FeedbackHistory extends StatelessWidget {
-  
   //currently, just hard-coding the Document ID of a specific user in Firebase
   final String documentId = "CDrU6W1jBHICyAoQ34X2";
 
@@ -19,8 +18,8 @@ class FeedbackHistory extends StatelessWidget {
 
     return FutureBuilder<DocumentSnapshot>(
       future: users.doc(documentId).get(),
-      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           return Text("Something went wrong");
         }
@@ -30,27 +29,26 @@ class FeedbackHistory extends StatelessWidget {
           likes = data['likesTotal'];
           dislikes = data['dislikesTotal'];
           streaks = data['posting_streak_days'];
-          
+
           return Container(
-            child: Column(
-              children: [
-                Flexible(
-                  fit: FlexFit.tight,
-                  flex: 1,
-                  child: Center(
-                    child: Text(
-                      "All Time Stats",
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                    ),
+              child: Column(
+            children: [
+              Flexible(
+                fit: FlexFit.tight,
+                flex: 1,
+                child: Center(
+                  child: Text(
+                    "All Time Stats",
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Flexible(
-                  flex: 6,
-                  child: _buildGrid(createStatsList(likes, dislikes, streaks)),
-                )
-              ],
-            )
-          );
+              ),
+              Flexible(
+                flex: 6,
+                child: _buildGrid(createStatsList(likes, dislikes, streaks)),
+              )
+            ],
+          ));
         }
 
         return Center(
@@ -75,7 +73,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "25 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -91,7 +89,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "50 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -107,7 +105,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "100 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -123,7 +121,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "150 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -139,7 +137,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "200 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -155,7 +153,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
               "250 Likes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-          ],  
+          ],
         ),
       ),
     );
@@ -166,7 +164,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/smiling.png'),
+            Image.asset('assets/stars/green_star.png'),
             Text(
               "25 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -182,7 +180,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/sunglasses.png'),
+            Image.asset('assets/stars/blue_star.png'),
             Text(
               "50 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -198,7 +196,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/big_eyes.png'),
+            Image.asset('assets/stars/red_star.png'),
             Text(
               "100 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -214,7 +212,7 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/heart_eyes.png'),
+            Image.asset('assets/stars/orange_star.png'),
             Text(
               "150 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -225,12 +223,12 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
     );
   }
 
-    if (streaks >= 200) {
+  if (streaks >= 200) {
     statsList.add(
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/star_eyes.png'),
+            Image.asset('assets/stars/silver_star.png'),
             Text(
               "200 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -241,12 +239,12 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
     );
   }
 
-    if (streaks >= 250) {
+  if (streaks >= 250) {
     statsList.add(
       Container(
         child: Column(
           children: [
-            Image.asset('assets/faces/partying.png'),
+            Image.asset('assets/stars/gold_star.png'),
             Text(
               "250 Streaks",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -257,12 +255,12 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
     );
   }
 
-  if (dislikes < 10) {
+  if ((dislikes / likes) < 0.05) {
     statsList.add(
       Container(
         child: Column(
           children: [
-            Image.asset('assets/cats/kissing_cat.png'),
+            Image.asset('assets/faces/kiss_heart.png'),
             Text(
               "Few dislikes",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -277,9 +275,9 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
 }
 
 Widget _buildGrid(List<Container> statsList) => GridView.extent(
-        maxCrossAxisExtent: 130,
-        padding: const EdgeInsets.all(0),
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        children: statsList,
-);
+      maxCrossAxisExtent: 130,
+      padding: const EdgeInsets.all(0),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      children: statsList,
+    );
