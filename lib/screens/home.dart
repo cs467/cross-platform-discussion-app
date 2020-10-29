@@ -28,7 +28,10 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Prompt(text: "Disc ${index + 1}")),
+                  builder: (context) => Prompt(
+                        text: "Disc ${index + 1}",
+                        promptNumber: "${index + 1}",
+                      )),
             );
           },
           label: Text('Join Discussion'),

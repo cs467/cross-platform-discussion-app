@@ -13,8 +13,7 @@ class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() => _LoginPageState(scaffoldKey);
 }
 
-
-// ScaffoldKey might be unnecessary. 
+// ScaffoldKey might be unnecessary.
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // I should be able to make these two one Widget but I cannot
-  // figure out how to save both values onSaved. 
+  // figure out how to save both values onSaved.
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -116,8 +115,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
-
   Widget _submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
@@ -130,9 +127,8 @@ class _LoginPageState extends State<LoginPage> {
 
         if (form.validate()) {
           try {
-            User result = 
-              await Provider.of<AuthService>(context, listen: false).loginUser(
-                email: _email, password: _password);
+            User result = await Provider.of<AuthService>(context, listen: false)
+                .loginUser(email: _email, password: _password);
             print(result);
           } on FirebaseAuthException catch (error) {
             return _buildErrorDialog(context, error.message);
@@ -200,8 +196,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// This will display the error message sent back from 
-// Firebase after attempting to login with invalid credentials. 
+// This will display the error message sent back from
+// Firebase after attempting to login with invalid credentials.
 Future _buildErrorDialog(BuildContext context, _message) {
   return showDialog(
     builder: (context) {
