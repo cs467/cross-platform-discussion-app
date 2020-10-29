@@ -53,17 +53,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             title: const Text('Sign Out'),
             onTap: () async {
               if (1 == 1) {
-                  try {
-                    User result =
-                        await Provider.of<AuthService>(context, listen: false)
-                            .signout();
-                    print(result);
-                  } on FirebaseAuthException catch (error) {
-                    return _buildErrorDialog(context, error.message);
-                  } on Exception catch (error) {
-                    return _buildErrorDialog(context, error.toString());
-                  }
+                try {
+                  User result =
+                      await Provider.of<AuthService>(context, listen: false)
+                          .signout();
+                  print(result);
+                } on FirebaseAuthException catch (error) {
+                  return _buildErrorDialog(context, error.message);
+                } on Exception catch (error) {
+                  return _buildErrorDialog(context, error.toString());
                 }
+              }
               setState(() {
                 Navigator.pushAndRemoveUntil(
                   context,
