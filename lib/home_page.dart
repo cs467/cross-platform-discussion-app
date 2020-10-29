@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:disc/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
-  static const routeName = '/';
+  static const routeName = 'homepage';
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -24,10 +24,6 @@ class _HomePageState extends State<HomePage> {
     ),
     floatingActionButton: Semantics(
       child: loginButton(context),
-      button: true,
-      enabled: true,
-      onTapHint: 'Select an image',
-      label: 'This button is used to send you to new entry screen',
     ),
     floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
   );
@@ -36,7 +32,7 @@ class _HomePageState extends State<HomePage> {
 
 Widget loginButton(BuildContext context) {
   return FloatingActionButton(
-    tooltip: 'New Entry',
+    tooltip: 'Login',
     child: Icon(Icons.add),
     onPressed: () {
       Navigator.pushNamed(context, 'loginpage');

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:disc/home_page.dart';
+import 'package:provider/provider.dart';
+import 'package:disc/auth.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
@@ -9,6 +13,8 @@ class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() => _LoginPageState(scaffoldKey);
 }
 
+
+// ScaffoldKey might be unnecessary. 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
@@ -45,6 +51,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _emailPasswordWidget() {
+    return Column(
+      children: <Widget>[
+        _emailField("Username"),
+        _passwordField("Password", isPassword: true),
+      ],
+    );
+  }
+
+  // I should be able to make these two one Widget but I cannot
+  // figure out how to save both values onSaved. 
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -60,7 +77,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               obscureText: isPassword,
-              onSaved: (String value) {_email = value;},
+              onSaved: (String value) {
+                _email = value;
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
@@ -85,7 +104,9 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               obscureText: isPassword,
-              onSaved: (String value) {_password = value;},
+              onSaved: (String value) {
+                _password = value;
+              },
               decoration: InputDecoration(
                   border: InputBorder.none,
                   fillColor: Color(0xfff3f3f4),
@@ -95,28 +116,30 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _emailPasswordWidget() {
-    return Column(
-      children: <Widget>[
-        _emailField("Username"),
-        _passwordField("Password", isPassword: true),
-      ],
-    );
-  }
+
 
   Widget _submitButton(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        _formKey.currentState.save();
+      onTap: () async {
+        final form = _formKey.currentState;
+        form.save();
         //_performLogin();
         print("$_email $_password");
         // validateWithFirebase(_email, _password);
         // signIn();
 
-        // Validate will return true if is valid, or false if invalid.
-        // if (form.validate()) {
-        //   print("$_email $_password");
-        // }
+        if (form.validate()) {
+          try {
+            User result = 
+              await Provider.of<AuthService>(context, listen: false).loginUser(
+                email: _email, password: _password);
+            print(result);
+          } on FirebaseAuthException catch (error) {
+            return _buildErrorDialog(context, error.message);
+          } on Exception catch (error) {
+            return _buildErrorDialog(context, error.toString());
+          }
+        }
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -126,8 +149,8 @@ class _LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.all(Radius.circular(5)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.grey.shade200,
-                  offset: Offset(2, 4),
+                  color: Colors.black54,
+                  offset: Offset(0, 0),
                   blurRadius: 5,
                   spreadRadius: 2)
             ],
@@ -143,6 +166,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget _continue(BuildContext context) {
     return GestureDetector(
         onTap: () {
+          // Basically this code removes all the routes below the chosen.
+          // Prevents the back button from appearing on the home screen.
+          // Source: https://rb.gy/iaxydk
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomePage()),
@@ -172,11 +198,27 @@ class _LoginPageState extends State<LoginPage> {
       child: Image.asset('assets/images/flutter.png', width: 100.0),
     );
   }
+}
 
-  // void _performLogin() {
-  //   var snackbar = SnackBar(
-  //     content: Text('Email: $_email and Password $_password'),
-  //   );
-  //   Scaffold.of(context).showSnackBar(snackbar);
-  // }
+// This will display the error message sent back from 
+// Firebase after attempting to login with invalid credentials. 
+Future _buildErrorDialog(BuildContext context, _message) {
+  return showDialog(
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Error Message'),
+        content: Text(_message),
+        actions: <Widget>[
+          FlatButton(
+              child: Text('Cancel'),
+              color: Color(0xff2193b0),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ],
+      );
+    },
+    context: context,
+    barrierColor: Colors.black54,
+  );
 }
