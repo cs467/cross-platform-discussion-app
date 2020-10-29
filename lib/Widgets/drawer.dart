@@ -1,10 +1,10 @@
-import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:disc/home_page.dart';
-import 'package:provider/provider.dart';
-import 'package:disc/auth.dart';
 import 'dart:async';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../screens/home.dart';
+import 'auth.dart';
 
 changeBrightness(BuildContext context) {
   DynamicTheme.of(context).setBrightness(

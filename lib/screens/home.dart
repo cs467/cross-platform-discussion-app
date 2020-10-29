@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../screens/prompt.dart';
+import 'package:disc/widgets/drawer.dart';
 
-class MyApp extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  static const routeName = 'homepage';
   @override
-  _MyAppState createState() => _MyAppState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToSelectedContent(
@@ -57,6 +59,7 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title: Text('Disc'),
       ),
+      endDrawer: DrawerWidget(),
       body: ListView.builder(
         controller: _scrollController,
         itemCount: 5,
