@@ -62,16 +62,35 @@ class Prompt extends StatelessWidget {
                             var info = PromptPost();
                             info.name = post['name'];
                             info.body = post['body'];
-                            print(info.name);
-                            print(info.body);
+                            //print(info.name);
+                            //print(info.body);
                             return Semantics(
                               button: true,
                               enabled: true,
-                              child: ListTile(
-                                onTap: () async {},
-                                trailing: Text(info.name),
-                                title: Text(info.body),
-                              ),
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('prompts')
+                                      .orderBy('number', descending: false)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data.documents != null &&
+                                        snapshot.data.documents.length > 0) {
+                                      return ListTile(
+                                        onTap: () async {},
+                                        leading: Icon(
+                                          Icons.favorite,
+                                          color: Colors.grey,
+                                          size: 24.0,
+                                          semanticLabel:
+                                              'Text to announce in accessibility modes',
+                                        ),
+                                        trailing: Text(info.name),
+                                        title: Text(info.body),
+                                      );
+                                    }
+                                    return CircularProgressIndicator();
+                                  }),
                             );
                           },
                         ),
@@ -87,7 +106,7 @@ class Prompt extends StatelessWidget {
                                 controller: postController,
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
-                                maxLength: 225,
+                                maxLength: 525,
                                 buildCounter: (
                                   BuildContext context, {
                                   int currentLength,
@@ -100,16 +119,19 @@ class Prompt extends StatelessWidget {
                                   suffixIcon: IconButton(
                                     icon: Icon(Icons.send),
                                     onPressed: () {
-                                      FirebaseFirestore.instance
-                                          .collection("posts$promptNumber")
-                                          .add({
-                                        "name": "TEST",
-                                        "body": postController.text,
-                                        "timeStamp": DateTime.now().toString(),
-                                      }).then((value) {
-                                        postController.clear();
-                                        print(value.id);
-                                      });
+                                      if (postController.text.length > 0) {
+                                        FirebaseFirestore.instance
+                                            .collection("posts$promptNumber")
+                                            .add({
+                                          "name": "TEST",
+                                          "body": postController.text,
+                                          "timeStamp":
+                                              DateTime.now().toString(),
+                                        }).then((value) {
+                                          postController.clear();
+                                          print(value.id);
+                                        });
+                                      } else {}
                                     },
                                   ),
                                   hintText: 'Post a Reponse Here',
