@@ -30,7 +30,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             title: const Text('All Time Stats'),
             onTap: () {
-              //Navigator.pushReplacementNamed(context, 'feedback_history');
               Navigator.push(context, 
                 MaterialPageRoute(
                   builder: (context) => FeedbackHistory()

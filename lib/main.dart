@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import './Widgets/auth.dart';
 import './screens/home.dart';
 import './screens/login_page.dart';
-import './screens/feedback_history.dart';
 
 void main() async {
   // Tip to make sure Firebase was initialized (4th example): 
@@ -25,7 +24,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final routes = {
-    //FeedbackHistory.routeName: (context) => FeedbackHistory(),
     LoginPage.routeName: (context) => LoginPage(),
     HomePage.routeName: (context) => HomePage()
   };
