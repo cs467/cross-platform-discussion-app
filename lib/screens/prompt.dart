@@ -34,25 +34,32 @@ class Prompt extends StatelessWidget {
                   return Column(
                     children: [
                       Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: StreamBuilder(
-                              stream: FirebaseFirestore.instance
-                                  .collection('prompts')
-                                  .orderBy('number', descending: false)
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData &&
-                                    snapshot.data.documents != null &&
-                                    snapshot.data.documents.length > 0) {
-                                  return Text(
-                                    snapshot.data
-                                            .docs[int.parse(promptNumber) - 1]
-                                        ['prompt'],
-                                    textAlign: TextAlign.justify,
-                                  );
-                                }
-                                return CircularProgressIndicator();
-                              })),
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey)),
+                          child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('prompts')
+                                      .orderBy('number', descending: false)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data.documents != null &&
+                                        snapshot.data.documents.length > 0) {
+                                      return Text(
+                                        snapshot.data.docs[
+                                                int.parse(promptNumber) - 1]
+                                            ['prompt'],
+                                        textAlign: TextAlign.justify,
+                                      );
+                                    }
+                                    return CircularProgressIndicator();
+                                  })),
+                        ),
+                      ),
                       SizedBox(height: 0),
                       Expanded(
                         child: ListView.builder(
@@ -77,7 +84,14 @@ class Prompt extends StatelessWidget {
                                         snapshot.data.documents != null &&
                                         snapshot.data.documents.length > 0) {
                                       return ListTile(
-                                        onTap: () async {},
+                                        onTap: () async {
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                          }
+                                        },
                                         leading: Icon(
                                           Icons.favorite,
                                           color: Colors.grey,
@@ -95,6 +109,7 @@ class Prompt extends StatelessWidget {
                           },
                         ),
                       ),
+                      SizedBox(height: 5),
                       Center(
                         child: Semantics(
                             button: true,
