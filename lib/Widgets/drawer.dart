@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:disc/screens/feedback_history.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     return Drawer(
       child: ListView(
         children: [
+          ListTile(
+            title: const Text('All Time Stats'),
+            onTap: () {
+              //Navigator.pushReplacementNamed(context, 'feedback_history');
+              Navigator.push(context, 
+                MaterialPageRoute(
+                  builder: (context) => FeedbackHistory()
+                )
+               );
+            },
+          ),
           Container(
             height: 50,
             child: DrawerHeader(child: Text('Settings')),
