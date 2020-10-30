@@ -34,12 +34,25 @@ class Prompt extends StatelessWidget {
                   return Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                          textAlign: TextAlign.justify,
-                        ),
-                      ),
+                          padding: const EdgeInsets.all(15.0),
+                          child: StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection('prompts')
+                                  .orderBy('number', descending: false)
+                                  .snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data.documents != null &&
+                                    snapshot.data.documents.length > 0) {
+                                  return Text(
+                                    snapshot.data
+                                            .docs[int.parse(promptNumber) - 1]
+                                        ['prompt'],
+                                    textAlign: TextAlign.justify,
+                                  );
+                                }
+                                return CircularProgressIndicator();
+                              })),
                       SizedBox(height: 0),
                       Expanded(
                         child: ListView.builder(
