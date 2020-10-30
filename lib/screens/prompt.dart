@@ -146,6 +146,13 @@ class Prompt extends StatelessWidget {
                                           postController.clear();
                                           print(value.id);
                                         });
+
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
                                       } else {}
                                     },
                                   ),
