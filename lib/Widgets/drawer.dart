@@ -27,16 +27,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     return Drawer(
       child: ListView(
         children: [
-          ListTile(
-            title: const Text('All Time Stats'),
-            onTap: () {
-              Navigator.push(context, 
-                MaterialPageRoute(
-                  builder: (context) => FeedbackHistory()
-                )
-               );
-            },
-          ),
           Container(
             height: 50,
             child: DrawerHeader(child: Text('Settings')),
@@ -82,6 +72,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   (Route<dynamic> route) => false,
                 );
               });
+            },
+          ),
+          ListTile(
+            title: const Text('All Time Stats'),
+            onTap: () {
+              Navigator.push(context, 
+                MaterialPageRoute(
+                  builder: (context) => FeedbackHistory()
+                )
+               );
             },
           ),
         ],
