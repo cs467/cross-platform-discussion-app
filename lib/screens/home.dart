@@ -73,6 +73,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //resizeToAvoidBottomPadding: 
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Disc'),
       ),
