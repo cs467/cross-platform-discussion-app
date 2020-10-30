@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/prompt.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,13 +18,26 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildExpansionTileChildren(int index) => [
         Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            textAlign: TextAlign.justify,
-          ),
+          child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('prompts')
+                  .orderBy('number', descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.data.documents != null &&
+                    snapshot.data.documents.length > 0) {
+                  return Text(
+                    snapshot.data.docs[index]['prompt'],
+                    textAlign: TextAlign.justify,
+                  );
+                }
+                return CircularProgressIndicator();
+              }),
         ),
         SizedBox(height: 15),
         FloatingActionButton.extended(
+          heroTag: null,
           onPressed: () {
             Navigator.push(
               context,
