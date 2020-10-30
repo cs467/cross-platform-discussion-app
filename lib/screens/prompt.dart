@@ -5,7 +5,9 @@ import '../models/post.dart';
 // ignore: must_be_immutable
 class Prompt extends StatelessWidget {
   String text;
-  Prompt({Key key, @required this.text}) : super(key: key);
+  String promptNumber;
+  Prompt({Key key, @required this.text, @required this.promptNumber})
+      : super(key: key);
   TextEditingController postController = new TextEditingController();
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,7 +24,7 @@ class Prompt extends StatelessWidget {
           ),
           body: StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('posts')
+                  .collection('posts$promptNumber')
                   .orderBy('timeStamp', descending: true)
                   .snapshots(),
               builder: (content, snapshot) {
@@ -86,7 +88,7 @@ class Prompt extends StatelessWidget {
                                     icon: Icon(Icons.send),
                                     onPressed: () {
                                       FirebaseFirestore.instance
-                                          .collection("posts")
+                                          .collection("posts$promptNumber")
                                           .add({
                                         "name": "TEST",
                                         "body": postController.text,

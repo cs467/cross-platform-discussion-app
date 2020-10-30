@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import '../screens/prompt.dart';
+import 'package:disc/widgets/drawer.dart';
 
-class MyApp extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  static const routeName = 'homepage';
   @override
-  _MyAppState createState() => _MyAppState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToSelectedContent(
@@ -26,7 +28,10 @@ class _MyAppState extends State<MyApp> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Prompt(text: "Disc ${index + 1}")),
+                  builder: (context) => Prompt(
+                        text: "Disc ${index + 1}",
+                        promptNumber: "${index + 1}",
+                      )),
             );
           },
           label: Text('Join Discussion'),
@@ -54,9 +59,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //resizeToAvoidBottomPadding: 
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Disc'),
       ),
+      endDrawer: DrawerWidget(),
       body: ListView.builder(
         controller: _scrollController,
         itemCount: 5,
