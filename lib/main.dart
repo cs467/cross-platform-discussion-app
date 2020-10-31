@@ -2,12 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:provider/provider.dart';
-import './Widgets/auth.dart';
-import './screens/home.dart';
-import './screens/login_page.dart';
+import 'package:disc/screens/home.dart';
+import 'package:disc/Widgets/auth.dart';
+import 'package:disc/screens/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
-  // Tip to make sure Firebase was initialized (4th example): 
+  // Tip to make sure Firebase was initialized (4th example):
   // https://rb.gy/e7kpxj
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -15,9 +16,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider<AuthService>(
       child: MyApp(),
-      create: (BuildContext context) {
-        return AuthService();
-      },
+      create: (context) => AuthService(),
     ),
   );
 }
@@ -37,10 +36,34 @@ class MyApp extends StatelessWidget {
               brightness: brightness,
             ),
         themedWidgetBuilder: (context, theme) {
-          return MaterialApp(
-            theme: theme,
-            routes: routes,
-            home: HomePage(),
+          return GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus &&
+                  currentFocus.focusedChild != null) {
+                currentFocus.focusedChild.unfocus();
+              }
+            },
+            child: MaterialApp(
+              theme: theme,
+              routes: routes,
+              home: FutureBuilder<User>(
+                future:
+                    Provider.of<AuthService>(context, listen: false).getUser(),
+                builder: (context, AsyncSnapshot<User> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return snapshot.hasData ? HomePage() : LoginPage();
+                  } else {
+                    return Center(
+                      child: Container(
+                        child: CircularProgressIndicator(),
+                        alignment: Alignment(0.0, 0.0),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
           );
         });
   }

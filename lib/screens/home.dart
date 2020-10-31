@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../screens/prompt.dart';
+import 'package:disc/screens/prompt.dart';
+import 'package:disc/Widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:disc/widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';

@@ -17,7 +17,7 @@ class AuthService with ChangeNotifier {
   Future signout() async {
     var result = FirebaseAuth.instance.signOut();
     notifyListeners();
-    checkUser();
+    //checkUser();
     return result;
   }
 
@@ -36,15 +36,16 @@ class AuthService with ChangeNotifier {
     }
   }
 
-Future checkUser() async {
-    notifyListeners();
-    FirebaseAuth.instance.authStateChanges().listen((User user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        print('User is signed in!');
-      }
-    });
-  }
+// Used for Testing
+// Future checkUser() async {
+//     //notifyListeners();
+//     FirebaseAuth.instance.authStateChanges().listen((User user) {
+//       if (user == null) {
+//         print('User is currently signed out!');
+//       } else {
+//         print('User is signed in!');
+//       }
+//     });
+//   }
 
 }

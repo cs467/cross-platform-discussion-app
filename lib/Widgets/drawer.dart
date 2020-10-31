@@ -4,15 +4,9 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../screens/home.dart';
-import 'auth.dart';
+import 'package:disc/screens/home.dart';
+import 'package:disc/Widgets/auth.dart';
 
-changeBrightness(BuildContext context) {
-  DynamicTheme.of(context).setBrightness(
-      Theme.of(context).brightness == Brightness.dark
-          ? Brightness.light
-          : Brightness.dark);
-}
 
 class DrawerWidget extends StatefulWidget {
   @override
@@ -21,6 +15,7 @@ class DrawerWidget extends StatefulWidget {
 
 class _DrawerWidgetState extends State<DrawerWidget> {
   bool _mode = false;
+  _DrawerWidgetState();
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +39,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ),
           ListTile(
             title: const Text('Log In or Sign Up'),
-            onTap: () {
+            onTap: () async {
               setState(() {
                 Navigator.pushReplacementNamed(context, 'loginpage');
               });
@@ -53,17 +48,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           ListTile(
             title: const Text('Sign Out'),
             onTap: () async {
-              if (1 == 1) {
-                try {
-                  User result =
-                      await Provider.of<AuthService>(context, listen: false)
-                          .signout();
-                  print(result);
-                } on FirebaseAuthException catch (error) {
-                  return _buildErrorDialog(context, error.message);
-                } on Exception catch (error) {
-                  return _buildErrorDialog(context, error.toString());
-                }
+              try {
+                User result =
+                    await Provider.of<AuthService>(context, listen: false).signout();
+              } on FirebaseAuthException catch (error) {
+                return _buildErrorDialog(context, error.message);
+              } on Exception catch (error) {
+                return _buildErrorDialog(context, error.toString());
               }
               setState(() {
                 Navigator.pushAndRemoveUntil(
@@ -71,6 +62,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   MaterialPageRoute(builder: (context) => HomePage()),
                   (Route<dynamic> route) => false,
                 );
+                _successfulSignout(context);
               });
             },
           ),
@@ -97,10 +89,39 @@ Future _buildErrorDialog(BuildContext context, _message) {
     builder: (context) {
       return AlertDialog(
         title: Text('Error Message'),
-        content: Text(_message),
+        content: SingleChildScrollView(child: Text(_message)),
         actions: <Widget>[
           FlatButton(
               child: Text('Cancel'),
+              color: Color(0xff2193b0),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ],
+      );
+    },
+    context: context,
+    barrierColor: Colors.black54,
+  );
+}
+
+changeBrightness(BuildContext context) {
+  DynamicTheme.of(context).setBrightness(
+      Theme.of(context).brightness == Brightness.dark
+          ? Brightness.light
+          : Brightness.dark);
+}
+
+Future _successfulSignout(BuildContext context) {
+  return showDialog(
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Sign Out Success'),
+        content: SingleChildScrollView(
+            child: Text('You are no longer signed in.')),
+        actions: <Widget>[
+          FlatButton(
+              child: Text('Proceed'),
               color: Color(0xff2193b0),
               onPressed: () {
                 Navigator.of(context).pop();
