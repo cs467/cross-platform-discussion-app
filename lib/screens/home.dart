@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../screens/prompt.dart';
-import 'package:disc/widgets/drawer.dart';
+import 'package:disc/screens/prompt.dart';
+import 'package:disc/Widgets/drawer.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
