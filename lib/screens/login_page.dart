@@ -45,7 +45,8 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-        resizeToAvoidBottomPadding: false);
+      )
+    );
   }
 
   Widget _emailPasswordWidget() {
