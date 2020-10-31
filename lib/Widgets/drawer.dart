@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:disc/screens/feedback_history.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,16 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 );
                 _successfulSignout(context);
               });
+            },
+          ),
+          ListTile(
+            title: const Text('All Time Stats'),
+            onTap: () {
+              Navigator.push(context, 
+                MaterialPageRoute(
+                  builder: (context) => FeedbackHistory()
+                )
+               );
             },
           ),
         ],

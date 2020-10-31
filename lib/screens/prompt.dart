@@ -5,7 +5,9 @@ import '../models/post.dart';
 // ignore: must_be_immutable
 class Prompt extends StatelessWidget {
   String text;
-  Prompt({Key key, @required this.text}) : super(key: key);
+  String promptNumber;
+  Prompt({Key key, @required this.text, @required this.promptNumber})
+      : super(key: key);
   TextEditingController postController = new TextEditingController();
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,7 +24,7 @@ class Prompt extends StatelessWidget {
           ),
           body: StreamBuilder(
               stream: FirebaseFirestore.instance
-                  .collection('posts')
+                  .collection('posts$promptNumber')
                   .orderBy('timeStamp', descending: true)
                   .snapshots(),
               builder: (content, snapshot) {
@@ -32,10 +34,30 @@ class Prompt extends StatelessWidget {
                   return Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                          textAlign: TextAlign.justify,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey)),
+                          child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('prompts')
+                                      .orderBy('number', descending: false)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data.documents != null &&
+                                        snapshot.data.documents.length > 0) {
+                                      return Text(
+                                        snapshot.data.docs[
+                                                int.parse(promptNumber) - 1]
+                                            ['prompt'],
+                                        textAlign: TextAlign.justify,
+                                      );
+                                    }
+                                    return CircularProgressIndicator();
+                                  })),
                         ),
                       ),
                       SizedBox(height: 0),
@@ -47,20 +69,47 @@ class Prompt extends StatelessWidget {
                             var info = PromptPost();
                             info.name = post['name'];
                             info.body = post['body'];
-                            print(info.name);
-                            print(info.body);
+                            //print(info.name);
+                            //print(info.body);
                             return Semantics(
                               button: true,
                               enabled: true,
-                              child: ListTile(
-                                onTap: () async {},
-                                trailing: Text(info.name),
-                                title: Text(info.body),
-                              ),
+                              child: StreamBuilder(
+                                  stream: FirebaseFirestore.instance
+                                      .collection('prompts')
+                                      .orderBy('number', descending: false)
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data.documents != null &&
+                                        snapshot.data.documents.length > 0) {
+                                      return ListTile(
+                                        onTap: () async {
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                          }
+                                        },
+                                        leading: Icon(
+                                          Icons.favorite,
+                                          color: Colors.grey,
+                                          size: 24.0,
+                                          semanticLabel:
+                                              'Text to announce in accessibility modes',
+                                        ),
+                                        trailing: Text(info.name),
+                                        title: Text(info.body),
+                                      );
+                                    }
+                                    return CircularProgressIndicator();
+                                  }),
                             );
                           },
                         ),
                       ),
+                      SizedBox(height: 5),
                       Center(
                         child: Semantics(
                             button: true,
@@ -72,7 +121,7 @@ class Prompt extends StatelessWidget {
                                 controller: postController,
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
-                                maxLength: 225,
+                                maxLength: 525,
                                 buildCounter: (
                                   BuildContext context, {
                                   int currentLength,
@@ -85,16 +134,26 @@ class Prompt extends StatelessWidget {
                                   suffixIcon: IconButton(
                                     icon: Icon(Icons.send),
                                     onPressed: () {
-                                      FirebaseFirestore.instance
-                                          .collection("posts")
-                                          .add({
-                                        "name": "TEST",
-                                        "body": postController.text,
-                                        "timeStamp": DateTime.now().toString(),
-                                      }).then((value) {
-                                        postController.clear();
-                                        print(value.id);
-                                      });
+                                      if (postController.text.length > 0) {
+                                        FirebaseFirestore.instance
+                                            .collection("posts$promptNumber")
+                                            .add({
+                                          "name": "TEST",
+                                          "body": postController.text,
+                                          "timeStamp":
+                                              DateTime.now().toString(),
+                                        }).then((value) {
+                                          postController.clear();
+                                          print(value.id);
+                                        });
+
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                      } else {}
                                     },
                                   ),
                                   hintText: 'Post a Reponse Here',

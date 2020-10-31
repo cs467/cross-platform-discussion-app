@@ -45,8 +45,7 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-      ),
-    );
+        resizeToAvoidBottomPadding: false);
   }
 
   Widget _emailPasswordWidget() {
@@ -128,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
             User result = await Provider.of<AuthService>(context, listen: false)
                 .loginUser(email: _email, password: _password);
             //print(result);
+
           } on FirebaseAuthException catch (error) {
             return _buildErrorDialog(context, error.message);
           } on Exception catch (error) {
@@ -203,8 +203,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// This will display the error message sent back from
-// Firebase after attempting to login with invalid credentials.
 // This will display the error message sent back from
 // Firebase after attempting to login with invalid credentials.
 Future _buildErrorDialog(BuildContext context, _message) {
