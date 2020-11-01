@@ -21,32 +21,36 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        title: Text("Login Page"),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  _logo(context),
-                  SizedBox(height: 20.0),
-                  _emailPasswordWidget(),
-                  SizedBox(height: 20.0),
-                  _submitButton(context),
-                  SizedBox(height: 20.0),
-                  _continue(context),
-                ],
-              ),
-            ],
-          ),
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          title: Text("Login Page"),
         ),
-      )
-    );
+        body: Align(
+          child: SafeArea(
+            child: Container(
+              padding: EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        _logo(context),
+                        SizedBox(height: 20.0),
+                        _emailPasswordWidget(),
+                        SizedBox(height: 20.0),
+                        _submitButton(context),
+                        SizedBox(height: 20.0),
+                        _continue(context),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ));
+
   }
 
   Widget _emailPasswordWidget() {
