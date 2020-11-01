@@ -318,9 +318,9 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
 }
 
 Widget _buildGrid(List<Container> statsList) => GridView.extent(
-      maxCrossAxisExtent: 130,
-      padding: const EdgeInsets.all(0),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      children: statsList,
-    );
+  maxCrossAxisExtent: 150,
+  padding: const EdgeInsets.all(0),
+  mainAxisSpacing: 10,
+  crossAxisSpacing: 10,
+  children: statsList,
+);
