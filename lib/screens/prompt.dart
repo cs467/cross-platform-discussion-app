@@ -138,7 +138,7 @@ class Prompt extends StatelessWidget {
                                         FirebaseFirestore.instance
                                             .collection("posts$promptNumber")
                                             .add({
-                                          "name": "TEST",
+                                          "name": text,
                                           "body": postController.text,
                                           "timeStamp":
                                               DateTime.now().toString(),

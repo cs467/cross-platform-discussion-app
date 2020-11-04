@@ -5,11 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/screens/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:disc/screens/signup_page.dart';
+import 'package:disc/screens/splash.dart';
 
 void main() async {
-  // Tip to make sure Firebase was initialized (4th example):
-  // https://rb.gy/e7kpxj
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -24,7 +23,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   static final routes = {
     LoginPage.routeName: (context) => LoginPage(),
-    HomePage.routeName: (context) => HomePage()
+    HomePage.routeName: (context) => HomePage(),
+    SignUpPage.routeName: (context) => SignUpPage()
   };
 
   @override
@@ -47,22 +47,7 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               theme: theme,
               routes: routes,
-              home: FutureBuilder<User>(
-                future:
-                    Provider.of<AuthService>(context, listen: false).getUser(),
-                builder: (context, AsyncSnapshot<User> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return snapshot.hasData ? HomePage() : LoginPage();
-                  } else {
-                    return Center(
-                      child: Container(
-                        child: CircularProgressIndicator(),
-                        alignment: Alignment(0.0, 0.0),
-                      ),
-                    );
-                  }
-                },
-              ),
+              home: SplashPage()
             ),
           );
         });

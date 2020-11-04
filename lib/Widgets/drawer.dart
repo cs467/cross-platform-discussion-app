@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/Widgets/auth.dart';
 
-
 class DrawerWidget extends StatefulWidget {
+  DrawerWidget({Key key, this.title}) : super(key: key); 
+  final String title;
   @override
   _DrawerWidgetState createState() => _DrawerWidgetState();
 }
@@ -37,49 +38,54 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
             secondary: const Icon(Icons.lightbulb_outline),
           ),
-          ListTile(
-            title: const Text('Log In or Sign Up'),
-            onTap: () async {
-              setState(() {
-                Navigator.pushReplacementNamed(context, 'loginpage');
-              });
-            },
-          ),
-          ListTile(
-            title: const Text('Sign Out'),
-            onTap: () async {
-              try {
-                User result =
-                    await Provider.of<AuthService>(context, listen: false).signout();
-              } on FirebaseAuthException catch (error) {
-                return _buildErrorDialog(context, error.message);
-              } on Exception catch (error) {
-                return _buildErrorDialog(context, error.toString());
-              }
-              setState(() {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                  (Route<dynamic> route) => false,
-                );
-                _successfulSignout(context);
-              });
-            },
-          ),
+          _signInSignOut(context),
           ListTile(
             title: const Text('All Time Stats'),
             onTap: () {
-              Navigator.push(context, 
-                MaterialPageRoute(
-                  builder: (context) => FeedbackHistory()
-                )
-              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => FeedbackHistory()));
             },
           ),
         ],
       ),
     );
   }
+
+  Widget _signInSignOut(BuildContext context) {
+    return Column(
+      children: [
+        widget.title == null ? ListTile(
+          title: const Text('Log In or Sign Up'),
+          onTap: () async {
+            setState(() {
+              Navigator.pushReplacementNamed(context, 'loginpage');
+            });
+          },
+        ) : Container(),
+        widget.title != null ? ListTile(
+          title: const Text('Sign Out'),
+          onTap: () async {
+            try {
+              await Provider.of<AuthService>(context, listen: false).signout();
+            } on FirebaseAuthException catch (error) {
+              return _buildErrorDialog(context, error.message);
+            } on Exception catch (error) {
+              return _buildErrorDialog(context, error.toString());
+            }
+            setState(() {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                (Route<dynamic> route) => false,
+              );
+              _successfulSignout(context);
+            });
+          },
+        ) : Container(),
+      ],
+    );
+  }
+  
 }
 
 // This will display the error message sent back from
@@ -117,8 +123,8 @@ Future _successfulSignout(BuildContext context) {
     builder: (context) {
       return AlertDialog(
         title: Text('Sign Out Success'),
-        content: SingleChildScrollView(
-            child: Text('You are no longer signed in.')),
+        content:
+            SingleChildScrollView(child: Text('You are no longer signed in.')),
         actions: <Widget>[
           FlatButton(
               child: Text('Proceed'),
