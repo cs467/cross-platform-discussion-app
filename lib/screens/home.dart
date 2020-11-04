@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
+  HomePage({Key key, this.title}) : super(key: key); 
+  final String title;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -43,7 +45,7 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                   builder: (context) => Prompt(
-                        text: "Disc ${index + 1}",
+                        text: widget.title ?? "Disc ${index + 1}",
                         promptNumber: "${index + 1}",
                       )),
             );
@@ -73,12 +75,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //resizeToAvoidBottomPadding: 
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Disc'),
+        title: Text(widget.title ?? 'Home Page'),
       ),
-      endDrawer: DrawerWidget(),
+      endDrawer: DrawerWidget(title: widget.title),
       body: ListView.builder(
         controller: _scrollController,
         itemCount: 5,

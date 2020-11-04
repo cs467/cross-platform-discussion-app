@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:disc/screens/home.dart';
-import 'package:disc/screens/signup_page.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class LoginPage extends StatefulWidget {
-  static const routeName = 'loginpage';
+class SignUpPage extends StatefulWidget {
+  static const routeName = 'signuppage';
   @override
-  State<StatefulWidget> createState() => _LoginPageState();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
+  TextEditingController usernameController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          title: Text("Login Page"),
+          title: Text("Sign Up Page"),
         ),
         body: Align(
           child: SafeArea(
@@ -38,13 +37,11 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         _logo(context),
                         SizedBox(height: 20.0),
-                        _emailPasswordWidget(),
+                        _textFieldWidget(),
                         SizedBox(height: 20.0),
                         _submitButton(context),
                         SizedBox(height: 20.0),
                         _continue(context),
-                        SizedBox(height: 10.0),
-                        _signup(context)
                       ],
                     ),
                   ],
@@ -55,17 +52,50 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _emailPasswordWidget() {
+  Widget _logo(BuildContext context) {
+    return Container(
+      child: Image.asset('assets/images/flutter.png', width: 100.0),
+    );
+  }
+
+  Widget _textFieldWidget() {
     return Column(
       children: <Widget>[
-        _emailField("Username"),
+        _usernameField("Username"),
+        _emailField("Email"),
         _passwordField("Password", isPassword: true),
       ],
     );
   }
 
-  // I should be able to make these two one Widget but I cannot
-  // figure out how to save both values onSaved.
+  Widget _usernameField(String title, {bool isPassword = false}) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+              //autofocus: true,
+              controller: usernameController,
+              obscureText: isPassword,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Enter Username',
+                  fillColor: Color(0xfff3f3f4),
+                  filled: true))
+        ],
+      ),
+    );
+  }
+
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -86,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: 'Enter Email or Username',
+                  hintText: 'Enter Email',
                   fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
@@ -130,10 +160,14 @@ class _LoginPageState extends State<LoginPage> {
         if (form.validate()) {
           try {
             User result = await Provider.of<AuthService>(context, listen: false)
-                .loginUser(
+                .createUser(
+                    username: usernameController.text,
                     email: emailController.text,
                     password: passwordController.text);
             print(result);
+            //Add user info to Firebase
+            // addUserToDB();
+
           } on FirebaseAuthException catch (error) {
             return _buildErrorDialog(context, error.message);
           } on Exception catch (error) {
@@ -141,23 +175,21 @@ class _LoginPageState extends State<LoginPage> {
           }
         }
         setState(() {
-          _successfulLogin(context);
-
-          Provider.of<AuthService>(context, listen: false)
-              .getUser()
-              .then((currentUser) => FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(currentUser.uid)
-                  .get()
-                  .then((DocumentSnapshot result) => Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(title: result["username"])),
-                          (Route<dynamic> route) => false,
-                          ))
-                  .catchError((err) => print(err)));
-          emailController.clear();
-          passwordController.clear();
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomePage(
+                      title: usernameController.text,
+                    )),
+            (Route<dynamic> route) => false,
+          );
+          /******
+           * If I clear here, they clear before routing title to new page.
+           *****/
+          // usernameController.clear();
+          // emailController.clear();
+          // passwordController.clear();
+          //_successfulLogin(context);
         });
       },
       child: Container(
@@ -196,12 +228,6 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
-              child: Text('Forgot Password?',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
               child: Text('Continue without logging in?',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
             ),
@@ -209,78 +235,24 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _signup(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          // Basically this code removes all the routes below the chosen.
-          // Prevents the back button from appearing on the home screen.
-          // Source: https://rb.gy/iaxydk
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => SignUpPage()),
-            (Route<dynamic> route) => false,
-          );
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              child: Text('Click here to Sign Up',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ),
+  Future _buildErrorDialog(BuildContext context, _message) {
+    return showDialog(
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error Message'),
+          content: SingleChildScrollView(child: Text(_message)),
+          actions: <Widget>[
+            FlatButton(
+                child: Text('Cancel'),
+                color: Color(0xff2193b0),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                })
           ],
-        ));
-  }
-
-  Widget _logo(BuildContext context) {
-    return Container(
-      child: Image.asset('assets/images/flutter.png', width: 100.0),
+        );
+      },
+      context: context,
+      barrierColor: Colors.black54,
     );
   }
-}
-
-// This will display the error message sent back from
-// Firebase after attempting to login with invalid credentials.
-Future _buildErrorDialog(BuildContext context, _message) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Error Message'),
-        content: SingleChildScrollView(child: Text(_message)),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Cancel'),
-              color: Color(0xff2193b0),
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
-}
-
-Future _successfulLogin(BuildContext context) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Log In Success'),
-        content: SingleChildScrollView(
-            child: Text('Congrats, you have successfully Logged In!!')),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Proceed'),
-              color: Color(0xff2193b0),
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
 }

@@ -1,10 +1,9 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
-// Used partial code from:
-// https://morioh.com/p/e7f8d2c0fae3
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -21,8 +20,24 @@ class AuthService with ChangeNotifier {
     return result;
   }
 
-  Future createUser({String email, String password}) async {
-    // Add code to create User
+  Future createUser({String username, String email, String password}) async {
+    try {
+      var result = FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((currentUser) => FirebaseFirestore.instance
+          .collection("users")
+          .doc(currentUser.user.uid)
+          .set({
+            "uid": currentUser.user.uid,
+            "username": username,
+            "email": email
+          })
+          );
+      notifyListeners();
+      return result;
+    } catch (e) {
+      throw new FirebaseAuthException(code: e.code, message: e.message);
+    }
   }
 
   Future<User> loginUser({String email, String password}) async {
