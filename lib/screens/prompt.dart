@@ -335,7 +335,7 @@ class _PromptState extends State<Prompt> {
                                   hintText: 'Post a Reponse Here',
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: Colors.grey[300], width: 2.0),
+                                        color: Colors.transparent, width: 2.0),
                                   ),
                                 ),
                               ),
