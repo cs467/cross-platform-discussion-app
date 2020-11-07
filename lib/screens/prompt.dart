@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'dart:async';
+
 // ignore: must_be_immutable
 class Prompt extends StatefulWidget {
   String text;
@@ -19,6 +21,24 @@ class _PromptState extends State<Prompt> {
   bool rSelected = true, lSelected = false;
 
   TextEditingController postController = new TextEditingController();
+
+  Timer _timer;
+
+  @override
+  void initState() {
+    _timer = Timer.periodic(
+      Duration(seconds: 5),
+      (Timer t) => setState(() {}),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -262,7 +282,7 @@ class _PromptState extends State<Prompt> {
                                                     children: [
                                                       SizedBox(height: 5),
                                                       Text(info.name),
-                                                      SizedBox(height: 15),
+                                                      SizedBox(height: 10),
                                                       Text(
                                                           timeago.format(
                                                               todayDate),
@@ -316,7 +336,7 @@ class _PromptState extends State<Prompt> {
                                           "name": widget.text,
                                           "body": postController.text,
                                           "timeStamp":
-                                              DateTime.now().toString(),
+                                              DateTime.now().toUtc().toString(),
                                           "likes": 0,
                                           "likedBy": [],
                                         }).then((value) {
