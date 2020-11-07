@@ -6,57 +6,55 @@ var dislikes;
 var streaks;
 
 class FeedbackHistory extends StatelessWidget {
-  
-  //currently, just hard-coding the Document ID of a specific user in Firebase
-  final String documentId = "CDrU6W1jBHICyAoQ34X2";
+  final String username;
+  FeedbackHistory({Key key, this.username}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference users =
-        FirebaseFirestore.instance.collection('test_user_collection');
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Your Achievements"),
+        title: Text('Hi, ' + username),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: users.doc(documentId).get(),
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .where('username', isEqualTo: username)
+            .snapshots(),
+        builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text("Something went wrong");
           }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data = snapshot.data.data();
-            likes = data['likesTotal'];
-            dislikes = data['dislikesTotal'];
-            streaks = data['posting_streak_days'];
+          if (snapshot.hasData) {
+            likes = snapshot.data.documents[0]['likes'];
+            dislikes = snapshot.data.documents[0]['dislikes'];
+            streaks = snapshot.data.documents[0]['streaks'];
 
             return Container(
-              child: Column(
-                children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        "All Time Stats",
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                      ),
+                child: Column(
+              children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: Center(
+                    child: Text(
+                      "All Time Stats",
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Flexible(
-                    flex: 6,
-                    child: _buildGrid(createStatsList(likes, dislikes, streaks)),
-                  )
-                ],
-              )
+                ),
+                Flexible(
+                  flex: 6,
+                  child: _buildGrid(createStatsList(likes, dislikes, streaks)),
+                )
+              ],
+            ));
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
             );
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
         },
       ),
     );
@@ -318,9 +316,9 @@ List<Container> createStatsList(int likes, int dislikes, int streaks) {
 }
 
 Widget _buildGrid(List<Container> statsList) => GridView.extent(
-  maxCrossAxisExtent: 150,
-  padding: const EdgeInsets.all(0),
-  mainAxisSpacing: 10,
-  crossAxisSpacing: 10,
-  children: statsList,
-);
+      maxCrossAxisExtent: 150,
+      padding: const EdgeInsets.all(0),
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      children: statsList,
+    );
