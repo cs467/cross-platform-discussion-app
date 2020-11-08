@@ -106,7 +106,7 @@ class _PromptState extends State<Prompt> {
                                 child: GestureDetector(
                               onTap: () {
                                 sort = "timeStamp";
-                                print(sort);
+                                //print(sort);
                                 rSelected = true;
                                 lSelected = false;
                                 setState(() {});
@@ -132,7 +132,7 @@ class _PromptState extends State<Prompt> {
                                 child: GestureDetector(
                               onTap: () {
                                 sort = "likes";
-                                print(sort);
+                                //print(sort);
                                 rSelected = false;
                                 lSelected = true;
                                 setState(() {});
@@ -178,14 +178,15 @@ class _PromptState extends State<Prompt> {
                                 info.body = post['body'];
                                 info.likes = post['likes'];
                                 info.likedBy = post['likedBy'];
-                                print(post['timeStamp']);
+
+                                //print(post['timeStamp']);
 
                                 DateTime todayDate =
                                     DateTime.parse(post['timeStamp']);
 
-                                print(todayDate);
+                                //print(todayDate);
 
-                                print(post.documentID);
+                                //print(post.documentID);
                                 //print(info.name);
                                 //print(info.body);
                                 return Semantics(
@@ -230,6 +231,28 @@ class _PromptState extends State<Prompt> {
                                                       }).then((value) {
                                                         postController.clear();
                                                       });
+                                                      FirebaseFirestore.instance
+                                                          .collection('users')
+                                                          .where('username',
+                                                              isEqualTo:
+                                                                  info.name)
+                                                          .get()
+                                                          .then((value) {
+                                                        int curLikes = value
+                                                            .docs[0]
+                                                            .get('likes');
+                                                        String curUid = value
+                                                            .docs[0]
+                                                            .get('uid');
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("users")
+                                                            .doc(curUid)
+                                                            .update({
+                                                          "likes":
+                                                              curLikes - 1,
+                                                        });
+                                                      });
                                                     } else {
                                                       FirebaseFirestore.instance
                                                           .collection(
@@ -242,6 +265,28 @@ class _PromptState extends State<Prompt> {
                                                                 [widget.text]),
                                                       }).then((value) {
                                                         postController.clear();
+                                                      });
+                                                      FirebaseFirestore.instance
+                                                          .collection('users')
+                                                          .where('username',
+                                                              isEqualTo:
+                                                                  info.name)
+                                                          .get()
+                                                          .then((value) {
+                                                        int curLikes = value
+                                                            .docs[0]
+                                                            .get('likes');
+                                                        String curUid = value
+                                                            .docs[0]
+                                                            .get('uid');
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection("users")
+                                                            .doc(curUid)
+                                                            .update({
+                                                          "likes":
+                                                              curLikes + 1,
+                                                        });
                                                       });
                                                     }
 
@@ -341,7 +386,7 @@ class _PromptState extends State<Prompt> {
                                           "likedBy": [],
                                         }).then((value) {
                                           postController.clear();
-                                          print(value.id);
+                                          //print(value.id);
                                         });
                                         FocusScopeNode currentFocus =
                                             FocusScope.of(context);

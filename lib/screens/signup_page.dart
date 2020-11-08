@@ -163,7 +163,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 .createUser(
                     username: usernameController.text,
                     email: emailController.text,
-                    password: passwordController.text);
+                    password: passwordController.text,
+                    likes: 0,
+                    dislikes: 0,
+                    streaks: 0,
+                    );
             print(result);
             //Add user info to Firebase
             // addUserToDB();
