@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                   suffixIcon: emailController.text.length > 0
                       ? IconButton(
                           onPressed: () => emailController.clear(),
-                          icon: Icon(Icons.cancel, color: Colors.grey))
+                          icon: Icon(Icons.clear, color: Colors.grey))
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email or Username',
@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                 suffixIcon: passwordController.text.length > 0
                       ? IconButton(
                           onPressed: () => passwordController.clear(),
-                          icon: Icon(Icons.cancel, color: Colors.grey))
+                          icon: Icon(Icons.clear, color: Colors.grey))
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Password',
@@ -196,12 +196,12 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.symmetric(vertical: 15),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.black54,
-                  offset: Offset(0, 0),
-                  blurRadius: 5,
+                  color: Colors.grey.withOpacity(0.5),
+                  offset: Offset(0, 3),
+                  blurRadius: 3,
                   spreadRadius: 2)
             ],
             gradient: LinearGradient(
