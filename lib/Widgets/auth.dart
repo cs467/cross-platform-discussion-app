@@ -20,7 +20,7 @@ class AuthService with ChangeNotifier {
     return result;
   }
 
-  Future createUser({String username, String email, String password}) async {
+  Future createUser({String username, String email, String password, int likes, int dislikes, int streaks}) async {
     try {
       var result = FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -30,7 +30,10 @@ class AuthService with ChangeNotifier {
           .set({
             "uid": currentUser.user.uid,
             "username": username,
-            "email": email
+            "email": email,
+            "likes": likes,
+            "dislikes": dislikes,
+            "streaks": streaks,
           })
           );
       notifyListeners();
