@@ -38,13 +38,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
           ),
           _signInSignOut(context),
-          ListTile(
+           widget.title != null
+              ? ListTile(
             title: const Text('All Time Stats'),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FeedbackHistory()));
+                  MaterialPageRoute(builder: (context) => FeedbackHistory(username: widget.title)));
             },
-          ),
+          ) : Container(),
         ],
       ),
     );
