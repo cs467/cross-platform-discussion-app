@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
@@ -20,8 +20,28 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController passwordController = new TextEditingController();
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    emailController.addListener(() {
+      setState(() {});
+    });
+    passwordController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
           title: Text("Login Page"),
@@ -85,6 +105,11 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                  suffixIcon: emailController.text.length > 0
+                      ? IconButton(
+                          onPressed: () => emailController.clear(),
+                          icon: Icon(Icons.clear, color: Colors.grey))
+                      : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email or Username',
                   fillColor: Color(0xfff3f3f4),
@@ -112,6 +137,11 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
+                suffixIcon: passwordController.text.length > 0
+                      ? IconButton(
+                          onPressed: () => passwordController.clear(),
+                          icon: Icon(Icons.clear, color: Colors.grey))
+                      : null,
                   border: InputBorder.none,
                   hintText: 'Enter Password',
                   fillColor: Color(0xfff3f3f4),
@@ -143,17 +173,18 @@ class _LoginPageState extends State<LoginPage> {
         setState(() {
           _successfulLogin(context);
 
-          Provider.of<AuthService>(context, listen: false)
-              .getUser()
-              .then((currentUser) => FirebaseFirestore.instance
+          Provider.of<AuthService>(context, listen: false).getUser().then(
+              (currentUser) => FirebaseFirestore.instance
                   .collection("users")
                   .doc(currentUser.uid)
                   .get()
-                  .then((DocumentSnapshot result) => Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomePage(title: result["username"])),
-                          (Route<dynamic> route) => false,
+                  .then(
+                      (DocumentSnapshot result) => Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    HomePage(title: result["username"])),
+                            (Route<dynamic> route) => false,
                           ))
                   .catchError((err) => print(err)));
           emailController.clear();
@@ -165,12 +196,12 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.symmetric(vertical: 15),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                  color: Colors.black54,
-                  offset: Offset(0, 0),
-                  blurRadius: 5,
+                  color: Colors.grey.withOpacity(0.5),
+                  offset: Offset(0, 3),
+                  blurRadius: 3,
                   spreadRadius: 2)
             ],
             gradient: LinearGradient(

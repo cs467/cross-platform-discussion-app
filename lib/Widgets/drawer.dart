@@ -36,7 +36,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 changeBrightness(context);
               });
             },
-            secondary: const Icon(Icons.lightbulb_outline),
           ),
           _signInSignOut(context),
            widget.title != null

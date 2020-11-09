@@ -45,8 +45,9 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                   builder: (context) => Prompt(
-                        text: widget.title ?? "Disc ${index + 1}",
+                        user: widget.title ?? "Disc ${index + 1}",
                         promptNumber: "${index + 1}",
+                        text: "Disc ${index + 1}"
                       )),
             );
           },

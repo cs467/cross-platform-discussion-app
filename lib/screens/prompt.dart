@@ -9,7 +9,8 @@ import 'dart:async';
 class Prompt extends StatefulWidget {
   String text;
   String promptNumber;
-  Prompt({Key key, @required this.text, @required this.promptNumber})
+  String user;
+  Prompt({Key key, @required this.text, @required this.promptNumber, this.user})
       : super(key: key);
 
   @override
@@ -218,7 +219,7 @@ class _PromptState extends State<Prompt> {
                                                 child: ListTile(
                                                   onTap: () async {
                                                     if (info.likedBy.contains(
-                                                        widget.text)) {
+                                                        widget.user)) {
                                                       FirebaseFirestore.instance
                                                           .collection(
                                                               "posts${widget.promptNumber}")
@@ -227,7 +228,7 @@ class _PromptState extends State<Prompt> {
                                                         "likes": info.likes - 1,
                                                         "likedBy": FieldValue
                                                             .arrayRemove(
-                                                                [widget.text]),
+                                                                [widget.user]),
                                                       }).then((value) {
                                                         postController.clear();
                                                       });
@@ -262,7 +263,7 @@ class _PromptState extends State<Prompt> {
                                                         "likes": info.likes + 1,
                                                         "likedBy": FieldValue
                                                             .arrayUnion(
-                                                                [widget.text]),
+                                                                [widget.user]),
                                                       }).then((value) {
                                                         postController.clear();
                                                       });
@@ -306,7 +307,7 @@ class _PromptState extends State<Prompt> {
                                                         Icons.favorite,
                                                         color: info.likedBy
                                                                 .contains(
-                                                                    widget.text)
+                                                                    widget.user)
                                                             ? Colors.red[300]
                                                             : Colors.grey,
                                                         size: 24.0,
@@ -378,7 +379,7 @@ class _PromptState extends State<Prompt> {
                                             .collection(
                                                 "posts${widget.promptNumber}")
                                             .add({
-                                          "name": widget.text,
+                                          "name": widget.user,
                                           "body": postController.text,
                                           "timeStamp":
                                               DateTime.now().toUtc().toString(),
