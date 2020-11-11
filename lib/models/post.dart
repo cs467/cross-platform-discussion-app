@@ -5,8 +5,12 @@ class PromptPost {
   String name;
   var likes;
   var likedBy = [];
+  var flags;
+  var flaggedBy = [];
   Timestamp timestamp;
   PromptPost({
+    this.flags,
+    this.flaggedBy,
     this.likedBy,
     this.body,
     this.name,
