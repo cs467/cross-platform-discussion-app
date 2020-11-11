@@ -202,7 +202,7 @@ class _PromptState extends State<Prompt> {
                                           .orderBy('number', descending: false)
                                           .snapshots(),
                                       builder: (context, snapshot) {
-                                        if (info.flags < 2) {
+                                        if (info.flags < 1) {
                                           if (snapshot.hasData &&
                                               snapshot.data.documents != null &&
                                               snapshot.data.documents.length >
