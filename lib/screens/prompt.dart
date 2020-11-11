@@ -363,19 +363,22 @@ class _PromptState extends State<Prompt> {
                                   String clean =
                                       filter.censor(postController.text).trim();
 
-                                  FirebaseFirestore.instance
-                                      .collection("posts${widget.promptNumber}")
-                                      .add({
-                                    "name": widget.user,
-                                    "body": clean,
-                                    "timeStamp":
-                                        DateTime.now().toUtc().toString(),
-                                    "likes": 0,
-                                    "likedBy": [],
-                                  }).then((value) {
-                                    postController.clear();
-                                    //print(value.id);
-                                  });
+                                  if (clean.length > 0) {
+                                    FirebaseFirestore.instance
+                                        .collection(
+                                            "posts${widget.promptNumber}")
+                                        .add({
+                                      "name": widget.user,
+                                      "body": clean,
+                                      "timeStamp":
+                                          DateTime.now().toUtc().toString(),
+                                      "likes": 0,
+                                      "likedBy": [],
+                                    }).then((value) {
+                                      postController.clear();
+                                      //print(value.id);
+                                    });
+                                  }
                                   FocusScopeNode currentFocus =
                                       FocusScope.of(context);
 
@@ -419,13 +422,13 @@ class _PromptState extends State<Prompt> {
                                           postController.clear();
                                           //print(value.id);
                                         });
-                                        FocusScopeNode currentFocus =
-                                            FocusScope.of(context);
-
-                                        if (!currentFocus.hasPrimaryFocus) {
-                                          currentFocus.unfocus();
-                                        }
                                       } else {}
+                                      FocusScopeNode currentFocus =
+                                          FocusScope.of(context);
+
+                                      if (!currentFocus.hasPrimaryFocus) {
+                                        currentFocus.unfocus();
+                                      }
                                     },
                                   ),
                                   hintText: 'Post a Reponse Here',
