@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:profanity_filter/profanity_filter.dart';
 
 import 'dart:async';
 
@@ -250,8 +251,7 @@ class _PromptState extends State<Prompt> {
                                                             .collection("users")
                                                             .doc(curUid)
                                                             .update({
-                                                          "likes":
-                                                              curLikes - 1,
+                                                          "likes": curLikes - 1,
                                                         });
                                                       });
                                                     } else {
@@ -285,8 +285,7 @@ class _PromptState extends State<Prompt> {
                                                             .collection("users")
                                                             .doc(curUid)
                                                             .update({
-                                                          "likes":
-                                                              curLikes + 1,
+                                                          "likes": curLikes + 1,
                                                         });
                                                       });
                                                     }
@@ -357,7 +356,33 @@ class _PromptState extends State<Prompt> {
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   left: 15.0, right: 15, top: 8),
-                              child: TextField(
+                              child: TextFormField(
+                                textInputAction: TextInputAction.send,
+                                onFieldSubmitted: (value) {
+                                  final filter = ProfanityFilter();
+                                  String clean =
+                                      filter.censor(postController.text).trim();
+
+                                  FirebaseFirestore.instance
+                                      .collection("posts${widget.promptNumber}")
+                                      .add({
+                                    "name": widget.user,
+                                    "body": clean,
+                                    "timeStamp":
+                                        DateTime.now().toUtc().toString(),
+                                    "likes": 0,
+                                    "likedBy": [],
+                                  }).then((value) {
+                                    postController.clear();
+                                    //print(value.id);
+                                  });
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                  }
+                                },
                                 controller: postController,
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
@@ -374,13 +399,18 @@ class _PromptState extends State<Prompt> {
                                   suffixIcon: IconButton(
                                     icon: Icon(Icons.send),
                                     onPressed: () {
-                                      if (postController.text.length > 0) {
+                                      final filter = ProfanityFilter();
+                                      String clean = filter
+                                          .censor(postController.text)
+                                          .trim();
+
+                                      if (clean.length > 0) {
                                         FirebaseFirestore.instance
                                             .collection(
                                                 "posts${widget.promptNumber}")
                                             .add({
                                           "name": widget.user,
-                                          "body": postController.text,
+                                          "body": clean,
                                           "timeStamp":
                                               DateTime.now().toUtc().toString(),
                                           "likes": 0,
@@ -423,4 +453,12 @@ class _PromptState extends State<Prompt> {
               }),
         ));
   }
+}
+
+String validateProfanity(String value) {
+  final filter = ProfanityFilter();
+  if (filter.hasProfanity(value) == true) {
+    return "Remove Profanity to Post a Response";
+  }
+  return null;
 }
