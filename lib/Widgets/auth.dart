@@ -55,6 +55,10 @@ class AuthService with ChangeNotifier {
     }
   }
 
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+}
+
 // Used for Testing
 // Future checkUser() async {
 //     //notifyListeners();

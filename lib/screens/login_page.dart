@@ -4,17 +4,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
+import 'package:disc/screens/password_reset.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
+  String email;
+  LoginPage({Key key, this.email})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  bool _emailExist = false;
 
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -62,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 20.0),
                         _submitButton(context),
                         SizedBox(height: 20.0),
+                        _passwordReset(context),
                         _continue(context),
                         SizedBox(height: 10.0),
                         _signup(context)
@@ -84,8 +90,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // I should be able to make these two one Widget but I cannot
-  // figure out how to save both values onSaved.
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -105,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                  errorText: _emailExist ? "Email does not exist" : null,
                   suffixIcon: emailController.text.length > 0
                       ? IconButton(
                           onPressed: () => emailController.clear(),
@@ -137,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
-                suffixIcon: passwordController.text.length > 0
+                  suffixIcon: passwordController.text.length > 0
                       ? IconButton(
                           onPressed: () => passwordController.clear(),
                           icon: Icon(Icons.clear, color: Colors.grey))
@@ -227,13 +232,30 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
-              child: Text('Forgot Password?',
+              child: Text('Continue without logging in?',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
             ),
+          ],
+        ));
+  }
+
+  Widget _passwordReset(BuildContext context) {
+    return GestureDetector(
+        onTap: () async {
+          setState(() {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => PasswordPage()),
+              (Route<dynamic> route) => true,
+            );
+          });
+        },
+        child: Column(
+          children: [
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
-              child: Text('Continue without logging in?',
+              child: Text('Forgot Password?',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
             ),
           ],
@@ -243,9 +265,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget _signup(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          // Basically this code removes all the routes below the chosen.
-          // Prevents the back button from appearing on the home screen.
-          // Source: https://rb.gy/iaxydk
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => SignUpPage()),
@@ -314,4 +333,13 @@ Future _successfulLogin(BuildContext context) {
     context: context,
     barrierColor: Colors.black54,
   );
+}
+
+//Function to check if email exists
+Future<bool> emailCheck(String email) async {
+  final result = await FirebaseFirestore.instance
+      .collection('users')
+      .where('email', isEqualTo: email)
+      .get();
+  return result.docs.isEmpty;
 }
