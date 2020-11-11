@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:profanity_filter/profanity_filter.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'dart:async';
 
@@ -217,126 +218,190 @@ class _PromptState extends State<Prompt> {
                                                   color: Colors.transparent,
                                                   width: 2,
                                                 )),
-                                                child: ListTile(
-                                                  onTap: () async {
-                                                    if (info.likedBy.contains(
-                                                        widget.user)) {
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "posts${widget.promptNumber}")
-                                                          .doc(post.documentID)
-                                                          .update({
-                                                        "likes": info.likes - 1,
-                                                        "likedBy": FieldValue
-                                                            .arrayRemove(
-                                                                [widget.user]),
-                                                      }).then((value) {
-                                                        postController.clear();
-                                                      });
-                                                      FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .where('username',
-                                                              isEqualTo:
-                                                                  info.name)
-                                                          .get()
-                                                          .then((value) {
-                                                        int curLikes = value
-                                                            .docs[0]
-                                                            .get('likes');
-                                                        String curUid = value
-                                                            .docs[0]
-                                                            .get('uid');
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection("users")
-                                                            .doc(curUid)
-                                                            .update({
-                                                          "likes": curLikes - 1,
-                                                        });
-                                                      });
-                                                    } else {
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              "posts${widget.promptNumber}")
-                                                          .doc(post.documentID)
-                                                          .update({
-                                                        "likes": info.likes + 1,
-                                                        "likedBy": FieldValue
-                                                            .arrayUnion(
-                                                                [widget.user]),
-                                                      }).then((value) {
-                                                        postController.clear();
-                                                      });
-                                                      FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .where('username',
-                                                              isEqualTo:
-                                                                  info.name)
-                                                          .get()
-                                                          .then((value) {
-                                                        int curLikes = value
-                                                            .docs[0]
-                                                            .get('likes');
-                                                        String curUid = value
-                                                            .docs[0]
-                                                            .get('uid');
-                                                        FirebaseFirestore
-                                                            .instance
-                                                            .collection("users")
-                                                            .doc(curUid)
-                                                            .update({
-                                                          "likes": curLikes + 1,
-                                                        });
-                                                      });
-                                                    }
+                                                child: Slidable(
+                                                  actionPane:
+                                                      SlidableDrawerActionPane(),
+                                                  actionExtentRatio: 0.25,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                    child: ListTile(
+                                                      onTap: () async {
+                                                        if (info.likedBy
+                                                            .contains(
+                                                                widget.user)) {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "posts${widget.promptNumber}")
+                                                              .doc(post
+                                                                  .documentID)
+                                                              .update({
+                                                            "likes":
+                                                                info.likes - 1,
+                                                            "likedBy": FieldValue
+                                                                .arrayRemove([
+                                                              widget.user
+                                                            ]),
+                                                          }).then((value) {
+                                                            postController
+                                                                .clear();
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('username',
+                                                                  isEqualTo:
+                                                                      info.name)
+                                                              .get()
+                                                              .then((value) {
+                                                            int curLikes = value
+                                                                .docs[0]
+                                                                .get('likes');
+                                                            String curUid =
+                                                                value.docs[0]
+                                                                    .get('uid');
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "users")
+                                                                .doc(curUid)
+                                                                .update({
+                                                              "likes":
+                                                                  curLikes - 1,
+                                                            });
+                                                          });
+                                                        } else {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "posts${widget.promptNumber}")
+                                                              .doc(post
+                                                                  .documentID)
+                                                              .update({
+                                                            "likes":
+                                                                info.likes + 1,
+                                                            "likedBy": FieldValue
+                                                                .arrayUnion([
+                                                              widget.user
+                                                            ]),
+                                                          }).then((value) {
+                                                            postController
+                                                                .clear();
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('username',
+                                                                  isEqualTo:
+                                                                      info.name)
+                                                              .get()
+                                                              .then((value) {
+                                                            int curLikes = value
+                                                                .docs[0]
+                                                                .get('likes');
+                                                            String curUid =
+                                                                value.docs[0]
+                                                                    .get('uid');
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "users")
+                                                                .doc(curUid)
+                                                                .update({
+                                                              "likes":
+                                                                  curLikes + 1,
+                                                            });
+                                                          });
+                                                        }
 
-                                                    FocusScopeNode
-                                                        currentFocus =
-                                                        FocusScope.of(context);
+                                                        FocusScopeNode
+                                                            currentFocus =
+                                                            FocusScope.of(
+                                                                context);
 
-                                                    if (!currentFocus
-                                                        .hasPrimaryFocus) {
-                                                      currentFocus.unfocus();
-                                                    }
-                                                  },
-                                                  leading: Column(
-                                                    children: [
-                                                      SizedBox(height: 5),
-                                                      Icon(
-                                                        Icons.favorite,
-                                                        color: info.likedBy
-                                                                .contains(
-                                                                    widget.user)
-                                                            ? Colors.red[300]
-                                                            : Colors.grey,
-                                                        size: 24.0,
-                                                        semanticLabel:
-                                                            'Text to announce in accessibility modes',
+                                                        if (!currentFocus
+                                                            .hasPrimaryFocus) {
+                                                          currentFocus
+                                                              .unfocus();
+                                                        }
+                                                      },
+                                                      leading: Column(
+                                                        children: [
+                                                          SizedBox(height: 5),
+                                                          Icon(
+                                                            Icons.favorite,
+                                                            color: info.likedBy
+                                                                    .contains(
+                                                                        widget
+                                                                            .user)
+                                                                ? Colors
+                                                                    .red[300]
+                                                                : Colors.grey,
+                                                            size: 24.0,
+                                                            semanticLabel:
+                                                                'Text to announce in accessibility modes',
+                                                          ),
+                                                          SizedBox(height: 5),
+                                                          Text(
+                                                              info.likes
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                fontSize: 12.0,
+                                                              )),
+                                                        ],
                                                       ),
-                                                      SizedBox(height: 5),
-                                                      Text(
-                                                          info.likes.toString(),
-                                                          style: TextStyle(
-                                                            fontSize: 12.0,
-                                                          )),
-                                                    ],
+                                                      trailing: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          SizedBox(height: 5),
+                                                          Text(info.name),
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                              timeago.format(
+                                                                  todayDate),
+                                                              style: TextStyle(
+                                                                fontSize: 10.0,
+                                                              ))
+                                                        ],
+                                                      ),
+                                                      title: Text(info.body),
+                                                    ),
                                                   ),
-                                                  trailing: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      SizedBox(height: 5),
-                                                      Text(info.name),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                          timeago.format(
-                                                              todayDate),
-                                                          style: TextStyle(
-                                                            fontSize: 10.0,
-                                                          ))
-                                                    ],
-                                                  ),
-                                                  title: Text(info.body),
+                                                  secondaryActions: <Widget>[
+                                                    if (info.name
+                                                        .contains(widget.user))
+                                                      IconSlideAction(
+                                                        caption: 'Delete',
+                                                        color: Colors.red[300],
+                                                        icon: Icons.delete,
+                                                        onTap: () {
+                                                          if (info.name
+                                                              .contains(widget
+                                                                  .user)) {
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "posts${widget.promptNumber}")
+                                                                .doc(post
+                                                                    .documentID)
+                                                                .delete();
+                                                          }
+                                                        },
+                                                      ),
+                                                    if (!info.name
+                                                        .contains(widget.user))
+                                                      IconSlideAction(
+                                                        caption: 'Report',
+                                                        color:
+                                                            Colors.orange[300],
+                                                        icon: Icons.flag,
+                                                        onTap: () => null,
+                                                      )
+                                                  ],
                                                 ),
                                               ),
                                             ),
