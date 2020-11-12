@@ -13,7 +13,7 @@ class PasswordPage extends StatefulWidget {
 class _PasswordPageState extends State<PasswordPage> {
   final _formKey = GlobalKey<FormState>();
   bool _emailExist = false;
-  String _warning, email;
+  String email;
 
   TextEditingController emailController = new TextEditingController();
 
@@ -50,7 +50,6 @@ class _PasswordPageState extends State<PasswordPage> {
                   children: <Widget>[
                     Column(
                       children: <Widget>[
-                        showAlert(),
                         _logo(context),
                         SizedBox(height: 20.0),
                          _emailField("Email"),
@@ -120,7 +119,7 @@ class _PasswordPageState extends State<PasswordPage> {
               setState(() {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(email: emailController.text)),
+                  MaterialPageRoute(builder: (context) => LoginPage()),
                   (Route<dynamic> route) => false,
                 );
                 email = emailController.text;
@@ -175,43 +174,6 @@ class _PasswordPageState extends State<PasswordPage> {
   Widget _logo(BuildContext context) {
     return Container(
       child: Image.asset('assets/images/flutter.png', width: 100.0),
-    );
-  }
-
-  Widget showAlert() {
-    if (_warning != null) {
-      return Container(
-        color: Colors.amberAccent,
-        width: double.infinity,
-        padding: EdgeInsets.all(8.0),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(Icons.error_outline),
-            ),
-            Expanded(
-              child: Container(
-                child: Text(_warning),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () {
-                  setState(() {
-                    _warning = null;
-                  });
-                },
-              ),
-            )
-          ],
-        ),
-      );
-    }
-    return SizedBox(
-      height: 0,
     );
   }
 }

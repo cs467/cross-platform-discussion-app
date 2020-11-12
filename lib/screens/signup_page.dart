@@ -268,7 +268,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
         final valid = await usernameCheck(usernameController.text);
 
-
         if (!valid) {
           setState(() {
             _usernameExist = true;
