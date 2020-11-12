@@ -456,7 +456,7 @@ class _PromptState extends State<Prompt> {
                                                                 int curLikes = value
                                                                     .docs[0]
                                                                     .get(
-                                                                        'flagged');
+                                                                        'flags');
                                                                 String curUid =
                                                                     value
                                                                         .docs[0]
@@ -468,7 +468,7 @@ class _PromptState extends State<Prompt> {
                                                                         "users")
                                                                     .doc(curUid)
                                                                     .update({
-                                                                  "flagged":
+                                                                  "flags":
                                                                       curLikes -
                                                                           1,
                                                                 });

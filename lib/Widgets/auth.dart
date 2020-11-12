@@ -34,7 +34,8 @@ class AuthService with ChangeNotifier {
             "likes": 0,
             "dislikes": 0,
             "streaks": 0,
-            "registrationDateTime": DateTime.now().toUtc().toString(),
+            "flags": 0,
+            "registrationDateTime": DateTime.now().toUtc(),//.toString(),
           })
           );
       notifyListeners();
