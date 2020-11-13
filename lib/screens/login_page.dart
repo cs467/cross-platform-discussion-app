@@ -7,12 +7,10 @@ import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/password_reset.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
-  String email;
-  LoginPage({Key key, this.email})
-      : super(key: key);
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
@@ -20,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   bool _emailExist = false;
+  bool _usernameExist = true;
 
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
@@ -104,9 +103,12 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
-              //autofocus: true,
               controller: emailController,
               obscureText: isPassword,
+              validator: (val) =>
+                  !EmailValidator.validate(val, true) && _usernameExist == true
+                      ? 'Not a valid email.'
+                      : null,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   errorText: _emailExist ? "Email does not exist" : null,
@@ -140,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
               controller: passwordController,
               obscureText: isPassword,
-              keyboardType: TextInputType.name,
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   suffixIcon: passwordController.text.length > 0
                       ? IconButton(
@@ -159,42 +161,47 @@ class _LoginPageState extends State<LoginPage> {
   Widget _submitButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        var result;
         final form = _formKey.currentState;
         form.save();
 
-        if (form.validate()) {
-          try {
-            User result = await Provider.of<AuthService>(context, listen: false)
-                .loginUser(
-                    email: emailController.text,
-                    password: passwordController.text);
-            print(result);
-          } on FirebaseAuthException catch (error) {
-            return _buildErrorDialog(context, error.message);
-          } on Exception catch (error) {
-            return _buildErrorDialog(context, error.toString());
-          }
-        }
-        setState(() {
-          _successfulLogin(context);
+        result = await usernameCheck(emailController.text);
 
-          Provider.of<AuthService>(context, listen: false).getUser().then(
-              (currentUser) => FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(currentUser.uid)
-                  .get()
-                  .then(
-                      (DocumentSnapshot result) => Navigator.pushAndRemoveUntil(
+        if (result != "None") {
+          _usernameExist = false;
+        }
+
+        if (form.validate() || _usernameExist == false) {
+          try {
+            emailController.text = result;
+            await Provider.of<AuthService>(context, listen: false).loginUser(
+                email: emailController.text, password: passwordController.text);
+            setState(() {
+              _successfulLogin(context);
+
+              Provider.of<AuthService>(context, listen: false).getUser().then(
+                  (currentUser) => FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(currentUser.uid)
+                      .get()
+                      .then((DocumentSnapshot result) =>
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     HomePage(title: result["username"])),
                             (Route<dynamic> route) => false,
                           ))
-                  .catchError((err) => print(err)));
-          emailController.clear();
-          passwordController.clear();
-        });
+                      .catchError((err) => print(err)));
+              emailController.clear();
+              passwordController.clear();
+            });
+          } on FirebaseAuthException catch (error) {
+            return _buildErrorDialog(context, error.message);
+          } on Exception catch (error) {
+            return _buildErrorDialog(context, error.toString());
+          }
+        } else {}
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -290,8 +297,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-// This will display the error message sent back from
-// Firebase after attempting to login with invalid credentials.
 Future _buildErrorDialog(BuildContext context, _message) {
   return showDialog(
     builder: (context) {
@@ -342,4 +347,22 @@ Future<bool> emailCheck(String email) async {
       .where('email', isEqualTo: email)
       .get();
   return result.docs.isEmpty;
+}
+
+Future<String> usernameCheck(String username) async {
+  var email;
+  final result = await FirebaseFirestore.instance
+      .collection('users')
+      .where('username', isEqualTo: username)
+      .get();
+  if (result.docs.isNotEmpty) {
+    email = result.docs.last['email'];
+  } else {
+    if (username.contains('@')) {
+      email = username;
+    } else {
+      email = "None";
+    }
+  }
+  return email;
 }
