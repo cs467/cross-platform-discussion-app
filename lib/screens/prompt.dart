@@ -544,60 +544,16 @@ class _PromptState extends State<Prompt> {
                       ),
                       SizedBox(height: 5),
                       Center(
-                        child: Semantics(
-                            button: true,
-                            enabled: true,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 15.0, right: 15, top: 8),
-                              child: TextFormField(
-                                textInputAction: TextInputAction.send,
-                                onFieldSubmitted: (value) {
-                                  final filter = ProfanityFilter();
-                                  String clean =
-                                      filter.censor(postController.text).trim();
-
-                                  if (clean.length > 0) {
-                                    FirebaseFirestore.instance
-                                        .collection(
-                                            "posts${widget.promptNumber}")
-                                        .add({
-                                      "name": widget.user,
-                                      "body": clean,
-                                      "timeStamp":
-                                          DateTime.now().toUtc().toString(),
-                                      "likes": 0,
-                                      "likedBy": [],
-                                      "flags": 0,
-                                      "flaggedBy": [],
-                                    }).then((value) {
-                                      postController.clear();
-                                      //print(value.id);
-                                    });
-                                  }
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
-                                },
-                                controller: postController,
-                                keyboardType: TextInputType.multiline,
-                                maxLines: null,
-                                maxLength: 525,
-                                buildCounter: (
-                                  BuildContext context, {
-                                  int currentLength,
-                                  int maxLength,
-                                  bool isFocused,
-                                }) {
-                                  return Text('${maxLength - currentLength}');
-                                },
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.send),
-                                    onPressed: () {
+                        child: !widget.user.contains("Disc")
+                            ? Semantics(
+                                button: true,
+                                enabled: true,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 15.0, right: 15, top: 8),
+                                  child: TextFormField(
+                                    textInputAction: TextInputAction.send,
+                                    onFieldSubmitted: (value) {
                                       final filter = ProfanityFilter();
                                       String clean = filter
                                           .censor(postController.text)
@@ -620,7 +576,7 @@ class _PromptState extends State<Prompt> {
                                           postController.clear();
                                           //print(value.id);
                                         });
-                                      } else {}
+                                      }
                                       FocusScopeNode currentFocus =
                                           FocusScope.of(context);
 
@@ -628,15 +584,65 @@ class _PromptState extends State<Prompt> {
                                         currentFocus.unfocus();
                                       }
                                     },
+                                    controller: postController,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    maxLength: 525,
+                                    buildCounter: (
+                                      BuildContext context, {
+                                      int currentLength,
+                                      int maxLength,
+                                      bool isFocused,
+                                    }) {
+                                      return Text(
+                                          '${maxLength - currentLength}');
+                                    },
+                                    decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                        icon: Icon(Icons.send),
+                                        onPressed: () {
+                                          final filter = ProfanityFilter();
+                                          String clean = filter
+                                              .censor(postController.text)
+                                              .trim();
+
+                                          if (clean.length > 0) {
+                                            FirebaseFirestore.instance
+                                                .collection(
+                                                    "posts${widget.promptNumber}")
+                                                .add({
+                                              "name": widget.user,
+                                              "body": clean,
+                                              "timeStamp": DateTime.now()
+                                                  .toUtc()
+                                                  .toString(),
+                                              "likes": 0,
+                                              "likedBy": [],
+                                              "flags": 0,
+                                              "flaggedBy": [],
+                                            }).then((value) {
+                                              postController.clear();
+                                              //print(value.id);
+                                            });
+                                          } else {}
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                          }
+                                        },
+                                      ),
+                                      hintText: 'Post a Reponse Here',
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent,
+                                            width: 2.0),
+                                      ),
+                                    ),
                                   ),
-                                  hintText: 'Post a Reponse Here',
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.transparent, width: 2.0),
-                                  ),
-                                ),
-                              ),
-                            )),
+                                ))
+                            : Container(),
                       ),
                       SizedBox(height: 5)
                     ],

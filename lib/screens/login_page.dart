@@ -105,9 +105,10 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
               controller: emailController,
               obscureText: isPassword,
-              validator: (val) => !EmailValidator.validate(val, true) && _usernameExist == true
-                        ? 'Not a valid email.'
-                        : null,
+              validator: (val) =>
+                  !EmailValidator.validate(val, true) && _usernameExist == true
+                      ? 'Not a valid email.'
+                      : null,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                   errorText: _emailExist ? "Email does not exist" : null,
@@ -166,45 +167,41 @@ class _LoginPageState extends State<LoginPage> {
 
         result = await usernameCheck(emailController.text);
 
-          if(result != "None") {
-            _usernameExist = false;
-          }
+        if (result != "None") {
+          _usernameExist = false;
+        }
 
         if (form.validate() || _usernameExist == false) {
           try {
             emailController.text = result;
-            await Provider.of<AuthService>(context, listen: false)
-                .loginUser(
-                    email: emailController.text,
-                    password: passwordController.text);
+            await Provider.of<AuthService>(context, listen: false).loginUser(
+                email: emailController.text, password: passwordController.text);
             setState(() {
-          _successfulLogin(context);
+              _successfulLogin(context);
 
-          Provider.of<AuthService>(context, listen: false).getUser().then(
-              (currentUser) => FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(currentUser.uid)
-                  .get()
-                  .then(
-                      (DocumentSnapshot result) => Navigator.pushAndRemoveUntil(
+              Provider.of<AuthService>(context, listen: false).getUser().then(
+                  (currentUser) => FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(currentUser.uid)
+                      .get()
+                      .then((DocumentSnapshot result) =>
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     HomePage(title: result["username"])),
                             (Route<dynamic> route) => false,
                           ))
-                  .catchError((err) => print(err)));
-          emailController.clear();
-          passwordController.clear();
-        });
+                      .catchError((err) => print(err)));
+              emailController.clear();
+              passwordController.clear();
+            });
           } on FirebaseAuthException catch (error) {
             return _buildErrorDialog(context, error.message);
           } on Exception catch (error) {
             return _buildErrorDialog(context, error.toString());
           }
-        } else {
-
-        }
+        } else {}
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -358,15 +355,14 @@ Future<String> usernameCheck(String username) async {
       .collection('users')
       .where('username', isEqualTo: username)
       .get();
-      if(result.docs.isNotEmpty) {
-        email = result.docs.last['email'];
-      } else {
-        if (username.contains('@'))
-        {
-          email = username;
-        } else {
-          email = "None";
-        }
-      }
+  if (result.docs.isNotEmpty) {
+    email = result.docs.last['email'];
+  } else {
+    if (username.contains('@')) {
+      email = username;
+    } else {
+      email = "None";
+    }
+  }
   return email;
 }
