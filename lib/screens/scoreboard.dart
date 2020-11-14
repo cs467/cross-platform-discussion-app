@@ -60,8 +60,53 @@ class _ScoreboardState extends State<Scoreboard> {
                   ),
                 ),
                 Card(
-                  child: ListTile(
-                    title: Text('Your Status'),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "Your Standing: " + "placeholder"
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 120,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              flex: 5,
+                              child: FractionallySizedBox(
+                                widthFactor: 0.95,
+                                child: Container(
+                                  color: Colors.blue,
+                                  child: Center(
+                                    child: Text(
+                                      "placeholder"
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Flexible(
+                              flex: 10,
+                              child: FractionallySizedBox(                               
+                                widthFactor: 0.95,
+                                child: Container(
+                                  color: Colors.red,
+                                  child: Center(
+                                    child: Text(
+                                      "placeholder"
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Card(
