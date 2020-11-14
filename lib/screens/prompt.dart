@@ -407,7 +407,39 @@ class _PromptState extends State<Prompt> {
                                                                       "posts${widget.promptNumber}")
                                                                   .doc(post
                                                                       .documentID)
+                                                                  .get()
+                                                                  .then(
+                                                                      (value) {
+                                                                int postLikes =
+                                                                    value.data()[
+                                                                        'likes'];
+                                                                print(postLikes);
+                                                                FirebaseFirestore
+                                                                  .instance
+                                                                  .collection('users')
+                                                                  .where('username', isEqualTo: widget.user)
+                                                                  .get()
+                                                                  .then((value) {
+                                                                    int curLikes = value.docs[0].get('likes');
+                                                                    int curPosts = value.docs[0].get('posts');
+                                                                    String curUid = value.docs[0].get('uid');
+                                                                    FirebaseFirestore
+                                                                      .instance
+                                                                      .collection("users")
+                                                                      .doc(curUid)
+                                                                      .update({
+                                                                        "likes": curLikes - postLikes,
+                                                                        "posts": curPosts -1,
+                                                                      });
+                                                                  });
+                                                                FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "posts${widget.promptNumber}")
+                                                                  .doc(post
+                                                                      .documentID)
                                                                   .delete();
+                                                              });                                                            
                                                             }
                                                           },
                                                         ),
@@ -453,7 +485,7 @@ class _PromptState extends State<Prompt> {
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                int curLikes = value
+                                                                int curFlags = value
                                                                     .docs[0]
                                                                     .get(
                                                                         'flags');
@@ -469,30 +501,42 @@ class _PromptState extends State<Prompt> {
                                                                     .doc(curUid)
                                                                     .update({
                                                                   "flags":
-                                                                      curLikes -
+                                                                      curFlags -
                                                                           1,
                                                                 });
                                                               });
                                                             } else {
                                                               FirebaseFirestore
-                                                                  .instance
-                                                                  .collection(
-                                                                      "posts${widget.promptNumber}")
-                                                                  .doc(post
-                                                                      .documentID)
-                                                                  .update({
-                                                                "flags":
-                                                                    info.flags +
-                                                                        1,
-                                                                "flaggedBy":
-                                                                    FieldValue
-                                                                        .arrayUnion([
-                                                                  widget.user
-                                                                ]),
-                                                              }).then((value) {
-                                                                postController
-                                                                    .clear();
-                                                              });
+                                                                .instance
+                                                                .collection("posts${widget.promptNumber}")
+                                                                .doc(post.documentID)
+                                                                .get()
+                                                                .then((value) {
+                                                                  int postLikes = value.data()['likes'];
+                                                                  FirebaseFirestore
+                                                                    .instance
+                                                                    .collection('users')
+                                                                    .where('username', isEqualTo: info.name)
+                                                                    .get()
+                                                                    .then((value) {
+                                                                      int curLikes = value.docs[0].get('likes');
+                                                                      String curUid = value.docs[0].get('uid');
+                                                                      FirebaseFirestore
+                                                                        .instance
+                                                                        .collection("users")
+                                                                        .doc(curUid)
+                                                                        .update({"likes": curLikes - postLikes,});
+                                                                    });
+                                                                });
+                                                              FirebaseFirestore
+                                                                .instance
+                                                                .collection("posts${widget.promptNumber}")
+                                                                .doc(post.documentID)
+                                                                .update({
+                                                                  "flags": info.flags + 1,
+                                                                  "flaggedBy": FieldValue.arrayUnion([widget.user]),
+                                                                })
+                                                                .then((value) {postController.clear();});  
                                                               FirebaseFirestore
                                                                   .instance
                                                                   .collection(
@@ -505,10 +549,14 @@ class _PromptState extends State<Prompt> {
                                                                   .get()
                                                                   .then(
                                                                       (value) {
-                                                                int curLikes = value
+                                                                int curFlags = value
                                                                     .docs[0]
                                                                     .get(
                                                                         'flags');
+                                                                int curPosts = value
+                                                                    .docs[0]
+                                                                    .get(
+                                                                        'posts');
                                                                 String curUid =
                                                                     value
                                                                         .docs[0]
@@ -521,7 +569,10 @@ class _PromptState extends State<Prompt> {
                                                                     .doc(curUid)
                                                                     .update({
                                                                   "flags":
-                                                                      curLikes +
+                                                                      curFlags +
+                                                                          1,
+                                                                  "posts":
+                                                                      curPosts -
                                                                           1,
                                                                 });
                                                               });
@@ -574,6 +625,21 @@ class _PromptState extends State<Prompt> {
                                       postController.clear();
                                       //print(value.id);
                                     });
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .where('username',
+                                            isEqualTo: widget.user)
+                                        .get()
+                                        .then((value) {
+                                      int curPosts = value.docs[0].get('posts');
+                                      String curUid = value.docs[0].get('uid');
+                                      FirebaseFirestore.instance
+                                          .collection("users")
+                                          .doc(curUid)
+                                          .update({
+                                        "posts": curPosts + 1,
+                                      });
+                                    });
                                   }
                                   FocusScopeNode currentFocus =
                                       FocusScope.of(context);
@@ -619,6 +685,23 @@ class _PromptState extends State<Prompt> {
                                         }).then((value) {
                                           postController.clear();
                                           //print(value.id);
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .where('username',
+                                                isEqualTo: widget.user)
+                                            .get()
+                                            .then((value) {
+                                          int curPosts =
+                                              value.docs[0].get('posts');
+                                          String curUid =
+                                              value.docs[0].get('uid');
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(curUid)
+                                              .update({
+                                            "posts": curPosts + 1,
+                                          });
                                         });
                                       } else {}
                                       FocusScopeNode currentFocus =

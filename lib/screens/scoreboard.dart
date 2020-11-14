@@ -62,13 +62,8 @@ class _ScoreboardState extends State<Scoreboard> {
                 Card(
                   child: Column(
                     children: [
-                      Container(
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            "Your Standing: " + "placeholder"
-                          ),
-                        ),
+                      ListTile(
+                        title: Text('Your Level'),
                       ),
                       Container(
                         height: 120,
@@ -80,7 +75,7 @@ class _ScoreboardState extends State<Scoreboard> {
                               child: FractionallySizedBox(
                                 widthFactor: 0.95,
                                 child: Container(
-                                  color: Colors.blue,
+                                  color: Colors.green[200],
                                   child: Center(
                                     child: Text(
                                       "placeholder"
@@ -94,7 +89,7 @@ class _ScoreboardState extends State<Scoreboard> {
                               child: FractionallySizedBox(                               
                                 widthFactor: 0.95,
                                 child: Container(
-                                  color: Colors.red,
+                                  color: Colors.orange[200],
                                   child: Center(
                                     child: Text(
                                       "placeholder"
@@ -104,6 +99,14 @@ class _ScoreboardState extends State<Scoreboard> {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                      Container(
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "customized message"
+                          ),
                         ),
                       ),
                     ],
