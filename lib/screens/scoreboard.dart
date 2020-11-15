@@ -121,6 +121,12 @@ class _ScoreboardState extends State<Scoreboard> {
                     children: [
                       Card(
                         child: ListTile(
+                          title: Text('Posts'),
+                          trailing: Text(posts.toString()),
+                        ),
+                      ),
+                      Card(
+                        child: ListTile(
                           title: Text('Likes'),
                           trailing: Text(likes.toString()),
                         ),
