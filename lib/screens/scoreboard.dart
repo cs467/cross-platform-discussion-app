@@ -17,10 +17,11 @@ class _ScoreboardState extends State<Scoreboard> {
   int dislikes;
   int streaks;
   int flags;
+  int posts;
   String registrationDateTime;
   int userRank = 0;
   int userNum = 0;
-//  List<bool> isSelected = [true, false];
+  List<bool> isSelected = [true, false];
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,7 @@ class _ScoreboardState extends State<Scoreboard> {
             dislikes = snapshot.data.documents[0]['dislikes'];
             streaks = snapshot.data.documents[0]['streaks'];
             flags = snapshot.data.documents[0]['flags'];
+            posts = snapshot.data.documents[0]['posts'];
             registrationDateTime = DateFormat('yMMMM').format(
                 snapshot.data.documents[0]['registrationDateTime'].toDate());
 
@@ -71,30 +73,20 @@ class _ScoreboardState extends State<Scoreboard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
-                              flex: 5,
+                              flex: 6,
                               child: FractionallySizedBox(
                                 widthFactor: 0.95,
                                 child: Container(
-                                  color: Colors.green[200],
-                                  child: Center(
-                                    child: Text(
-                                      "placeholder"
-                                    ),
-                                  ),
+                                  child: LevelIcon(posts: posts),
                                 ),
                               ),
                             ),
                             Flexible(
                               flex: 10,
-                              child: FractionallySizedBox(                               
+                              child: FractionallySizedBox(
                                 widthFactor: 0.95,
                                 child: Container(
-                                  color: Colors.orange[200],
-                                  child: Center(
-                                    child: Text(
-                                      "placeholder"
-                                    ),
-                                  ),
+                                  child: LevelTitle(posts: posts),
                                 ),
                               ),
                             ),
@@ -103,11 +95,7 @@ class _ScoreboardState extends State<Scoreboard> {
                       ),
                       Container(
                         height: 50,
-                        child: Center(
-                          child: Text(
-                            "customized message"
-                          ),
-                        ),
+                        child: LevelMessage(posts: posts),
                       ),
                     ],
                   ),
@@ -115,17 +103,14 @@ class _ScoreboardState extends State<Scoreboard> {
                 Card(
                   child: ListTile(
                     title: Text('Your Rank'),
-                    trailing: Text(userRank.toString() + '/' + userNum.toString()),
+                    trailing:
+                        Text(userRank.toString() + '/' + userNum.toString()),
                   ),
                 ),
                 Card(
                   child: ExpansionTile(
                     title: Text(
                       'Your Stats (all time)',
-                      // style: TextStyle(
-                      //   fontSize: 18.0,
-                      //   fontWeight: FontWeight.bold
-                      // ),
                     ),
                     children: [
                       Card(
@@ -158,6 +143,50 @@ class _ScoreboardState extends State<Scoreboard> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 30),
+                  child: Center(
+                    child: ToggleButtons(
+                      borderRadius: BorderRadius.circular(30),
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(0),
+                          child: Text(
+                            '            Posts            ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(0),
+                          child: Text(
+                            '            Likes            ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                      onPressed: (int index) {
+                        setState(() {
+                          for (int buttonIndex = 0;
+                              buttonIndex < isSelected.length;
+                              buttonIndex++) {
+                            if (buttonIndex == index) {
+                              isSelected[buttonIndex] = true;
+                            } else {
+                              isSelected[buttonIndex] = false;
+                            }
+                          }
+                        });
+                      },
+                      isSelected: isSelected,
                     ),
                   ),
                 ),
@@ -218,7 +247,6 @@ class _ScoreboardState extends State<Scoreboard> {
                     stream: FirebaseFirestore.instance
                         .collection('users')
                         .orderBy('likes', descending: true)
-                        //.limit(20)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData &&
@@ -300,30 +328,7 @@ class _ScoreboardState extends State<Scoreboard> {
                         return Container();
                       }
                     }),
-                // ToggleButtons(
-                //   children: [
-                //     Container(
-                //       child: Text('Weekly'),
-                //     ),
-                //     Container(
-                //       child: Text('All Time'),
-                //     ),
-                //   ],
-                //   onPressed: (int index) {
-                //     setState(() {
-                //       for (int buttonIndex = 0;
-                //           buttonIndex < isSelected.length;
-                //           buttonIndex++) {
-                //         if (buttonIndex == index) {
-                //           isSelected[buttonIndex] = true;
-                //         } else {
-                //           isSelected[buttonIndex] = false;
-                //         }
-                //       }
-                //     });
-                //   },
-                //   isSelected: isSelected,
-                // )
+                
               ],
             );
             //   return Container(
@@ -352,6 +357,98 @@ class _ScoreboardState extends State<Scoreboard> {
             );
           }
         },
+      ),
+    );
+  }
+}
+
+class LevelIcon extends StatelessWidget {
+  const LevelIcon({Key key, this.posts,}) : super(key: key);
+  final int posts;
+
+  @override
+  Widget build(BuildContext context) {
+    String imagePath;
+    if (posts < 25) {
+      imagePath = 'assets/images/levels/hatching.png';
+    } else if (posts < 50) {
+      imagePath = 'assets/images/levels/plant_sun.png';
+    } else if (posts < 100) {
+      imagePath = 'assets/images/levels/earth.png';
+    } else if (posts < 150) {
+      imagePath = 'assets/images/levels/heart_border.png';
+    } else if (posts < 200) {
+      imagePath = 'assets/images/stars/orange_star.png';
+    } else if (posts < 250) {
+      imagePath = 'assets/images/stars/silver_star.png';
+    } else {
+      imagePath = 'assets/images/stars/gold_star.png';
+    }
+
+    return Center(
+      child: Image.asset(imagePath),
+    );
+  }
+}
+
+class LevelTitle extends StatelessWidget {
+  const LevelTitle({Key key, this.posts,}) : super(key: key);
+  final int posts;
+
+  @override
+  Widget build(BuildContext context) {
+    String title;
+    if (posts < 25) {
+      title = "Hello World";
+    } else if (posts < 50) {
+      title = "Nature-Green";
+    } else if (posts < 100) {
+      title = "Blue-Planet";
+    } else if (posts < 150) {
+      title = "Red-Hot";
+    } else if (posts < 200) {
+      title = "Bronze-Star";
+    } else if (posts < 250) {
+      title = "Silver-Star";
+    } else {
+      title = "Gold-Star";
+    }
+    return Center(
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
+class LevelMessage extends StatelessWidget {
+  const LevelMessage({Key key, this.posts}) : super(key: key);
+  final int posts;
+
+  @override
+  Widget build(BuildContext context) {
+    String message;
+    if (posts < 25) {
+      message = "We're so glad you're here!";
+    } else if (posts < 50) {
+      message = "Let's grow further together!";
+    } else if (posts < 100) {
+      message = "It's getting bigger and bigger!";
+    } else if (posts < 150) {
+      message = "You're the heart of this community!";
+    } else if (posts < 200) {
+      message = "Yay, you've made it to the star level!";
+    } else if (posts < 250) {
+      message = "Thank you for inspiring all of us!";
+    } else {
+      message = "WOW, you are THE BEST of the best!!";
+    }
+
+    return Center(
+      child: Text(
+        message,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }
