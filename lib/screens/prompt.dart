@@ -548,8 +548,7 @@ class _PromptState extends State<Prompt> {
                                                                         .doc(curUid)
                                                                         .update({"likes": curLikes - postLikes,});
                                                                     });
-                                                                });
-                                                              FirebaseFirestore
+                                                                    FirebaseFirestore
                                                                 .instance
                                                                 .collection("posts${widget.promptNumber}")
                                                                 .doc(post.documentID)
@@ -597,6 +596,8 @@ class _PromptState extends State<Prompt> {
                                                                           1,
                                                                 });
                                                               });
+                                                                });
+                                                              
                                                             }
                                                             },
                                                           )
