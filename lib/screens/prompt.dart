@@ -414,18 +414,50 @@ class _PromptState extends State<Prompt> {
                                                                 Colors.red[300],
                                                             icon: Icons.delete,
                                                             onTap: () {
-                                                              if (info.name
-                                                                  .contains(widget
-                                                                      .user)) {
+                                                            if (info.name
+                                                                .contains(widget
+                                                                    .user)) {
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "posts${widget.promptNumber}")
+                                                                  .doc(post
+                                                                      .documentID)
+                                                                  .get()
+                                                                  .then(
+                                                                      (value) {
+                                                                int postLikes =
+                                                                    value.data()[
+                                                                        'likes'];
+                                                                print(postLikes);
                                                                 FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        "posts${widget.promptNumber}")
-                                                                    .doc(post
-                                                                        .documentID)
-                                                                    .delete();
-                                                              }
-                                                            },
+                                                                  .instance
+                                                                  .collection('users')
+                                                                  .where('username', isEqualTo: widget.user)
+                                                                  .get()
+                                                                  .then((value) {
+                                                                    int curLikes = value.docs[0].get('likes');
+                                                                    int curPosts = value.docs[0].get('posts');
+                                                                    String curUid = value.docs[0].get('uid');
+                                                                    FirebaseFirestore
+                                                                      .instance
+                                                                      .collection("users")
+                                                                      .doc(curUid)
+                                                                      .update({
+                                                                        "likes": curLikes - postLikes,
+                                                                        "posts": curPosts -1,
+                                                                      });
+                                                                  });
+                                                                FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "posts${widget.promptNumber}")
+                                                                  .doc(post
+                                                                      .documentID)
+                                                                  .delete();
+                                                              });                                                            
+                                                            }
+                                                          },
                                                           ),
                                                         if (!info.name.contains(
                                                             widget.user))
@@ -495,63 +527,77 @@ class _PromptState extends State<Prompt> {
                                                                   });
                                                                 });
                                                               } else {
+                                                              FirebaseFirestore
+                                                                .instance
+                                                                .collection("posts${widget.promptNumber}")
+                                                                .doc(post.documentID)
+                                                                .get()
+                                                                .then((value) {
+                                                                  int postLikes = value.data()['likes'];
+                                                                  FirebaseFirestore
+                                                                    .instance
+                                                                    .collection('users')
+                                                                    .where('username', isEqualTo: info.name)
+                                                                    .get()
+                                                                    .then((value) {
+                                                                      int curLikes = value.docs[0].get('likes');
+                                                                      String curUid = value.docs[0].get('uid');
+                                                                      FirebaseFirestore
+                                                                        .instance
+                                                                        .collection("users")
+                                                                        .doc(curUid)
+                                                                        .update({"likes": curLikes - postLikes,});
+                                                                    });
+                                                                });
+                                                              FirebaseFirestore
+                                                                .instance
+                                                                .collection("posts${widget.promptNumber}")
+                                                                .doc(post.documentID)
+                                                                .update({
+                                                                  "flags": info.flags + 1,
+                                                                  "flaggedBy": FieldValue.arrayUnion([widget.user]),
+                                                                })
+                                                                .then((value) {postController.clear();});  
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .where(
+                                                                      'username',
+                                                                      isEqualTo:
+                                                                          info
+                                                                              .name)
+                                                                  .get()
+                                                                  .then(
+                                                                      (value) {
+                                                                int curFlags = value
+                                                                    .docs[0]
+                                                                    .get(
+                                                                        'flags');
+                                                                int curPosts = value
+                                                                    .docs[0]
+                                                                    .get(
+                                                                        'posts');
+                                                                String curUid =
+                                                                    value
+                                                                        .docs[0]
+                                                                        .get(
+                                                                            'uid');
                                                                 FirebaseFirestore
                                                                     .instance
                                                                     .collection(
-                                                                        "posts${widget.promptNumber}")
-                                                                    .doc(post
-                                                                        .documentID)
+                                                                        "users")
+                                                                    .doc(curUid)
                                                                     .update({
                                                                   "flags":
-                                                                      info.flags +
+                                                                      curFlags +
                                                                           1,
-                                                                  "flaggedBy":
-                                                                      FieldValue
-                                                                          .arrayUnion([
-                                                                    widget.user
-                                                                  ]),
-                                                                }).then((value) {
-                                                                  postController
-                                                                      .clear();
+                                                                  "posts":
+                                                                      curPosts -
+                                                                          1,
                                                                 });
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'users')
-                                                                    .where(
-                                                                        'username',
-                                                                        isEqualTo:
-                                                                            info
-                                                                                .name)
-                                                                    .get()
-                                                                    .then(
-                                                                        (value) {
-                                                                  int curLikes =
-                                                                      value
-                                                                          .docs[
-                                                                              0]
-                                                                          .get(
-                                                                              'flags');
-                                                                  String
-                                                                      curUid =
-                                                                      value
-                                                                          .docs[
-                                                                              0]
-                                                                          .get(
-                                                                              'uid');
-                                                                  FirebaseFirestore
-                                                                      .instance
-                                                                      .collection(
-                                                                          "users")
-                                                                      .doc(
-                                                                          curUid)
-                                                                      .update({
-                                                                    "flags":
-                                                                        curLikes +
-                                                                            1,
-                                                                  });
-                                                                });
-                                                              }
+                                                              });
+                                                            }
                                                             },
                                                           )
                                                       ],
@@ -604,7 +650,24 @@ class _PromptState extends State<Prompt> {
                                           postController.clear();
                                           //print(value.id);
                                         });
-                                      }
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .where('username',
+                                                isEqualTo: widget.user)
+                                            .get()
+                                            .then((value) {
+                                          int curPosts =
+                                              value.docs[0].get('posts');
+                                          String curUid =
+                                              value.docs[0].get('uid');
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(curUid)
+                                              .update({
+                                            "posts": curPosts + 1,
+                                          });
+                                        });
+                                      } else {}
                                       FocusScopeNode currentFocus =
                                           FocusScope.of(context);
 
@@ -650,8 +713,26 @@ class _PromptState extends State<Prompt> {
                                               "flaggedBy": [],
                                             }).then((value) {
                                               postController.clear();
+                                              FirebaseFirestore.instance
+                                            .collection('users')
+                                            .where('username',
+                                                isEqualTo: widget.user)
+                                            .get()
+                                            .then((value) {
+                                          int curPosts =
+                                              value.docs[0].get('posts');
+                                          String curUid =
+                                              value.docs[0].get('uid');
+                                          FirebaseFirestore.instance
+                                              .collection("users")
+                                              .doc(curUid)
+                                              .update({
+                                            "posts": curPosts + 1,
+                                          });
+                                        });
                                               //print(value.id);
                                             });
+                                            
                                           } else {}
                                           FocusScopeNode currentFocus =
                                               FocusScope.of(context);

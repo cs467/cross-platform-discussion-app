@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:disc/screens/feedback_history.dart';
+import 'package:disc/screens/scoreboard.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,10 +40,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           _signInSignOut(context),
            widget.title != null
               ? ListTile(
-            title: const Text('All Time Stats'),
+            title: const Text('See Your Scoreboard'),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FeedbackHistory(username: widget.title)));
+                  MaterialPageRoute(builder: (context) => Scoreboard(username: widget.title)));
             },
           ) : Container(),
         ],
