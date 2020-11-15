@@ -32,7 +32,6 @@ class AuthService with ChangeNotifier {
             "username": username,
             "email": email,
             "likes": 0,
-            "dislikes": 0,
             "streaks": 0,
             "flags": 0,
             "posts": 0,

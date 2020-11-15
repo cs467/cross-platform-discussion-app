@@ -14,7 +14,6 @@ class Scoreboard extends StatefulWidget {
 
 class _ScoreboardState extends State<Scoreboard> {
   int likes;
-  int dislikes;
   int streaks;
   int flags;
   int posts;
@@ -41,7 +40,6 @@ class _ScoreboardState extends State<Scoreboard> {
           }
           if (snapshot.hasData) {
             likes = snapshot.data.documents[0]['likes'];
-            dislikes = snapshot.data.documents[0]['dislikes'];
             streaks = snapshot.data.documents[0]['streaks'];
             flags = snapshot.data.documents[0]['flags'];
             posts = snapshot.data.documents[0]['posts'];
@@ -129,12 +127,6 @@ class _ScoreboardState extends State<Scoreboard> {
                         child: ListTile(
                           title: Text('Likes'),
                           trailing: Text(likes.toString()),
-                        ),
-                      ),
-                      Card(
-                        child: ListTile(
-                          title: Text('Dislikes'),
-                          trailing: Text(dislikes.toString()),
                         ),
                       ),
                       Card(
