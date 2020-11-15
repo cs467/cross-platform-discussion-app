@@ -102,9 +102,15 @@ class _ScoreboardState extends State<Scoreboard> {
                 ),
                 Card(
                   child: ListTile(
-                    title: Text('Your Rank'),
+                    title: Text('Your Rank ' + (isSelected[0] == true ? '(Posts)' : '(Likes)')),
                     trailing:
-                        Text(userRank.toString() + '/' + userNum.toString()),
+                        Text(
+                          userRank.toString() + '/' + userNum.toString(),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                   ),
                 ),
                 Card(
@@ -233,7 +239,7 @@ class _ScoreboardState extends State<Scoreboard> {
                         padding: EdgeInsets.only(right: 15),
                         alignment: Alignment.centerRight,
                         child: Text(
-                          'Likes',
+                          isSelected[0] == true ? 'Posts' : 'Likes',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -243,7 +249,89 @@ class _ScoreboardState extends State<Scoreboard> {
                     ),
                   ],
                 ),
+                isSelected[0] == true 
+                ?
                 StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .orderBy('posts', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.data.documents != null &&
+                          snapshot.data.documents.length > 0) {
+                        RankTileList rankList;
+                        List<RankTile> ranks = List();
+                        snapshot.data.documents
+                            .forEach((user) => ranks.add(RankTile.fromMap({
+                                  'uid': user['uid'],
+                                  'username': user['username'],
+                                  'posts': user['posts'],
+                                })));
+                        rankList = RankTileList(users: ranks);
+                        int rankNum = 1;
+                        int nextRankNum = 2;
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((_) => setState(() {
+                                  userNum = snapshot.data.documents.length;
+                                }));
+
+                        return Container(
+                          child: ListView.builder(
+                            itemCount: rankList.listLength,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: ((index != 0) &&
+                                        (rankList
+                                                .getEachEntry(index - 1)
+                                                .userPosts ==
+                                            rankList
+                                                .getEachEntry(index)
+                                                .userPosts))
+                                    ? () {
+                                        nextRankNum++;
+                                        return Text((rankNum.toString()));
+                                      }()
+                                    : ((index == 0)
+                                        ? Text((rankNum.toString()))
+                                        : () {
+                                            rankNum = nextRankNum;
+                                            nextRankNum++;
+                                            return Text((rankNum.toString()));
+                                          }()),
+                                title:
+                                    rankList.getEachEntry(index).userUsername ==
+                                            widget.username
+                                        ? () {
+                                            int tempRank = rankNum;
+                                            WidgetsBinding.instance
+                                                .addPostFrameCallback(
+                                                    (_) => setState(() {
+                                                          userRank = tempRank;
+                                                        }));
+                                            return Text(rankList
+                                                .getEachEntry(index)
+                                                .userUsername);
+                                          }()
+                                        : Text(rankList
+                                            .getEachEntry(index)
+                                            .userUsername),
+                                trailing: Text(rankList
+                                    .getEachEntry(index)
+                                    .userPosts
+                                    .toString()),
+                              );
+                            },
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    })
+                    :
+                    StreamBuilder(
                     stream: FirebaseFirestore.instance
                         .collection('users')
                         .orderBy('likes', descending: true)
@@ -287,7 +375,6 @@ class _ScoreboardState extends State<Scoreboard> {
                                     : ((index == 0)
                                         ? Text((rankNum.toString()))
                                         : () {
-                                            //int tempRank = nextrankNum;
                                             rankNum = nextRankNum;
                                             nextRankNum++;
                                             return Text((rankNum.toString()));
@@ -297,11 +384,6 @@ class _ScoreboardState extends State<Scoreboard> {
                                             widget.username
                                         ? () {
                                             int tempRank = rankNum;
-                                            // () {
-                                            //   setState(() {
-                                            //     userRank = rankNum;
-                                            //   });
-                                            // };
                                             WidgetsBinding.instance
                                                 .addPostFrameCallback(
                                                     (_) => setState(() {
@@ -327,30 +409,10 @@ class _ScoreboardState extends State<Scoreboard> {
                       } else {
                         return Container();
                       }
-                    }),
-                
+                    })
+                    ,               
               ],
             );
-            //   return Container(
-            //       child: Column(
-            //     children: [
-            //       Flexible(
-            //         fit: FlexFit.tight,
-            //         flex: 1,
-            //         child: Center(
-            //           child: Text(
-            //             "All Time Stats",
-            //             style:
-            //                 TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            //           ),
-            //         ),
-            //       ),
-            //       Flexible(
-            //         flex: 6,
-            //         child: _buildGrid(createStatsList(likes, dislikes, streaks)),
-            //       )
-            //     ],
-            //   ));
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -399,7 +461,7 @@ class LevelTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     String title;
     if (posts < 25) {
-      title = "Hello World";
+      title = "Hello-World";
     } else if (posts < 50) {
       title = "Nature-Green";
     } else if (posts < 100) {
@@ -453,75 +515,3 @@ class LevelMessage extends StatelessWidget {
     );
   }
 }
-
-List<Container> createStatsList(int likes, int dislikes, int streaks) {
-  List<Container> statsList = List();
-  statsList.length = 0;
-
-  if (likes >= 25) {
-    statsList.add(
-      Container(
-        child: Column(
-          children: [
-            Image.asset('assets/images/crowns/green_crown.png'),
-            FittedBox(
-              fit: BoxFit.contain,
-              child: Text(
-                "25 Likes",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  if (streaks >= 25) {
-    statsList.add(
-      Container(
-        child: Column(
-          children: [
-            Image.asset('assets/images/stars/green_star.png'),
-            FittedBox(
-              fit: BoxFit.contain,
-              child: Text(
-                "25 Streaks",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  if ((dislikes / likes) < 0.05) {
-    statsList.add(
-      Container(
-        child: Column(
-          children: [
-            Image.asset('assets/images/faces/sunglasses.png'),
-            FittedBox(
-              fit: BoxFit.contain,
-              child: Text(
-                "Few dislikes",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  return statsList;
-}
-
-Widget _buildGrid(List<Container> statsList) => GridView.extent(
-      maxCrossAxisExtent: 150,
-      padding: const EdgeInsets.all(0),
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      children: statsList,
-    );

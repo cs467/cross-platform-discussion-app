@@ -6,6 +6,7 @@ class User {
   int dislikes;
   int streaks;
   int flags;
+  int posts;
   DateTime registrationDateTime;
 
   User({
@@ -16,6 +17,7 @@ class User {
     this.dislikes,
     this.streaks,
     this.flags,
+    this.posts,
     this.registrationDateTime,
   });
 
@@ -28,6 +30,7 @@ class User {
       dislikes: user['dislikes'],
       streaks: user['streak'],
       flags: user['flags'],
+      posts: user['posts'],
       registrationDateTime: user['registrationDateTime'],
     );
   }

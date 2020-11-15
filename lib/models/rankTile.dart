@@ -3,6 +3,7 @@ class RankTile {
   String username;
   //String email;
   int likes;
+  int posts;
   // int dislikes;
   // int streaks;
   // int flags;
@@ -13,6 +14,7 @@ class RankTile {
     this.username,
     // this.email,
     this.likes,
+    this.posts,
     // this.dislikes,
     // this.streaks,
     // this.flags,
@@ -25,6 +27,7 @@ class RankTile {
       username: user['username'],
       //email: user['email'],
       likes: user['likes'],
+      posts: user['posts'],
       // dislikes: user['dislikes'],
       // streaks: user['streak'],
       // flags: user['flags'],
@@ -35,4 +38,5 @@ class RankTile {
   String get userUid => this.uid;
   String get userUsername => this.username;
   int get userLikes => this.likes;
+  int get userPosts => this.posts;
 }
