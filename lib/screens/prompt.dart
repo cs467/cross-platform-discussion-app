@@ -55,6 +55,13 @@ class _PromptState extends State<Prompt> {
         child: Scaffold(
           appBar: AppBar(
             title: Text('${widget.text}'),
+            leading: !widget.user.contains("Disc")
+                ? BackButton(
+                  color:  Color(0xff00e676),
+                  onPressed: () => Navigator.of(context).pop())
+                : BackButton(
+                  color: Color(0xffffffff),
+                  onPressed: () => Navigator.of(context).pop()),
           ),
           body: StreamBuilder(
               stream: FirebaseFirestore.instance
