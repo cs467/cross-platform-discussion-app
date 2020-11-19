@@ -12,7 +12,7 @@ class PasswordPage extends StatefulWidget {
 
 class _PasswordPageState extends State<PasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  bool _emailExist = false;
+  bool _emailExist = true;
   String email;
 
   TextEditingController emailController = new TextEditingController();
@@ -84,7 +84,7 @@ class _PasswordPageState extends State<PasswordPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  errorText: _emailExist ? "Email does not exist" : null,
+                  errorText: !_emailExist ? "Email does not exist" : null,
                   suffixIcon: emailController.text.length > 0
                       ? IconButton(
                           onPressed: () => emailController.clear(),
@@ -109,10 +109,9 @@ class _PasswordPageState extends State<PasswordPage> {
 
             if (valid) {
               setState(() {
-                _emailExist = true;
+                _emailExist = false;
               });
             } else {
-              //_buildErrorDialog(context, "A password reset link has been sent to $email");
               await Provider.of<AuthService>(context, listen: false)
                   .resetPassword(emailController.text);
                   
@@ -154,11 +153,11 @@ class _PasswordPageState extends State<PasswordPage> {
     return showDialog(
       builder: (context) {
         return AlertDialog(
-          title: Text('Error Message'),
+          title: Text('Email Sent!'),
           content: SingleChildScrollView(child: Text(_message)),
           actions: <Widget>[
             FlatButton(
-                child: Text('Cancel'),
+                child: Text('Proceed'),
                 color: Color(0xff2193b0),
                 onPressed: () {
                   Navigator.of(context).pop();

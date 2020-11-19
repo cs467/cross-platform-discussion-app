@@ -44,12 +44,8 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          child: Center(
-            child: Container(
-              child: CircularProgressIndicator(),
-              alignment: Alignment(0.0, 0.0),
-            ),
-          ),
+          child: CircularProgressIndicator(),
+          alignment: Alignment(0.0, 0.0),
         ),
       ),
     );

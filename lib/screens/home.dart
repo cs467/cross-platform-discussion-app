@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
+import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -51,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                       )),
             );
           },
-          label: Text('Join Discussion'),
+          label: widget.title != null ? Text('Join Discussion') : Text('Read Discussion'),
           icon: Icon(Icons.insert_comment),
         ),
         SizedBox(height: 25),
@@ -77,8 +78,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('Submit a Prompt'),
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PromptProposal(user: widget.title)),
+            );
+        },
+        ),
       appBar: AppBar(
-        title: Text(widget.title ?? 'Home Page'),
+        title: Text('Home Page'),
+        leading: widget.title != null ? Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Icon(
+            Icons.bolt,
+            color: Color(0xff00e676),
+            ),
+        ) : Container(),
       ),
       endDrawer: DrawerWidget(title: widget.title),
       body: ListView.builder(
