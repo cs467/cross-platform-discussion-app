@@ -44,6 +44,7 @@ class _PromptProposalState extends State<PromptProposal> {
                 children: [
                   sortProposals(),
                   chatWork(snapshot),
+                  //userStats(),
                   response(),
                 ],
               );
@@ -220,7 +221,12 @@ class _PromptProposalState extends State<PromptProposal> {
                                               CrossAxisAlignment.end,
                                           children: [
                                             SizedBox(height: 5),
-                                            Text(info.name),
+                                            GestureDetector(
+                                              child: Text(info.name),
+                                              onTap: () {
+                                                
+                                              },
+                                              ),
                                             SizedBox(height: 10),
                                             Text(timeago.format(todayDate),
                                                 style: TextStyle(
@@ -388,6 +394,20 @@ class _PromptProposalState extends State<PromptProposal> {
               }
               return Container();
             }),
+      ),
+    );
+  }
+
+  Widget userStats() {
+    return Container(
+      height: 60,
+      alignment: Alignment.center,
+      child: Text(
+        'All Users',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

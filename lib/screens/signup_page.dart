@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:disc/screens/home.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
@@ -116,6 +117,9 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 10,
           ),
           TextFormField(
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
+              ],
               textInputAction: TextInputAction.next,
               controller: usernameController,
               obscureText: isPassword,
