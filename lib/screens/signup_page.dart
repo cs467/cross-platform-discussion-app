@@ -118,7 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           TextFormField(
               inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9\-//._]")),
               ],
               textInputAction: TextInputAction.next,
               controller: usernameController,
@@ -160,7 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     //autofocus: true,
                     textInputAction: TextInputAction.next,
                     validator: (val) => !EmailValidator.validate(val, true)
-                        ? 'Not a valid email.'
+                        ? 'Not a valid email or username.'
                         : null,
                     controller: emailController,
                     obscureText: isPassword,
@@ -178,7 +178,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : Container(),
+          : SizedBox(),
     );
   }
 
@@ -218,7 +218,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : Container(),
+          : SizedBox(),
     );
   }
 
@@ -260,7 +260,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : Container(),
+          : SizedBox(),
     );
   }
 
