@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:disc/screens/scoreboard.dart';
+import 'package:disc/screens/stats.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           _signInSignOut(context),
            widget.title != null
               ? ListTile(
-            title: const Text('See Your Scoreboard'),
+            title: const Text('See Your Stats'),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => Scoreboard(username: widget.title)));

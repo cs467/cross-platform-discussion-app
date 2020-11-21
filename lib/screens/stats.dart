@@ -21,6 +21,8 @@ class _ScoreboardState extends State<Scoreboard> {
   int userRank = 0;
   int userNum = 0;
   List<bool> isSelected = [true, false];
+bool rSelected = true, lSelected = false;
+  String sort = "timeStamp";
 
   @override
   Widget build(BuildContext context) {
@@ -150,50 +152,83 @@ class _ScoreboardState extends State<Scoreboard> {
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 30),
-                  child: Center(
-                    child: ToggleButtons(
-                      borderRadius: BorderRadius.circular(30),
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(0),
-                          child: Text(
-                            '            Posts            ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            isSelected[0] = true;
+                            isSelected[1] = false;
+                            //print(sort);
+                            rSelected = true;
+                            lSelected = false;
+                            setState(() {});
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: rSelected == true ? Colors.grey[500] : Colors.grey[200], 
+                                  width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Posts",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.all(0),
-                          child: Text(
-                            '            Likes            ',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            isSelected[1] = true;
+                            isSelected[0] = false;
+                            //print(sort);
+                            rSelected = false;
+                            lSelected = true;
+                            setState(() {});
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              side: new BorderSide(
+                                color: lSelected == true ? Colors.grey[500] : Colors.grey[200],
+                                width: 2.0
+                              ),
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Likes",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                      onPressed: (int index) {
-                        setState(() {
-                          for (int buttonIndex = 0;
-                              buttonIndex < isSelected.length;
-                              buttonIndex++) {
-                            if (buttonIndex == index) {
-                              isSelected[buttonIndex] = true;
-                            } else {
-                              isSelected[buttonIndex] = false;
-                            }
-                          }
-                        });
-                      },
-                      isSelected: isSelected,
-                    ),
+                        )
+                      ),
+                      SizedBox(width: 15),
+                    ],
                   ),
                 ),
+                Container(height: 15,),
                 Row(
                   children: [
                     Flexible(
@@ -217,7 +252,7 @@ class _ScoreboardState extends State<Scoreboard> {
                       child: Container(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Usename',
+                          'Username',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -278,46 +313,48 @@ class _ScoreboardState extends State<Scoreboard> {
                           child: ListView.builder(
                             itemCount: rankList.listLength,
                             itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: ((index != 0) &&
-                                        (rankList
-                                                .getEachEntry(index - 1)
-                                                .userPosts ==
-                                            rankList
-                                                .getEachEntry(index)
-                                                .userPosts))
-                                    ? () {
-                                        nextRankNum++;
-                                        return Text((rankNum.toString()));
-                                      }()
-                                    : ((index == 0)
-                                        ? Text((rankNum.toString()))
-                                        : () {
-                                            rankNum = nextRankNum;
-                                            nextRankNum++;
-                                            return Text((rankNum.toString()));
-                                          }()),
-                                title:
-                                    rankList.getEachEntry(index).userUsername ==
-                                            widget.username
-                                        ? () {
-                                            int tempRank = rankNum;
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback(
-                                                    (_) => setState(() {
-                                                          userRank = tempRank;
-                                                        }));
-                                            return Text(rankList
-                                                .getEachEntry(index)
-                                                .userUsername);
-                                          }()
-                                        : Text(rankList
-                                            .getEachEntry(index)
-                                            .userUsername),
-                                trailing: Text(rankList
-                                    .getEachEntry(index)
-                                    .userPosts
-                                    .toString()),
+                              return Card(
+                                child: ListTile(
+                                  leading: ((index != 0) &&
+                                          (rankList
+                                                  .getEachEntry(index - 1)
+                                                  .userPosts ==
+                                              rankList
+                                                  .getEachEntry(index)
+                                                  .userPosts))
+                                      ? () {
+                                          nextRankNum++;
+                                          return Text((rankNum.toString()));
+                                        }()
+                                      : ((index == 0)
+                                          ? Text((rankNum.toString()))
+                                          : () {
+                                              rankNum = nextRankNum;
+                                              nextRankNum++;
+                                              return Text((rankNum.toString()));
+                                            }()),
+                                  title:
+                                      rankList.getEachEntry(index).userUsername ==
+                                              widget.username
+                                          ? () {
+                                              int tempRank = rankNum;
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback(
+                                                      (_) => setState(() {
+                                                            userRank = tempRank;
+                                                          }));
+                                              return Text(rankList
+                                                  .getEachEntry(index)
+                                                  .userUsername);
+                                            }()
+                                          : Text(rankList
+                                              .getEachEntry(index)
+                                              .userUsername),
+                                  trailing: Text(rankList
+                                      .getEachEntry(index)
+                                      .userPosts
+                                      .toString()),
+                                ),
                               );
                             },
                             shrinkWrap: true,
@@ -358,46 +395,48 @@ class _ScoreboardState extends State<Scoreboard> {
                           child: ListView.builder(
                             itemCount: rankList.listLength,
                             itemBuilder: (context, index) {
-                              return ListTile(
-                                leading: ((index != 0) &&
-                                        (rankList
-                                                .getEachEntry(index - 1)
-                                                .userLikes ==
-                                            rankList
-                                                .getEachEntry(index)
-                                                .userLikes))
-                                    ? () {
-                                        nextRankNum++;
-                                        return Text((rankNum.toString()));
-                                      }()
-                                    : ((index == 0)
-                                        ? Text((rankNum.toString()))
-                                        : () {
-                                            rankNum = nextRankNum;
-                                            nextRankNum++;
-                                            return Text((rankNum.toString()));
-                                          }()),
-                                title:
-                                    rankList.getEachEntry(index).userUsername ==
-                                            widget.username
-                                        ? () {
-                                            int tempRank = rankNum;
-                                            WidgetsBinding.instance
-                                                .addPostFrameCallback(
-                                                    (_) => setState(() {
-                                                          userRank = tempRank;
-                                                        }));
-                                            return Text(rankList
-                                                .getEachEntry(index)
-                                                .userUsername);
-                                          }()
-                                        : Text(rankList
-                                            .getEachEntry(index)
-                                            .userUsername),
-                                trailing: Text(rankList
-                                    .getEachEntry(index)
-                                    .userLikes
-                                    .toString()),
+                              return Card(
+                                child: ListTile(
+                                  leading: ((index != 0) &&
+                                          (rankList
+                                                  .getEachEntry(index - 1)
+                                                  .userLikes ==
+                                              rankList
+                                                  .getEachEntry(index)
+                                                  .userLikes))
+                                      ? () {
+                                          nextRankNum++;
+                                          return Text((rankNum.toString()));
+                                        }()
+                                      : ((index == 0)
+                                          ? Text((rankNum.toString()))
+                                          : () {
+                                              rankNum = nextRankNum;
+                                              nextRankNum++;
+                                              return Text((rankNum.toString()));
+                                            }()),
+                                  title:
+                                      rankList.getEachEntry(index).userUsername ==
+                                              widget.username
+                                          ? () {
+                                              int tempRank = rankNum;
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback(
+                                                      (_) => setState(() {
+                                                            userRank = tempRank;
+                                                          }));
+                                              return Text(rankList
+                                                  .getEachEntry(index)
+                                                  .userUsername);
+                                            }()
+                                          : Text(rankList
+                                              .getEachEntry(index)
+                                              .userUsername),
+                                  trailing: Text(rankList
+                                      .getEachEntry(index)
+                                      .userLikes
+                                      .toString()),
+                                ),
                               );
                             },
                             shrinkWrap: true,
