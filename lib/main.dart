@@ -11,12 +11,11 @@ import 'package:disc/screens/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+    // WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   // ConnectionStatusSingleton connectionStatus =
   //     ConnectionStatusSingleton.getInstance();
   // connectionStatus.initialize();
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
 
   runApp(
     ChangeNotifierProvider<AuthService>(

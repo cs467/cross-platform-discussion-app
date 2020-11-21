@@ -18,6 +18,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // StreamSubscription _connectionChangeStream;
+
+  // bool isOffline;
+
+  // @override
+  // initState() {
+  //   super.initState();
+
+  //   ConnectionStatusSingleton connectionStatus =
+  //       ConnectionStatusSingleton.getInstance();
+  //   isOffline = !connectionStatus.hasConnection;
+  //   _connectionChangeStream =
+  //       connectionStatus.connectionChange.listen(connectionChanged);
+  // }
+
+  // void connectionChanged(dynamic hasConnection) {
+  //   setState(() {
+  //     isOffline = !hasConnection;
+  //   });
+  // }
   Map _source = {ConnectivityResult.none: false};
   AppConnectivity _connectivity = AppConnectivity.instance;
 
@@ -97,6 +117,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+//     const timeout = const Duration(seconds: 3);
+// const ms = const Duration(milliseconds: 1);
+
+// startTimeout([int milliseconds]) {
+//   var duration = milliseconds == null ? timeout : ms * milliseconds;
+//   return new Timer(duration, handleTimeout);
+// }
+
+// void handleTimeout() {  // callback function
+
+// }
     String string;
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
@@ -108,7 +139,7 @@ class _HomePageState extends State<HomePage> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    print(string);
+    print("online? $string");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
