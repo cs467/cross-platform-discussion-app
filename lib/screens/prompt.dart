@@ -26,6 +26,7 @@ class _PromptState extends State<Prompt> {
   TextEditingController postController = new TextEditingController();
 
   Timer _timer;
+  DateTime now = DateTime.now();
 
   @override
   void initState() {
@@ -44,6 +45,8 @@ class _PromptState extends State<Prompt> {
   }
 
   Widget build(BuildContext context) {
+    String startsWith = DateTime(now.year, now.month, now.day).toString();
+
     return GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -67,6 +70,7 @@ class _PromptState extends State<Prompt> {
               stream: FirebaseFirestore.instance
                   .collection('posts${widget.promptNumber}')
                   .orderBy(sort, descending: true)
+                  .where(sort, isGreaterThan: startsWith)
                   .snapshots(),
               builder: (content, snapshot) {
                 if (snapshot.hasData && snapshot.data.documents != null) {
