@@ -104,9 +104,6 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
-            inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]")),
-              ],
               controller: emailController,
               obscureText: isPassword,
               validator: (val) =>
