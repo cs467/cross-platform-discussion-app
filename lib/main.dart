@@ -7,8 +7,14 @@ import 'package:disc/Widgets/auth.dart';
 import 'package:disc/screens/login_page.dart';
 import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/splash.dart';
+//import 'package:disc/singleton/ConnectionStatusSingleton.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // ConnectionStatusSingleton connectionStatus =
+  //     ConnectionStatusSingleton.getInstance();
+  // connectionStatus.initialize();
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -44,11 +50,8 @@ class MyApp extends StatelessWidget {
                 currentFocus.focusedChild.unfocus();
               }
             },
-            child: MaterialApp(
-              theme: theme,
-              routes: routes,
-              home: SplashPage()
-            ),
+            child:
+                MaterialApp(theme: theme, routes: routes, home: SplashPage()),
           );
         });
   }

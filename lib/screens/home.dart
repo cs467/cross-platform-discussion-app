@@ -1,8 +1,13 @@
+//import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:disc/Widgets/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
 import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:disc/singleton/ConnectionStatusSingleton.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
@@ -13,6 +18,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivity.initialise();
+    //print("initialize!");
+    // if (mounted) {
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
+    // }
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToSelectedContent(
@@ -46,13 +66,14 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(
                   builder: (context) => Prompt(
-                        user: widget.title ?? "Disc ${index + 1}",
-                        promptNumber: "${index + 1}",
-                        text: "Disc ${index + 1}"
-                      )),
+                      user: widget.title ?? "Disc ${index + 1}",
+                      promptNumber: "${index + 1}",
+                      text: "Disc ${index + 1}")),
             );
           },
-          label: widget.title != null ? Text('Join Discussion') : Text('Read Discussion'),
+          label: widget.title != null
+              ? Text('Join Discussion')
+              : Text('Read Discussion'),
           icon: Icon(Icons.insert_comment),
         ),
         SizedBox(height: 25),
@@ -76,37 +97,108 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String string;
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+    print(string);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Submit a Prompt'),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PromptProposal(user: widget.title)),
-            );
-        },
-        ),
+      floatingActionButton: (string == "Offline")
+          ? null
+          : FloatingActionButton.extended(
+              label: Text('Submit a Prompt'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PromptProposal(user: widget.title)),
+                );
+              },
+            ),
       appBar: AppBar(
         title: Text('Home Page'),
-        leading: widget.title != null ? Padding(
-          padding: EdgeInsets.only(left: 0),
-          child: Icon(
-            Icons.bolt,
-            color: Color(0xff00e676),
-            ),
-        ) : Container(),
+        leading: widget.title != null
+            ? Padding(
+                padding: EdgeInsets.only(left: 0),
+                child: Icon(
+                  Icons.bolt,
+                  color: Color(0xff00e676),
+                ),
+              )
+            : Container(),
       ),
       endDrawer: DrawerWidget(title: widget.title),
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: 5,
-        itemBuilder: (BuildContext context, int index) => _buildExpansionTile(
-          index,
-        ),
-      ),
+      body: (string == "Offline")
+          ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Icon(
+                        Icons.cloud_off,
+                        color: Colors.black,
+                        size: 108.0,
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "No Internet",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    Container(
+                      child: Text(
+                        "Your device is not connected to the internet.",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 10,
+                    ),
+                    Container(
+                      child: Text(
+                        "Check your WiFi or mobile data connection.",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildExpansionTile(
+                index,
+              ),
+            ),
     );
+  }
+
+  @override
+  void dispose() {
+    _connectivity.disposeStream();
+    super.dispose();
   }
 }
