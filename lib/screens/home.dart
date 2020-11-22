@@ -1,4 +1,4 @@
-//import 'dart:async';
+import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
@@ -8,6 +8,9 @@ import 'package:disc/screens/prompt.dart';
 import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
 //import 'package:disc/singleton/ConnectionStatusSingleton.dart';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
@@ -38,19 +41,45 @@ class _HomePageState extends State<HomePage> {
   //     isOffline = !hasConnection;
   //   });
   // }
+  String string;
+
   Map _source = {ConnectivityResult.none: false};
   AppConnectivity _connectivity = AppConnectivity.instance;
 
   @override
   void initState() {
     super.initState();
+
     _connectivity.initialise();
-    //print("initialize!");
-    // if (mounted) {
+
     _connectivity.myStream.listen((source) {
-      setState(() => _source = source);
+      setState(() {
+        _source = source;
+        startTimeout(5000);
+      });
     });
-    // }
+  }
+
+  startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    return Timer(duration, handleTimeout);
+  }
+
+  void handleTimeout() {
+    // callback function
+    _connectivity.myStream.listen((source) {
+      _source = source;
+      switch (_source.keys.toList()[0]) {
+        case ConnectivityResult.none:
+          string = "Offline";
+          break;
+        case ConnectivityResult.mobile:
+          string = "Mobile: Online";
+          break;
+        case ConnectivityResult.wifi:
+          string = "WiFi: Online";
+      }
+    });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -117,18 +146,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-//     const timeout = const Duration(seconds: 3);
-// const ms = const Duration(milliseconds: 1);
-
-// startTimeout([int milliseconds]) {
-//   var duration = milliseconds == null ? timeout : ms * milliseconds;
-//   return new Timer(duration, handleTimeout);
-// }
-
-// void handleTimeout() {  // callback function
-
-// }
-    String string;
+    
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         string = "Offline";

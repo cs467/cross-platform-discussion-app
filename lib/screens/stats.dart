@@ -162,7 +162,6 @@ bool rSelected = true, lSelected = false;
                           onTap: () {
                             isSelected[0] = true;
                             isSelected[1] = false;
-                            //print(sort);
                             rSelected = true;
                             lSelected = false;
                             setState(() {});
@@ -196,7 +195,6 @@ bool rSelected = true, lSelected = false;
                           onTap: () {
                             isSelected[1] = true;
                             isSelected[0] = false;
-                            //print(sort);
                             rSelected = false;
                             lSelected = true;
                             setState(() {});

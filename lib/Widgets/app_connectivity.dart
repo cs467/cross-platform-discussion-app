@@ -17,6 +17,7 @@ class AppConnectivity {
   Stream get myStream => controller.stream;
 
   void initialise() async {
+//    connectivity = Connectivity();
     controller = StreamController.broadcast();
     ConnectivityResult result = await connectivity.checkConnectivity();
     _checkStatus(result);

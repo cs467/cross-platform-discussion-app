@@ -3,12 +3,17 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:disc/Widgets/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/password_reset.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:email_validator/email_validator.dart';
+
+const timeout = const Duration(seconds: 5);
+const ms = const Duration(milliseconds: 1);
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
@@ -24,10 +29,54 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  String string;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   _connectivity.initialise();
+
+  //   _connectivity.myStream.listen((source) {
+  //     setState(() {
+  //       _source = source;
+  //       startTimeout(5000);
+  //     });
+  //   });
+  // }
+
+  startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    return Timer(duration, handleTimeout);
+  }
+
+  void handleTimeout() {
+    print("time out!");
+    setState(() {});
+    // callback function
+    // _connectivity.myStream.listen((source) {
+    //   _source = source;
+    //   switch (_source.keys.toList()[0]) {
+    //     case ConnectivityResult.none:
+    //       string = "Offline";
+    //       break;
+    //     case ConnectivityResult.mobile:
+    //       string = "Mobile: Online";
+    //       break;
+    //     case ConnectivityResult.wifi:
+    //       string = "WiFi: Online";
+    //   }
+    // });
+  }
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    _connectivity.disposeStream();
     super.dispose();
   }
 
@@ -41,44 +90,114 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.addListener(() {
       setState(() {});
     });
+
+    _connectivity.initialise();
+
+    _connectivity.myStream.listen((source) {
+      setState(() {
+        _source = source;
+      });
+    });
+    startTimeout();
   }
 
   @override
   Widget build(BuildContext context) {
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+    print("online? $string");
+
     return Scaffold(
-        resizeToAvoidBottomInset: true,
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(
-          title: Text("Login Page"),
-        ),
-        body: Align(
-          child: SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(20.0),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        _logo(context),
-                        SizedBox(height: 20.0),
-                        _emailPasswordWidget(),
-                        SizedBox(height: 20.0),
-                        _submitButton(context),
-                        SizedBox(height: 20.0),
-                        _passwordReset(context),
-                        _continue(context),
-                        SizedBox(height: 10.0),
-                        _signup(context)
-                      ],
+      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomPadding: false,
+      appBar: AppBar(
+        title: Text("Login Page"),
+      ),
+      body: (string == "Offline")
+          ? Container(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Icon(
+                        Icons.cloud_off,
+                        color: Colors.black,
+                        size: 108.0,
+                      ),
+                    ),
+                    Container(
+                      child: Text(
+                        "No Internet",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 20,
+                    ),
+                    Container(
+                      child: Text(
+                        "Your device is not connected to the internet.",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 10,
+                    ),
+                    Container(
+                      child: Text(
+                        "Check your WiFi or mobile data connection.",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
+            )
+          : Align(
+              child: SafeArea(
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            _logo(context),
+                            SizedBox(height: 20.0),
+                            _emailPasswordWidget(),
+                            SizedBox(height: 20.0),
+                            _submitButton(context),
+                            SizedBox(height: 20.0),
+                            _passwordReset(context),
+                            _continue(context),
+                            SizedBox(height: 10.0),
+                            _signup(context)
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ));
+    );
   }
 
   Widget _emailPasswordWidget() {
