@@ -9,7 +9,7 @@ import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
 //import 'package:disc/singleton/ConnectionStatusSingleton.dart';
 
-const timeout = const Duration(seconds: 3);
+const timeout = const Duration(seconds: 5);
 const ms = const Duration(milliseconds: 1);
 
 class HomePage extends StatefulWidget {
@@ -41,7 +41,9 @@ class _HomePageState extends State<HomePage> {
   //     isOffline = !hasConnection;
   //   });
   // }
-  String string;
+  String string, timedString;
+  var timer;
+  var previousResult;
 
   Map _source = {ConnectivityResult.none: false};
   AppConnectivity _connectivity = AppConnectivity.instance;
@@ -53,33 +55,69 @@ class _HomePageState extends State<HomePage> {
     _connectivity.initialise();
 
     _connectivity.myStream.listen((source) {
+      print("home page init setState()!");
       setState(() {
         _source = source;
-        startTimeout(5000);
       });
     });
   }
 
-  startTimeout([int milliseconds]) {
+  Timer startTimeout([int milliseconds]) {
     var duration = milliseconds == null ? timeout : ms * milliseconds;
-    return Timer(duration, handleTimeout);
+    timer = Timer(duration, handleTimeout);
+    return timer;
   }
 
-  void handleTimeout() {
-    // callback function
-    _connectivity.myStream.listen((source) {
-      _source = source;
-      switch (_source.keys.toList()[0]) {
-        case ConnectivityResult.none:
-          string = "Offline";
-          break;
-        case ConnectivityResult.mobile:
-          string = "Mobile: Online";
-          break;
-        case ConnectivityResult.wifi:
-          string = "WiFi: Online";
+  void handleTimeout() async {
+    print("home page time out!");
+
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+    print("result: $result");
+    print("previousResult: $previousResult");
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+    if (previousResult != result) {
+      print("home page timer setState()!");
+      if (mounted) {
+        print("mounted? $mounted");
+        setState(() {
+          print("setState(): $timedString");
+        });
       }
-    });
+    }
+
+    // _connectivity.myStream.listen((source) {
+    //   //print("source: $source");
+    //   setState(() {
+    //     _source = source;
+    //   });
+    // });
+    // //setState(() {});
+    // // callback function
+    // _connectivity.myStream.listen((source) {
+    //   _source = source;
+    //   switch (_source.keys.toList()[0]) {
+    //     case ConnectivityResult.none:
+    //       string = "Offline";
+    //       break;
+    //     case ConnectivityResult.mobile:
+    //       string = "Mobile: Online";
+    //       break;
+    //     case ConnectivityResult.wifi:
+    //       string = "WiFi: Online";
+    //   }
+    // });
+    previousResult = result;
+    //return string;
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -146,7 +184,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         string = "Offline";
@@ -158,6 +195,10 @@ class _HomePageState extends State<HomePage> {
         string = "WiFi: Online";
     }
     print("online? $string");
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -247,7 +288,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _connectivity.disposeStream();
+    timer.cancel();
     super.dispose();
   }
 }

@@ -12,7 +12,7 @@ class AppConnectivity {
 
   Connectivity connectivity = Connectivity();
 
-  StreamController controller;// = StreamController.broadcast();
+  StreamController controller; // = StreamController.broadcast();
 
   Stream get myStream => controller.stream;
 
@@ -24,6 +24,7 @@ class AppConnectivity {
     connectivity.onConnectivityChanged.listen((result) {
       _checkStatus(result);
     });
+    print("inside initialize: ${controller.isClosed}");
   }
 
   void _checkStatus(ConnectivityResult result) async {
@@ -35,12 +36,13 @@ class AppConnectivity {
         print("connected!");
       } else
         isOnline = false;
-        print("no connection...");
+      print("no connection...");
     } on SocketException catch (_) {
       isOnline = false;
       print("socket exception...");
     }
     // if (!controller.isClosed) {
+    print("before add: ${controller.isClosed}");
     controller.sink.add({result: isOnline});
     // }
   }

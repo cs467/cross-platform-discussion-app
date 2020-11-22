@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
-    _connectivity.disposeStream();
+    // _connectivity.disposeStream();
     super.dispose();
   }
 
@@ -99,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     });
     startTimeout();
+    print("login page init!");
   }
 
   @override
