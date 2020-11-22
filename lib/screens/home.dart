@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:disc/Widgets/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
 import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
-//import 'package:disc/singleton/ConnectionStatusSingleton.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+import 'package:disc/singleton/app_connectivity.dart';
 
-const timeout = const Duration(seconds: 5);
+const timeout = const Duration(seconds: 3);
 const ms = const Duration(milliseconds: 1);
 
 class HomePage extends StatefulWidget {
@@ -21,26 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // StreamSubscription _connectionChangeStream;
 
-  // bool isOffline;
-
-  // @override
-  // initState() {
-  //   super.initState();
-
-  //   ConnectionStatusSingleton connectionStatus =
-  //       ConnectionStatusSingleton.getInstance();
-  //   isOffline = !connectionStatus.hasConnection;
-  //   _connectionChangeStream =
-  //       connectionStatus.connectionChange.listen(connectionChanged);
-  // }
-
-  // void connectionChanged(dynamic hasConnection) {
-  //   setState(() {
-  //     isOffline = !hasConnection;
-  //   });
-  // }
   String string, timedString;
   var timer;
   var previousResult;
@@ -51,14 +32,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     _connectivity.initialise();
-
     _connectivity.myStream.listen((source) {
-      print("home page init setState()!");
-      setState(() {
-        _source = source;
-      });
+      setState(() { _source = source;});
     });
   }
 
@@ -69,11 +45,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleTimeout() async {
-    print("home page time out!");
 
     ConnectivityResult result = await (Connectivity().checkConnectivity());
-    print("result: $result");
-    print("previousResult: $previousResult");
 
     switch (result) {
       case ConnectivityResult.none:
@@ -85,39 +58,12 @@ class _HomePageState extends State<HomePage> {
       case ConnectivityResult.wifi:
         timedString = "WiFi: Online";
     }
-    if (previousResult != result) {
-      print("home page timer setState()!");
-      if (mounted) {
-        print("mounted? $mounted");
-        setState(() {
-          print("setState(): $timedString");
-        });
-      }
+
+    if ((previousResult != result) && mounted) {
+        setState(() {});
     }
 
-    // _connectivity.myStream.listen((source) {
-    //   //print("source: $source");
-    //   setState(() {
-    //     _source = source;
-    //   });
-    // });
-    // //setState(() {});
-    // // callback function
-    // _connectivity.myStream.listen((source) {
-    //   _source = source;
-    //   switch (_source.keys.toList()[0]) {
-    //     case ConnectivityResult.none:
-    //       string = "Offline";
-    //       break;
-    //     case ConnectivityResult.mobile:
-    //       string = "Mobile: Online";
-    //       break;
-    //     case ConnectivityResult.wifi:
-    //       string = "WiFi: Online";
-    //   }
-    // });
     previousResult = result;
-    //return string;
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -194,11 +140,12 @@ class _HomePageState extends State<HomePage> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    print("online? $string");
+    
     startTimeout();
     if (string != timedString) {
       string = timedString;
     }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -210,7 +157,8 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => PromptProposal(user: widget.title)),
+                    builder: (context) => PromptProposal(user: widget.title)
+                  ),
                 );
               },
             ),
@@ -225,56 +173,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             : Container(),
-      ),
-      endDrawer: DrawerWidget(title: widget.title),
-      body: (string == "Offline")
-          ? Container(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: Icon(
-                        Icons.cloud_off,
-                        color: Colors.black,
-                        size: 108.0,
-                      ),
-                    ),
-                    Container(
-                      child: Text(
-                        "No Internet",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 20,
-                    ),
-                    Container(
-                      child: Text(
-                        "Your device is not connected to the internet.",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 10,
-                    ),
-                    Container(
-                      child: Text(
-                        "Check your WiFi or mobile data connection.",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+        ),
+        endDrawer: DrawerWidget(title: widget.title),
+        body: (string == "Offline")
+          ? NoInternetAccess()
           : ListView.builder(
               controller: _scrollController,
               itemCount: 5,

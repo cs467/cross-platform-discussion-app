@@ -7,15 +7,10 @@ import 'package:disc/Widgets/auth.dart';
 import 'package:disc/screens/login_page.dart';
 import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/splash.dart';
-//import 'package:disc/singleton/ConnectionStatusSingleton.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-    // WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // ConnectionStatusSingleton connectionStatus =
-  //     ConnectionStatusSingleton.getInstance();
-  // connectionStatus.initialize();
 
   runApp(
     ChangeNotifierProvider<AuthService>(

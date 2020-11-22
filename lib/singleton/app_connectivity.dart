@@ -12,19 +12,17 @@ class AppConnectivity {
 
   Connectivity connectivity = Connectivity();
 
-  StreamController controller; // = StreamController.broadcast();
+  StreamController controller;
 
   Stream get myStream => controller.stream;
 
   void initialise() async {
-//    connectivity = Connectivity();
     controller = StreamController.broadcast();
     ConnectivityResult result = await connectivity.checkConnectivity();
     _checkStatus(result);
     connectivity.onConnectivityChanged.listen((result) {
       _checkStatus(result);
     });
-    print("inside initialize: ${controller.isClosed}");
   }
 
   void _checkStatus(ConnectivityResult result) async {
@@ -33,18 +31,13 @@ class AppConnectivity {
       final result = await InternetAddress.lookup('example.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         isOnline = true;
-        print("connected!");
       } else
         isOnline = false;
-      print("no connection...");
     } on SocketException catch (_) {
       isOnline = false;
-      print("socket exception...");
     }
-    // if (!controller.isClosed) {
-    print("before add: ${controller.isClosed}");
+
     controller.sink.add({result: isOnline});
-    // }
   }
 
   void disposeStream() => controller.close();
