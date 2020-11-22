@@ -108,19 +108,20 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               validator: (val) =>
                   !EmailValidator.validate(val, true) && _usernameExist == true
-                      ? 'Not a valid email.'
+                      ? 'Not a valid email or username'
                       : null,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  errorText: _emailExist ? "Email does not exist" : null,
+                  errorText: _emailExist ? "Email or username does not exist" : null,
                   suffixIcon: emailController.text.length > 0
                       ? IconButton(
-                          onPressed: () => emailController.clear(),
+                          onPressed: () {
+                            emailController.clear();
+                          },
                           icon: Icon(Icons.clear, color: Colors.grey))
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email or Username',
-                  fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
@@ -152,7 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Password',
-                  fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),

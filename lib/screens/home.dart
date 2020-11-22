@@ -94,10 +94,18 @@ class _HomePageState extends State<HomePage> {
         leading: widget.title != null ? Padding(
           padding: EdgeInsets.only(left: 0),
           child: Icon(
-            Icons.bolt,
+            Icons.brightness_1_sharp,
+            size: 7,
             color: Color(0xff00e676),
             ),
-        ) : Container(),
+        ) : Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Icon(
+            Icons.brightness_1_sharp,
+            size: 7,
+            color: Theme.of(context).primaryColor,
+            ),
+        ),
       ),
       endDrawer: DrawerWidget(title: widget.title),
       body: ListView.builder(

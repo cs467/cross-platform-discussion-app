@@ -134,7 +134,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Username',
-                  fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
@@ -157,7 +156,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 10,
                 ),
                 TextFormField(
-                    //autofocus: true,
                     textInputAction: TextInputAction.next,
                     validator: (val) => !EmailValidator.validate(val, true)
                         ? 'Not a valid email or username.'
@@ -174,7 +172,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Enter Email',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )
@@ -214,7 +211,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Enter Password',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )
@@ -256,7 +252,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Confirm Password',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )

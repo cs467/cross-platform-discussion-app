@@ -92,7 +92,7 @@ class _PasswordPageState extends State<PasswordPage> {
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email',
-                  fillColor: Color(0xfff3f3f4),
+                  //fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
