@@ -21,7 +21,9 @@ class Prompt extends StatefulWidget {
 
 class _PromptState extends State<Prompt> {
   String sort = "timeStamp";
-  bool rSelected = true, lSelected = false;
+  bool rSelected = true, lSelected = false, fSelected = false;
+
+  var userFollows = false;
 
   TextEditingController postController = new TextEditingController();
 
@@ -30,7 +32,7 @@ class _PromptState extends State<Prompt> {
   @override
   void initState() {
     _timer = Timer.periodic(
-      Duration(seconds: 5),
+      Duration(seconds: 60),
       (Timer t) => setState(() {}),
     );
 
@@ -57,11 +59,11 @@ class _PromptState extends State<Prompt> {
             title: Text('${widget.text}'),
             leading: !widget.user.contains("Disc")
                 ? BackButton(
-                  color:  Color(0xff00e676),
-                  onPressed: () => Navigator.of(context).pop())
+                    color: Color(0xff00e676),
+                    onPressed: () => Navigator.of(context).pop())
                 : BackButton(
-                  color: Color(0xffffffff),
-                  onPressed: () => Navigator.of(context).pop()),
+                    color: Color(0xffffffff),
+                    onPressed: () => Navigator.of(context).pop()),
           ),
           body: StreamBuilder(
               stream: FirebaseFirestore.instance
@@ -414,6 +416,58 @@ class _PromptState extends State<Prompt> {
                                                               Text(info.body),
                                                         ),
                                                       ),
+                                                      actions: [
+                                                        if (!info.name.contains(
+                                                            widget.user))
+                                                          IconSlideAction(
+                                                              caption: 'Follow',
+                                                              color: Colors
+                                                                  .blue[300],
+                                                              icon: Icons
+                                                                  .account_box_rounded,
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              onTap: () {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .where(
+                                                                        'username',
+                                                                        isEqualTo:
+                                                                            widget
+                                                                                .user)
+                                                                    .get()
+                                                                    .then(
+                                                                        (value) {
+                                                                  String
+                                                                      curUid =
+                                                                      value
+                                                                          .docs[
+                                                                              0]
+                                                                          .get(
+                                                                              'uid');
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          "users")
+                                                                      .doc(
+                                                                          curUid)
+                                                                      .update({
+                                                                    "following":
+                                                                        FieldValue
+                                                                            .arrayUnion([
+                                                                      info.name
+                                                                    ]),
+                                                                  });
+                                                                }).then((value) {
+                                                                  postController
+                                                                      .clear();
+
+                                                                  //print(value.id);
+                                                                });
+                                                              }),
+                                                      ],
                                                       secondaryActions: <
                                                           Widget>[
                                                         if (info.name.contains(

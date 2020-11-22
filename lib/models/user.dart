@@ -8,18 +8,19 @@ class User {
   int flags;
   int posts;
   DateTime registrationDateTime;
+  var following = [];
 
-  User({
-    this.uid,
-    this.username,
-    this.email,
-    this.likes,
-    this.dislikes,
-    this.streaks,
-    this.flags,
-    this.posts,
-    this.registrationDateTime,
-  });
+  User(
+      {this.uid,
+      this.username,
+      this.email,
+      this.likes,
+      this.dislikes,
+      this.streaks,
+      this.flags,
+      this.posts,
+      this.registrationDateTime,
+      this.following});
 
   factory User.fromMap(Map<String, dynamic> user) {
     return User(
