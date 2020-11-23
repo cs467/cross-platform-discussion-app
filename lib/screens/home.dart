@@ -163,6 +163,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Home Page'),
         leading: widget.title != null
             ? Padding(
@@ -174,7 +175,9 @@ class _HomePageState extends State<HomePage> {
               )
             : Container(),
         ),
-        endDrawer: DrawerWidget(title: widget.title),
+        endDrawer: (string == "Offline")
+          ? null
+          : DrawerWidget(title: widget.title),
         body: (string == "Offline")
           ? NoInternetAccess()
           : ListView.builder(

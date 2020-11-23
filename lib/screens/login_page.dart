@@ -11,10 +11,8 @@ import 'package:connectivity/connectivity.dart';
 import 'package:disc/singleton/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
-import 'package:disc/screens/password_reset.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
-
 
 const timeout = const Duration(seconds: 3);
 const ms = const Duration(milliseconds: 1);
@@ -46,8 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     return timer;
   }
 
-void handleTimeout() async {
-
+  void handleTimeout() async {
     ConnectivityResult result = await (Connectivity().checkConnectivity());
 
     switch (result) {
@@ -62,7 +59,7 @@ void handleTimeout() async {
     }
 
     if ((previousResult != result) && mounted) {
-        setState(() {});
+      setState(() {});
     }
 
     previousResult = result;
@@ -89,7 +86,9 @@ void handleTimeout() async {
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
@@ -105,7 +104,7 @@ void handleTimeout() async {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
@@ -115,38 +114,39 @@ void handleTimeout() async {
       resizeToAvoidBottomInset: true,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        centerTitle: true,
         title: Text("Login Page"),
       ),
       body: (string == "Offline")
-        ? NoInternetAccess()
-        : Align(
-            child: SafeArea(
-              child: Container(
-                padding: EdgeInsets.all(20.0),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          _logo(context),
-                          SizedBox(height: 20.0),
-                          _emailPasswordWidget(),
-                          SizedBox(height: 20.0),
-                          _submitButton(context),
-                          SizedBox(height: 20.0),
-                          _passwordReset(context),
-                          _continue(context),
-                          SizedBox(height: 10.0),
-                          _signup(context)
-                        ],
-                      ),
-                    ],
+          ? NoInternetAccess()
+          : Align(
+              child: SafeArea(
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            _logo(context),
+                            SizedBox(height: 20.0),
+                            _emailPasswordWidget(),
+                            SizedBox(height: 20.0),
+                            _submitButton(context),
+                            SizedBox(height: 20.0),
+                            _passwordReset(context),
+                            _continue(context),
+                            SizedBox(height: 10.0),
+                            _signup(context)
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
     );
   }
 
@@ -210,22 +210,21 @@ void handleTimeout() async {
             height: 10,
           ),
           TextFormField(
-            controller: passwordController,
-            obscureText: isPassword,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              suffixIcon: passwordController.text.length > 0
-                ? IconButton(
-                    onPressed: () => passwordController.clear(),
-                    icon: Icon(Icons.clear, color: Colors.grey),
-                  )
-                : null,
-              border: InputBorder.none,
-              hintText: 'Enter Password',
-              fillColor: Color(0xfff3f3f4),
-              filled: true,
-            )
-          )
+              controller: passwordController,
+              obscureText: isPassword,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                suffixIcon: passwordController.text.length > 0
+                    ? IconButton(
+                        onPressed: () => passwordController.clear(),
+                        icon: Icon(Icons.clear, color: Colors.grey),
+                      )
+                    : null,
+                border: InputBorder.none,
+                hintText: 'Enter Password',
+                fillColor: Color(0xfff3f3f4),
+                filled: true,
+              ))
         ],
       ),
     );
@@ -248,8 +247,7 @@ void handleTimeout() async {
           try {
             emailController.text = result;
             await Provider.of<AuthService>(context, listen: false).loginUser(
-              email: emailController.text, password: passwordController.text
-            );
+                email: emailController.text, password: passwordController.text);
             setState(() {
               _successfulLogin(context);
 
@@ -322,13 +320,9 @@ void handleTimeout() async {
 
   Widget _passwordReset(BuildContext context) {
     return GestureDetector(
-        onTap: () async {
+        onTap: () {
           setState(() {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => PasswordPage()),
-              (Route<dynamic> route) => true,
-            );
+            Navigator.of(context).pushReplacementNamed('passwordpage');
           });
         },
         child: Column(
@@ -370,63 +364,6 @@ void handleTimeout() async {
     );
   }
 }
-
-// class NoInternetAccess extends StatelessWidget {
-//   const NoInternetAccess({
-//     Key key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//         child: Center(
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Container(
-//                 child: Icon(
-//                   Icons.cloud_off,
-//                   color: Colors.black,
-//                   size: 108.0,
-//                 ),
-//               ),
-//               Container(
-//                 child: Text(
-//                   "No Internet",
-//                   style: TextStyle(
-//                     fontSize: 28,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 height: 20,
-//               ),
-//               Container(
-//                 child: Text(
-//                   "Your device is not connected to the internet.",
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 height: 10,
-//               ),
-//               Container(
-//                 child: Text(
-//                   "Check your WiFi or mobile data connection.",
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       );
-//   }
-// }
 
 Future _buildErrorDialog(BuildContext context, _message) {
   return showDialog(
