@@ -193,7 +193,6 @@ class _PromptState extends State<Prompt> {
 
                                   DateTime todayDate =
                                       DateTime.parse(post['timeStamp']);
-                                  bool userFollows;
 
                                   FirebaseFirestore.instance
                                       .collection('users')

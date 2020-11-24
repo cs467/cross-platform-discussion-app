@@ -8,6 +8,7 @@ class PromptPost {
   var flags;
   var flaggedBy = [];
   bool userFollows;
+  var hasPost = [];
   Timestamp timestamp;
   PromptPost(
       {this.flags,
@@ -17,5 +18,6 @@ class PromptPost {
       this.name,
       this.likes,
       this.timestamp,
-      this.userFollows});
+      this.userFollows,
+      this.hasPost});
 }
