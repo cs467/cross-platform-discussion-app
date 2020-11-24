@@ -21,6 +21,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int selected = 0;
 
   String string, timedString;
   var timer;
@@ -34,7 +35,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
@@ -45,7 +48,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleTimeout() async {
-
     ConnectivityResult result = await (Connectivity().checkConnectivity());
 
     switch (result) {
@@ -60,7 +62,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if ((previousResult != result) && mounted) {
-        setState(() {});
+      setState(() {});
     }
 
     previousResult = result;
@@ -112,19 +114,24 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 25),
       ];
 
-  ExpansionTile _buildExpansionTile(int index) {
-    final GlobalKey expansionTileKey = GlobalKey();
-    double previousOffset;
-
-    return ExpansionTile(
-      key: expansionTileKey,
-      onExpansionChanged: (isExpanded) {
-        if (isExpanded) previousOffset = _scrollController.offset;
-        _scrollToSelectedContent(
-            isExpanded, previousOffset, index, expansionTileKey);
-      },
-      title: Text('Prompt ${index + 1}'),
-      children: _buildExpansionTileChildren(index),
+  Card _buildExpansionTile(int index) {
+    return Card(
+      child: ExpansionTile(
+          key: Key(index.toString()),
+          initiallyExpanded: index == selected,
+          title: Text('Prompt ${index + 1}'),
+          children: _buildExpansionTileChildren(index),
+          onExpansionChanged: ((newState) {
+            if (newState)
+              setState(() {
+                Duration(seconds: 20000);
+                selected = index;
+              });
+            else
+              setState(() {
+                selected = -1;
+              });
+          })),
     );
   }
 
@@ -140,7 +147,7 @@ class _HomePageState extends State<HomePage> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
@@ -157,8 +164,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PromptProposal(user: widget.title)
-                  ),
+                      builder: (context) => PromptProposal(user: widget.title)),
                 );
               },
             ),
@@ -174,13 +180,13 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             : Container(),
-        ),
-        endDrawer: (string == "Offline")
-          ? null
-          : DrawerWidget(title: widget.title),
-        body: (string == "Offline")
+      ),
+      endDrawer:
+          (string == "Offline") ? null : DrawerWidget(title: widget.title),
+      body: (string == "Offline")
           ? NoInternetAccess()
           : ListView.builder(
+              key: Key('builder ${selected.toString()}'),
               controller: _scrollController,
               itemCount: 5,
               itemBuilder: (BuildContext context, int index) =>
