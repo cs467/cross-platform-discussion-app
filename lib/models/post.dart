@@ -7,14 +7,15 @@ class PromptPost {
   var likedBy = [];
   var flags;
   var flaggedBy = [];
+  bool userFollows;
   Timestamp timestamp;
-  PromptPost({
-    this.flags,
-    this.flaggedBy,
-    this.likedBy,
-    this.body,
-    this.name,
-    this.likes,
-    this.timestamp,
-  });
+  PromptPost(
+      {this.flags,
+      this.flaggedBy,
+      this.likedBy,
+      this.body,
+      this.name,
+      this.likes,
+      this.timestamp,
+      this.userFollows});
 }

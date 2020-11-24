@@ -8,6 +8,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 var postNumber;
+var numberPosts;
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
@@ -19,9 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
-
-  void _scrollToSelectedContent(
-      bool isExpanded, double previousOffset, int index, GlobalKey myKey) {}
 
   List<Widget> _buildExpansionTileChildren(int index) => [
         Padding(
@@ -131,6 +129,25 @@ class _HomePageState extends State<HomePage> {
                                                           DateTime todayDate =
                                                               DateTime.parse(post[
                                                                   'timeStamp']);
+
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'users')
+                                                              .where('username',
+                                                                  isEqualTo:
+                                                                      widget
+                                                                          .title)
+                                                              .get()
+                                                              .then((value) {
+                                                            print(
+                                                                "DATAAAAA: ${value.docs[0]['following']}");
+                                                            info.userFollows = value
+                                                                .docs[0][
+                                                                    'following']
+                                                                .contains(
+                                                                    info.name);
+                                                          });
 
                                                           //print(todayDate);
 
@@ -251,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                                                                                     ),
                                                                                   ),
                                                                                   actions: [
-                                                                                    if (!info.name.contains(widget.title))
+                                                                                    if (!info.name.contains(widget.title) && info.userFollows == false)
                                                                                       IconSlideAction(
                                                                                           caption: 'Follow',
                                                                                           color: Colors.blue[300],
@@ -264,7 +281,25 @@ class _HomePageState extends State<HomePage> {
                                                                                                 "following": FieldValue.arrayUnion([info.name]),
                                                                                               });
                                                                                             }).then((value) {
+                                                                                              setState(() {});
+
                                                                                               //print(value.id);
+                                                                                            });
+                                                                                          }),
+                                                                                    if (!info.name.contains(widget.title) && info.userFollows == true)
+                                                                                      IconSlideAction(
+                                                                                          caption: 'Unfollow',
+                                                                                          color: Colors.blue[300],
+                                                                                          icon: Icons.account_box_rounded,
+                                                                                          foregroundColor: Colors.white,
+                                                                                          onTap: () {
+                                                                                            FirebaseFirestore.instance.collection('users').where('username', isEqualTo: widget.title).get().then((value) {
+                                                                                              String curUid = value.docs[0].get('uid');
+                                                                                              FirebaseFirestore.instance.collection("users").doc(curUid).update({
+                                                                                                "following": FieldValue.arrayRemove([info.name]),
+                                                                                              });
+                                                                                            }).then((value) {
+                                                                                              setState(() {});
                                                                                             });
                                                                                           }),
                                                                                   ],
@@ -387,9 +422,6 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 25),
       ];
   Card _buildExpansionTile(int index) {
-    final GlobalKey expansionTileKey = GlobalKey();
-    double previousOffset;
-
     return Card(
       child: ExpansionTile(
         key: GlobalKey(),

@@ -44,11 +44,8 @@ class MyApp extends StatelessWidget {
                 currentFocus.focusedChild.unfocus();
               }
             },
-            child: MaterialApp(
-              theme: theme,
-              routes: routes,
-              home: SplashPage()
-            ),
+            child:
+                MaterialApp(theme: theme, routes: routes, home: SplashPage()),
           );
         });
   }

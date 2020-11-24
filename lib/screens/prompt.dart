@@ -23,8 +23,6 @@ class _PromptState extends State<Prompt> {
   String sort = "timeStamp";
   bool rSelected = true, lSelected = false, fSelected = false;
 
-  var userFollows = false;
-
   TextEditingController postController = new TextEditingController();
 
   Timer _timer;
@@ -195,6 +193,19 @@ class _PromptState extends State<Prompt> {
 
                                   DateTime todayDate =
                                       DateTime.parse(post['timeStamp']);
+                                  bool userFollows;
+
+                                  FirebaseFirestore.instance
+                                      .collection('users')
+                                      .where('username', isEqualTo: widget.user)
+                                      .get()
+                                      .then((value) {
+                                    print(
+                                        "DATAAAAA: ${value.docs[0]['following']}");
+                                    info.userFollows = value.docs[0]
+                                            ['following']
+                                        .contains(info.name);
+                                  });
 
                                   //print(todayDate);
 
@@ -418,7 +429,9 @@ class _PromptState extends State<Prompt> {
                                                       ),
                                                       actions: [
                                                         if (!info.name.contains(
-                                                            widget.user))
+                                                                widget.user) &&
+                                                            info.userFollows ==
+                                                                false)
                                                           IconSlideAction(
                                                               caption: 'Follow',
                                                               color: Colors
@@ -463,8 +476,63 @@ class _PromptState extends State<Prompt> {
                                                                 }).then((value) {
                                                                   postController
                                                                       .clear();
+                                                                  setState(
+                                                                      () {});
 
                                                                   //print(value.id);
+                                                                });
+                                                              }),
+                                                        if (!info.name.contains(
+                                                                widget.user) &&
+                                                            info.userFollows ==
+                                                                true)
+                                                          IconSlideAction(
+                                                              caption:
+                                                                  'Unfollow',
+                                                              color: Colors
+                                                                  .blue[300],
+                                                              icon: Icons
+                                                                  .account_box_rounded,
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              onTap: () {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'users')
+                                                                    .where(
+                                                                        'username',
+                                                                        isEqualTo:
+                                                                            widget
+                                                                                .user)
+                                                                    .get()
+                                                                    .then(
+                                                                        (value) {
+                                                                  String
+                                                                      curUid =
+                                                                      value
+                                                                          .docs[
+                                                                              0]
+                                                                          .get(
+                                                                              'uid');
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          "users")
+                                                                      .doc(
+                                                                          curUid)
+                                                                      .update({
+                                                                    "following":
+                                                                        FieldValue
+                                                                            .arrayRemove([
+                                                                      info.name
+                                                                    ]),
+                                                                  });
+                                                                }).then((value) {
+                                                                  postController
+                                                                      .clear();
+                                                                  setState(
+                                                                      () {});
                                                                 });
                                                               }),
                                                       ],
