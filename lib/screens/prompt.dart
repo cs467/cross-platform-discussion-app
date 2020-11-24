@@ -57,6 +57,7 @@ class _PromptState extends State<Prompt> {
         },
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text('${widget.text}'),
             leading: !widget.user.contains("Disc")
                 ? BackButton(

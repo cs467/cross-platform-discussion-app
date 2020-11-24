@@ -6,7 +6,9 @@ import 'package:disc/screens/home.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/screens/login_page.dart';
 import 'package:disc/screens/signup_page.dart';
+import 'package:disc/screens/stats_page.dart';
 import 'package:disc/screens/splash.dart';
+import 'package:disc/screens/password_reset.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +26,9 @@ class MyApp extends StatelessWidget {
   static final routes = {
     LoginPage.routeName: (context) => LoginPage(),
     HomePage.routeName: (context) => HomePage(),
-    SignUpPage.routeName: (context) => SignUpPage()
+    SignUpPage.routeName: (context) => SignUpPage(),
+    StatsPage.routeName: (context) => StatsPage(),
+    PasswordPage.routeName: (context) => PasswordPage(),
   };
 
   @override
@@ -44,11 +48,8 @@ class MyApp extends StatelessWidget {
                 currentFocus.focusedChild.unfocus();
               }
             },
-            child: MaterialApp(
-              theme: theme,
-              routes: routes,
-              home: SplashPage()
-            ),
+            child:
+                MaterialApp(theme: theme, routes: routes, home: SplashPage()),
           );
         });
   }

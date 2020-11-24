@@ -1,14 +1,21 @@
+import 'dart:async';
+
+import 'package:provider/provider.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
+
+import 'package:disc/singleton/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
-import 'package:disc/screens/password_reset.dart';
-import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 class LoginPage extends StatefulWidget {
   static const routeName = 'loginpage';
@@ -24,10 +31,45 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  String string, timedString;
+  var timer;
+  var previousResult;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    timer = Timer(duration, handleTimeout);
+    return timer;
+  }
+
+  void handleTimeout() async {
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+
+    if ((previousResult != result) && mounted) {
+      setState(() {});
+    }
+
+    previousResult = result;
+  }
+
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    timer.cancel();
     super.dispose();
   }
 
@@ -41,44 +83,71 @@ class _LoginPageState extends State<LoginPage> {
     passwordController.addListener(() {
       setState(() {});
     });
+
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() {
+        _source = source;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
+
     return Scaffold(
-        resizeToAvoidBottomInset: true,
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(
-          title: Text("Login Page"),
-        ),
-        body: Align(
-          child: SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(20.0),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: <Widget>[
-                    Column(
+      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomPadding: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Login Page"),
+      ),
+      body: (string == "Offline")
+          ? NoInternetAccess()
+          : Align(
+              child: SafeArea(
+                child: Container(
+                  padding: EdgeInsets.all(20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
                       children: <Widget>[
-                        _logo(context),
-                        SizedBox(height: 20.0),
-                        _emailPasswordWidget(),
-                        SizedBox(height: 20.0),
-                        _submitButton(context),
-                        SizedBox(height: 20.0),
-                        _passwordReset(context),
-                        _continue(context),
-                        SizedBox(height: 10.0),
-                        _signup(context)
+                        Column(
+                          children: <Widget>[
+                            _logo(context),
+                            SizedBox(height: 20.0),
+                            _emailPasswordWidget(),
+                            SizedBox(height: 20.0),
+                            _submitButton(context),
+                            SizedBox(height: 20.0),
+                            _passwordReset(context),
+                            _continue(context),
+                            SizedBox(height: 10.0),
+                            _signup(context)
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ));
+    );
   }
 
   Widget _emailPasswordWidget() {
@@ -145,15 +214,17 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  suffixIcon: passwordController.text.length > 0
-                      ? IconButton(
-                          onPressed: () => passwordController.clear(),
-                          icon: Icon(Icons.clear, color: Colors.grey))
-                      : null,
-                  border: InputBorder.none,
-                  hintText: 'Enter Password',
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true))
+                suffixIcon: passwordController.text.length > 0
+                    ? IconButton(
+                        onPressed: () => passwordController.clear(),
+                        icon: Icon(Icons.clear, color: Colors.grey),
+                      )
+                    : null,
+                border: InputBorder.none,
+                hintText: 'Enter Password',
+                fillColor: Color(0xfff3f3f4),
+                filled: true,
+              ))
         ],
       ),
     );
@@ -249,13 +320,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordReset(BuildContext context) {
     return GestureDetector(
-        onTap: () async {
+        onTap: () {
           setState(() {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => PasswordPage()),
-              (Route<dynamic> route) => true,
-            );
+            Navigator.of(context).pushReplacementNamed('passwordpage');
           });
         },
         child: Column(
