@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                           print("PPOST: ${pPost.hasPost}");
                         }
                         */
-                            var hahaha =
+                            var currentUser =
                                 snapshot.data.documents[0]['following'];
                             print(snapshot.data.documents[0]['following']);
                             return ListView.builder(
@@ -104,12 +104,12 @@ class _HomePageState extends State<HomePage> {
                                               snapshot.data.documents.length >
                                                   0) {
                                             print(
-                                                "HAAHAHAHAHAH ${snapshot.data.documents.length}");
+                                                "currentUser ${snapshot.data.documents.length}");
 
                                             return Card(
                                               child: ExpansionTile(
                                                   title: Text(
-                                                    hahaha[index],
+                                                    currentUser[index],
                                                     textAlign:
                                                         TextAlign.justify,
                                                   ),
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                                                                   'posts$postNumber')
                                                               .where('name',
                                                                   isEqualTo:
-                                                                      hahaha[
+                                                                      currentUser[
                                                                           index])
                                                               .snapshots(),
                                                           builder: (context,
