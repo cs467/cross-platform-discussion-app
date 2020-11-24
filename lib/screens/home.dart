@@ -22,6 +22,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
+  // selected's value = 0. For default first item is open.
+  int selected = 0;
+
   List<Widget> _buildExpansionTileChildren(int index) => [
         Padding(
           padding: const EdgeInsets.all(15.0),
@@ -451,10 +454,21 @@ class _HomePageState extends State<HomePage> {
   Card _buildExpansionTile(int index) {
     return Card(
       child: ExpansionTile(
-        key: GlobalKey(),
-        title: Text('Prompt ${index + 1}'),
-        children: _buildExpansionTileChildren(index),
-      ),
+          key: Key(index.toString()),
+          initiallyExpanded: index == selected,
+          title: Text('Prompt ${index + 1}'),
+          children: _buildExpansionTileChildren(index),
+          onExpansionChanged: ((newState) {
+            if (newState)
+              setState(() {
+                Duration(seconds: 20000);
+                selected = index;
+              });
+            else
+              setState(() {
+                selected = -1;
+              });
+          })),
     );
   }
 
@@ -491,6 +505,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             child: ListView.builder(
+              key: Key('builder ${selected.toString()}'),
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               controller: _scrollController,
