@@ -1,9 +1,18 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:disc/models/post.dart';
+import 'home.dart';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 class PromptProposal extends StatefulWidget {
   PromptProposal({Key key, @required this.user}) : super(key: key);
@@ -17,8 +26,73 @@ class _PromptProposalState extends State<PromptProposal> {
   String sort = "timeStamp";
   TextEditingController postController = new TextEditingController();
 
+String string, timedString;
+  var timer;
+  var previousResult;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    timer = Timer(duration, handleTimeout);
+    return timer;
+  }
+
+  void handleTimeout() async {
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+
+    if ((previousResult != result) && mounted) {
+      setState(() {});
+    }
+
+    previousResult = result;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() { _source = source;});
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
+
     return GestureDetector(
       onTap: () {
         FocusScopeNode currentFocus = FocusScope.of(context);
@@ -31,9 +105,32 @@ class _PromptProposalState extends State<PromptProposal> {
         resizeToAvoidBottomInset: true,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
+          leading:
+          (string == "Offline")
+          ? null
+          : 
+          GestureDetector(
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomePage(title: widget.user)
+                ),
+                (Route<dynamic> route) => false,
+              );
+            },
+            child: Container(
+              child: Icon(
+                Icons.keyboard_arrow_left,
+              ),
+            ),
+          ),
+          centerTitle: true,
           title: Text("Prompt Proposal"),
         ),
-        body: StreamBuilder(
+        body: (string == "Offline")
+          ? NoInternetAccess()
+          : StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('proposal')
               .orderBy(sort, descending: true)

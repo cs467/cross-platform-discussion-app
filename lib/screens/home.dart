@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
           : FloatingActionButton.extended(
               label: Text('Submit a Prompt'),
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => PromptProposal(user: widget.title)
