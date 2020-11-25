@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/screens/login_page.dart';
 import 'package:disc/Widgets/auth.dart';
+import 'package:disc/screens/prompt_proposal.dart';
 
 class DrawerWidget extends StatefulWidget {
   DrawerWidget({Key key, this.title}) : super(key: key); 
@@ -38,14 +39,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             },
           ),
           _signInSignOut(context),
-          widget.title != null
-          ? ListTile(
+          ListTile(
               title: const Text('See Your Stats'),
               onTap: () {
                 Navigator.of(context).pushReplacementNamed('statspage', arguments: widget.title);
               },
-            ) 
-          : Container(),
+          ),
+          ListTile(
+            title: const Text('Submit a Prompt'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PromptProposal(user: widget.title)
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
