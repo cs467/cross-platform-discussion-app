@@ -23,16 +23,16 @@ class NoInternetAccess extends StatelessWidget {
             ),
             NoInternetText(
               text: "Your device is not connected to the internet.", 
-              size: 20, 
-              weight: FontWeight.normal,
+              size: 16, 
+              weight: FontWeight.bold,
             ),
             Container(
               height: 10,
             ),
             NoInternetText(
               text: "Check your WiFi or mobile data connection.", 
-              size: 20, 
-              weight: FontWeight.normal,
+              size: 16, 
+              weight: FontWeight.bold,
             ),
           ],
         ),

@@ -1,3 +1,7 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+import 'package:disc/screens/home.dart';
+import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
@@ -6,6 +10,9 @@ import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'dart:async';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 // ignore: must_be_immutable
 class Prompt extends StatefulWidget {
@@ -28,6 +35,13 @@ class _PromptState extends State<Prompt> {
   Timer _timer;
   DateTime now = DateTime.now();
 
+  String string, timedString;
+  var timer;
+  var previousResult;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
   @override
   void initState() {
     _timer = Timer.periodic(
@@ -36,16 +50,65 @@ class _PromptState extends State<Prompt> {
     );
 
     super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() { _source = source;});
+    });
   }
 
   @override
   void dispose() {
     _timer.cancel();
+    timer.cancel();
     super.dispose();
+  }
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    timer = Timer(duration, handleTimeout);
+    return timer;
+  }
+
+  void handleTimeout() async {
+
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+
+    if ((previousResult != result) && mounted) {
+        setState(() {});
+    }
+
+    previousResult = result;
   }
 
   Widget build(BuildContext context) {
     String startsWith = DateTime(now.year, now.month, now.day).toString();
+
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+    
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
 
     return GestureDetector(
         onTap: () {
@@ -59,15 +122,36 @@ class _PromptState extends State<Prompt> {
           appBar: AppBar(
             centerTitle: true,
             title: Text('${widget.text}'),
-            leading: !widget.user.contains("Disc")
-                ? BackButton(
-                  color:  Color(0xff00e676),
-                  onPressed: () => Navigator.of(context).pop())
-                : BackButton(
-                  color: Color(0xffffffff),
-                  onPressed: () => Navigator.of(context).pop()),
+            leading: (string == "Offline")
+            ? null
+            : (!widget.user.contains("Disc")
+                  ? BackButton(
+                    color:  Color(0xff00e676),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(title: widget.user)
+                        ),
+                        (Route<dynamic> route) => false,
+                      );
+                    })
+                  : BackButton(
+                    color: Color(0xffffffff),
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(title: widget.user)
+                        ),
+                        (Route<dynamic> route) => false,
+                      );
+                    })
+              )
           ),
-          body: StreamBuilder(
+          body:  (string == "Offline")
+          ? NoInternetAccess()
+          : StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('posts${widget.promptNumber}')
                   .orderBy(sort, descending: true)

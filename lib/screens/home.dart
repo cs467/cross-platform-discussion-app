@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
         FloatingActionButton.extended(
           heroTag: null,
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Prompt(
