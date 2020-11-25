@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Home Page'),
+        title: Text('Daychat'),
       ),
       endDrawer:
           (string == "Offline") ? null : DrawerWidget(title: widget.title),

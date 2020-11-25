@@ -673,7 +673,10 @@ class _PromptState extends State<Prompt> {
                     int maxLength,
                     bool isFocused,
                   }) {
-                    return Text('${maxLength - currentLength}');
+                    if (isFocused)
+                      return Text('${maxLength - currentLength}');
+                    else
+                      return Container(height: 17);
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -720,7 +723,7 @@ class _PromptState extends State<Prompt> {
                         }
                       },
                     ),
-                    hintText: 'Post a Reponse Here',
+                    hintText: 'Post a Reponse Here...',
                     enabledBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Colors.transparent, width: 2.0),
