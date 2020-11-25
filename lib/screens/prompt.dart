@@ -52,7 +52,9 @@ class _PromptState extends State<Prompt> {
     super.initState();
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
@@ -70,7 +72,6 @@ class _PromptState extends State<Prompt> {
   }
 
   void handleTimeout() async {
-
     ConnectivityResult result = await (Connectivity().checkConnectivity());
 
     switch (result) {
@@ -85,7 +86,7 @@ class _PromptState extends State<Prompt> {
     }
 
     if ((previousResult != result) && mounted) {
-        setState(() {});
+      setState(() {});
     }
 
     previousResult = result;
@@ -105,7 +106,7 @@ class _PromptState extends State<Prompt> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
@@ -124,40 +125,31 @@ class _PromptState extends State<Prompt> {
             centerTitle: true,
             title: Text('${widget.text}'),
             leading: (string == "Offline")
-            ? null
-            : (!widget.user.contains("Disc")
-                  ? BackButton(
-                    color:  Color(0xff00e676),
-                    onPressed: () {
+                ? null
+                : GestureDetector(
+                    onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(title: widget.user)
-                        ),
+                            builder: (context) => HomePage(title: widget.user)),
                         (Route<dynamic> route) => false,
                       );
-                    })
-                  : BackButton(
-                    color: Color(0xffffffff),
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(title: widget.user)
-                        ),
-                        (Route<dynamic> route) => false,
-                      );
-                    })
-              )
+                    },
+                    child: Container(
+                      child: Icon(
+                        Icons.keyboard_arrow_left,
+                      ),
+                    ),
+                  ),
           ),
-          body:  (string == "Offline")
-          ? NoInternetAccess()
-          : StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection('posts${widget.promptNumber}')
-                  .orderBy(sort, descending: true)
-                  .where(sort, isGreaterThan: startsWith)
-                  .snapshots(),
+          body: (string == "Offline")
+              ? NoInternetAccess()
+              : StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('posts${widget.promptNumber}')
+                      .orderBy(sort, descending: true)
+                      .where(sort, isGreaterThan: startsWith)
+                      .snapshots(),
                   //rSelected == true ?
                   // FirebaseFirestore.instance
                   // .collection('posts${widget.promptNumber}')
@@ -165,118 +157,121 @@ class _PromptState extends State<Prompt> {
                   // .where('timeStamp', isGreaterThan: startsWith)
                   // .orderBy('likes', descending: true)
                   // .snapshots(),
-              builder: (content, snapshot) {
-                if (snapshot.hasData && snapshot.data.documents != null) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, bottom: 0, left: 10, right: 10),
-                        child: Card(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                              color: Colors.transparent,
-                              width: 2,
-                            )),
-                            child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: StreamBuilder(
-                                    stream: FirebaseFirestore.instance
-                                        .collection('prompts')
-                                        .orderBy('number', descending: false)
-                                        .snapshots(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData &&
-                                          snapshot.data.documents != null &&
-                                          snapshot.data.documents.length > 0) {
-                                        return Text(
-                                          snapshot.data.docs[
-                                              int.parse(widget.promptNumber) -
-                                                  1]['prompt'],
-                                          textAlign: TextAlign.justify,
-                                        );
-                                      }
-                                      return CircularProgressIndicator();
-                                    })),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 15),
-                            Expanded(
-                                child: GestureDetector(
-                              onTap: () {
-                                sort = "timeStamp";
-                                rSelected = true;
-                                lSelected = false;
-                                setState(() {});
-                              },
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                      color: rSelected == true
-                                          ? Colors.grey[500]
-                                          : Colors.grey[200],
-                                      width: 2.0),
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("Recent"),
+                  builder: (content, snapshot) {
+                    if (snapshot.hasData && snapshot.data.documents != null) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8.0, bottom: 0, left: 10, right: 10),
+                            child: Card(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                  color: Colors.transparent,
+                                  width: 2,
                                 )),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: StreamBuilder(
+                                        stream: FirebaseFirestore.instance
+                                            .collection('prompts')
+                                            .orderBy('number',
+                                                descending: false)
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData &&
+                                              snapshot.data.documents != null &&
+                                              snapshot.data.documents.length >
+                                                  0) {
+                                            return Text(
+                                              snapshot.data.docs[int.parse(
+                                                      widget.promptNumber) -
+                                                  1]['prompt'],
+                                              textAlign: TextAlign.justify,
+                                            );
+                                          }
+                                          return CircularProgressIndicator();
+                                        })),
                               ),
-                            )),
-                            SizedBox(width: 15),
-                            Expanded(
-                                child: GestureDetector(
-                              onTap: () {
-                                sort = "likes";
-                                rSelected = false;
-                                lSelected = true;
-                                setState(() {});
-                              },
-                              child: Card(
-                                  shape: RoundedRectangleBorder(
-                                    side: new BorderSide(
-                                        color: lSelected == true
-                                            ? Colors.grey[500]
-                                            : Colors.grey[200],
-                                        width: 2.0),
-                                    borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 15),
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    sort = "timeStamp";
+                                    rSelected = true;
+                                    lSelected = false;
+                                    setState(() {});
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                          color: rSelected == true
+                                              ? Colors.grey[500]
+                                              : Colors.grey[200],
+                                          width: 2.0),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Center(
+                                        child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Recent"),
+                                    )),
                                   ),
-                                  child: Center(
-                                      child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text("Likes"),
-                                  ))),
-                            )),
-                            SizedBox(width: 15),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 0),
-                      showChat(snapshot),
-                      SizedBox(height: 5),
-                      response(),
-                      SizedBox(height: 5)
-                    ],
-                  );
-                } else {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Center(child: CircularProgressIndicator()),
-                      SizedBox(height: 300),
-                    ],
-                  );
-                }
-              }),
+                                )),
+                                SizedBox(width: 15),
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    sort = "likes";
+                                    rSelected = false;
+                                    lSelected = true;
+                                    setState(() {});
+                                  },
+                                  child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        side: new BorderSide(
+                                            color: lSelected == true
+                                                ? Colors.grey[500]
+                                                : Colors.grey[200],
+                                            width: 2.0),
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                      ),
+                                      child: Center(
+                                          child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text("Likes"),
+                                      ))),
+                                )),
+                                SizedBox(width: 15),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 0),
+                          showChat(snapshot),
+                          SizedBox(height: 5),
+                          response(),
+                          SizedBox(height: 5)
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(height: 300),
+                        ],
+                      );
+                    }
+                  }),
         ));
   }
 
@@ -310,7 +305,7 @@ class _PromptState extends State<Prompt> {
                 // final Map<String, dynamic> Function() map = ds.data;
 
                 //print(snapshot.data);
-                
+
                 DateTime todayDate = DateTime.parse(post['timeStamp']);
 
                 return Semantics(
@@ -678,7 +673,10 @@ class _PromptState extends State<Prompt> {
                     int maxLength,
                     bool isFocused,
                   }) {
-                    return Text('${maxLength - currentLength}');
+                    if (isFocused)
+                      return Text('${maxLength - currentLength}');
+                    else
+                      return Container(height: 17);
                   },
                   decoration: InputDecoration(
                     suffixIcon: IconButton(
@@ -725,7 +723,7 @@ class _PromptState extends State<Prompt> {
                         }
                       },
                     ),
-                    hintText: 'Post a Reponse Here',
+                    hintText: 'Post a Reponse Here...',
                     enabledBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Colors.transparent, width: 2.0),
