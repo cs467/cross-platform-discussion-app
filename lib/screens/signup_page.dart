@@ -1,3 +1,6 @@
+import 'package:connectivity/connectivity.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:disc/screens/home.dart';
@@ -8,6 +11,9 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 class SignUpPage extends StatefulWidget {
   static const routeName = 'signuppage';
@@ -25,12 +31,48 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
 
+  String string, timedString;
+  var timer;
+  var previousResult;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    timer = Timer(duration, handleTimeout);
+    return timer;
+  }
+
+  void handleTimeout() async {
+
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+
+    if ((previousResult != result) && mounted) {
+        setState(() {});
+    }
+
+    previousResult = result;
+  }
+  
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     usernameController.dispose();
     confirmPasswordController.dispose();
+    timer.cancel();
     super.dispose();
   }
 
@@ -50,27 +92,52 @@ class _SignUpPageState extends State<SignUpPage> {
     confirmPasswordController.addListener(() {
       setState(() {});
     });
+
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() { _source = source;});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+    
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
+
     return Scaffold(
-        resizeToAvoidBottomInset: true,
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(
-          title: Text("Register"),
-        ),
-        body: Align(
-          child: SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(20.0),
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        _logo(context),
+      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomPadding: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Register"),
+      ),
+      body: (string == "Offline")
+      ? NoInternetAccess()
+      : Align(
+        child: SafeArea(
+          child: Container(
+            padding: EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      _logo(context),
                         SizedBox(height: 20.0),
                         _textFieldWidget(),
                         SizedBox(height: 20.0),
@@ -78,14 +145,15 @@ class _SignUpPageState extends State<SignUpPage> {
                         _continue(context),
                         // SizedBox(height: 20.0),
                         // _continue(context),
-                      ],
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
-        ));
+        ),
+      )
+    );
   }
 
   Widget _logo(BuildContext context) {

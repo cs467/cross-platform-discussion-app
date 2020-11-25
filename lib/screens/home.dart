@@ -1,8 +1,16 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
 import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:disc/Widgets/no_internet_access.dart';
+import 'package:disc/singleton/app_connectivity.dart';
+
+const timeout = const Duration(seconds: 3);
+const ms = const Duration(milliseconds: 1);
 
 class HomePage extends StatefulWidget {
   static const routeName = 'homepage';
@@ -13,6 +21,51 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  String string, timedString;
+  var timer;
+  var previousResult;
+
+  Map _source = {ConnectivityResult.none: false};
+  AppConnectivity _connectivity = AppConnectivity.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() { _source = source;});
+    });
+  }
+
+  Timer startTimeout([int milliseconds]) {
+    var duration = milliseconds == null ? timeout : ms * milliseconds;
+    timer = Timer(duration, handleTimeout);
+    return timer;
+  }
+
+  void handleTimeout() async {
+
+    ConnectivityResult result = await (Connectivity().checkConnectivity());
+
+    switch (result) {
+      case ConnectivityResult.none:
+        timedString = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        timedString = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        timedString = "WiFi: Online";
+    }
+
+    if ((previousResult != result) && mounted) {
+        setState(() {});
+    }
+
+    previousResult = result;
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToSelectedContent(
@@ -42,17 +95,18 @@ class _HomePageState extends State<HomePage> {
         FloatingActionButton.extended(
           heroTag: null,
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Prompt(
-                        user: widget.title ?? "Disc ${index + 1}",
-                        promptNumber: "${index + 1}",
-                        text: "Disc ${index + 1}"
-                      )),
+                      user: widget.title ?? "Disc ${index + 1}",
+                      promptNumber: "${index + 1}",
+                      text: "Disc ${index + 1}")),
             );
           },
-          label: widget.title != null ? Text('Join Discussion') : Text('Read Discussion'),
+          label: widget.title != null
+              ? Text('Join Discussion')
+              : Text('Read Discussion'),
           icon: Icon(Icons.insert_comment),
         ),
         SizedBox(height: 25),
@@ -76,20 +130,40 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        string = "Offline";
+        break;
+      case ConnectivityResult.mobile:
+        string = "Mobile: Online";
+        break;
+      case ConnectivityResult.wifi:
+        string = "WiFi: Online";
+    }
+    
+    startTimeout();
+    if (string != timedString) {
+      string = timedString;
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        label: Text('Submit a Prompt'),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PromptProposal(user: widget.title)),
-            );
-        },
-        ),
+      floatingActionButton: (string == "Offline")
+          ? null
+          : FloatingActionButton.extended(
+              label: Text('Submit a Prompt'),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PromptProposal(user: widget.title)
+                  ),
+                );
+              },
+            ),
       appBar: AppBar(
+        centerTitle: true,
         title: Text('Home Page'),
         leading: widget.title != null ? Padding(
           padding: EdgeInsets.only(left: 0),
@@ -106,15 +180,26 @@ class _HomePageState extends State<HomePage> {
             color: Theme.of(context).primaryColor,
             ),
         ),
-      ),
-      endDrawer: DrawerWidget(title: widget.title),
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: 5,
-        itemBuilder: (BuildContext context, int index) => _buildExpansionTile(
-          index,
         ),
-      ),
+        endDrawer: (string == "Offline")
+          ? null
+          : DrawerWidget(title: widget.title),
+        body: (string == "Offline")
+          ? NoInternetAccess()
+          : ListView.builder(
+              controller: _scrollController,
+              itemCount: 5,
+              itemBuilder: (BuildContext context, int index) =>
+                  _buildExpansionTile(
+                index,
+              ),
+            ),
     );
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 }
