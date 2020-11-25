@@ -127,7 +127,7 @@ class _PromptState extends State<Prompt> {
             ? null
             : (!widget.user.contains("Disc")
                   ? BackButton(
-                    color:  Color(0xff00e676),
+                    color:  Color(0xffffffff),
                     onPressed: () {
                       Navigator.pushAndRemoveUntil(
                         context,

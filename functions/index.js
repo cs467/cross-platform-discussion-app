@@ -3,12 +3,31 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-exports.helloWorld = functions.https.onRequest((request, response) => {
-  functions.logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
+exports.getFiveProposals = functions.https.onCall((data, context) => {
+  var list = [];
+  db.collection('proposal').orderBy('likes', 'desc').limit(5).get().then(snapshot => {
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+
+    snapshot.forEach(doc => {
+      list.push(doc.data().body);
+    });
+
+  db.collection('prompts').get().then(snapshot => {
+    if(snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }
+
+    snapshot.docs.forEach(function (value, i) {
+      value.ref.update({
+        prompt: list[i]
+      });
+    })
+  })
+  });
 });
 
 exports.deleteProposals = functions.https.onCall((data, context) => {
@@ -27,9 +46,15 @@ async function deleteCollection(db) {
 async function deleteQueryBatch(db, query, resolve) {
   const snapshot = await query.get();
 
+  // When there are no documents left, we are done
+ if (snapshot.size === 0) {
+  resolve();
+  return;
+ }
+
   // Delete documents in a batch
   snapshot.docs.forEach((doc) => {
-    db.delete();
+    doc.ref.delete();
   });
 
   // Recurse on the next process tick, to avoid

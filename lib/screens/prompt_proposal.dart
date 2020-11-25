@@ -23,16 +23,25 @@ class PromptProposal extends StatefulWidget {
 }
 
 class _PromptProposalState extends State<PromptProposal> {
+  
+  Future<void> getFiveProposals() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getFiveProposals');
+    final results = await callable();
+  }
+
+
+  Future<void> deleteProposals() async {
+  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
+  final results = await callable();
+}
+  
+
   bool rSelected = true, lSelected = false;
   String sort = "timeStamp";
   TextEditingController postController = new TextEditingController();
 
-//   Future<void> deleteProposals() async {
-//   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
-//   final results = await callable();
-// }
-
-String string, timedString;
+  String string, timedString;
   var timer;
   var previousResult;
 
@@ -71,7 +80,9 @@ String string, timedString;
     super.initState();
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
@@ -80,7 +91,7 @@ String string, timedString;
     timer.cancel();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     switch (_source.keys.toList()[0]) {
@@ -111,58 +122,55 @@ String string, timedString;
         resizeToAvoidBottomInset: true,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          leading:
-          (string == "Offline")
-          ? null
-          : 
-          GestureDetector(
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(title: widget.user)
+          leading: (string == "Offline")
+              ? null
+              : GestureDetector(
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomePage(title: widget.user)),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: Container(
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                    ),
+                  ),
                 ),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Container(
-              child: Icon(
-                Icons.keyboard_arrow_left,
-              ),
-            ),
-          ),
           centerTitle: true,
           title: Text("Prompt Proposal"),
         ),
         body: (string == "Offline")
-          ? NoInternetAccess()
-          : StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('proposal')
-              .orderBy(sort, descending: true)
-              .snapshots(),
-          builder: (content, snapshot) {
-            if (snapshot.hasData && snapshot.data.documents != null) {
-              return Column(
-                children: [
-                  sortProposals(),
-                  chatWork(snapshot),
-                  //userStats(),
-                  response(),
-                ],
-              );
-            } else {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Center(child: CircularProgressIndicator()),
-                  SizedBox(height: 300),
-                ],
-              );
-            }
-          },
-        ),
+            ? NoInternetAccess()
+            : StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('proposal')
+                    .orderBy(sort, descending: true)
+                    .snapshots(),
+                builder: (content, snapshot) {
+                  if (snapshot.hasData && snapshot.data.documents != null) {
+                    return Column(
+                      children: [
+                        sortProposals(),
+                        chatWork(snapshot),
+                        //userStats(),
+                        response(),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(child: CircularProgressIndicator()),
+                        SizedBox(height: 300),
+                      ],
+                    );
+                  }
+                },
+              ),
       ),
     );
   }
@@ -326,10 +334,8 @@ String string, timedString;
                                             SizedBox(height: 5),
                                             GestureDetector(
                                               child: Text(info.name),
-                                              onTap: () {
-                                                
-                                              },
-                                              ),
+                                              onTap: () {},
+                                            ),
                                             SizedBox(height: 10),
                                             Text(timeago.format(todayDate),
                                                 style: TextStyle(
@@ -632,9 +638,10 @@ String string, timedString;
           SizedBox(width: 15),
           Expanded(
               child: GestureDetector(
-            onTap: () {
+            onTap: () async {
               sort = "likes";
-              //print(sort);
+              //getFiveProposals();
+              //deleteProposals();
               rSelected = false;
               lSelected = true;
               setState(() {});
