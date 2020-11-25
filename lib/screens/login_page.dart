@@ -130,15 +130,14 @@ class _LoginPageState extends State<LoginPage> {
                         Column(
                           children: <Widget>[
                             _logo(context),
-                            SizedBox(height: 20.0),
-                            _emailPasswordWidget(),
-                            SizedBox(height: 20.0),
-                            _submitButton(context),
-                            SizedBox(height: 20.0),
-                            _passwordReset(context),
-                            _continue(context),
-                            SizedBox(height: 10.0),
-                            _signup(context)
+                        SizedBox(height: 20.0),
+                        _emailPasswordWidget(),
+                        SizedBox(height: 20.0),
+                        _loginButton(context),
+                        _passwordReset(context),
+                        //_continue(context),
+                        SizedBox(height: 20.0),
+                        _signupButton(context)
                           ],
                         ),
                       ],
@@ -177,19 +176,21 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               validator: (val) =>
                   !EmailValidator.validate(val, true) && _usernameExist == true
-                      ? 'Not a valid email.'
+                      ? 'Not a valid email or username'
                       : null,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  errorText: _emailExist ? "Email does not exist" : null,
+                  errorText:
+                      _emailExist ? "Email or username does not exist" : null,
                   suffixIcon: emailController.text.length > 0
                       ? IconButton(
-                          onPressed: () => emailController.clear(),
+                          onPressed: () {
+                            emailController.clear();
+                          },
                           icon: Icon(Icons.clear, color: Colors.grey))
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email or Username',
-                  fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
@@ -214,25 +215,23 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                suffixIcon: passwordController.text.length > 0
-                    ? IconButton(
-                        onPressed: () => passwordController.clear(),
-                        icon: Icon(Icons.clear, color: Colors.grey),
-                      )
-                    : null,
-                border: InputBorder.none,
-                hintText: 'Enter Password',
-                fillColor: Color(0xfff3f3f4),
-                filled: true,
-              ))
+                  suffixIcon: passwordController.text.length > 0
+                      ? IconButton(
+                          onPressed: () => passwordController.clear(),
+                          icon: Icon(Icons.clear, color: Colors.grey))
+                      : null,
+                  border: InputBorder.none,
+                  hintText: 'Enter Password',
+                  filled: true))
         ],
       ),
     );
   }
 
-  Widget _submitButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
+  Widget _loginButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      heroTag: "btn1",
+      onPressed: () async {
         var result;
         final form = _formKey.currentState;
         form.save();
@@ -275,48 +274,31 @@ class _LoginPageState extends State<LoginPage> {
           }
         } else {}
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  offset: Offset(0, 3),
-                  blurRadius: 3,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                colors: [Color(0xff2193b0), Color(0xff6dd5ed)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight)),
-        child: Text("LOGIN"),
-      ),
+      label: Text('LOGIN'),
+      icon: Icon(Icons.login),
     );
   }
 
-  Widget _continue(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false,
-          );
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              child: Text('Continue without logging in?',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ),
-          ],
-        ));
-  }
+  // Widget _continue(BuildContext context) {
+  //   return GestureDetector(
+  //       onTap: () {
+  //         Navigator.pushAndRemoveUntil(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => HomePage()),
+  //           (Route<dynamic> route) => false,
+  //         );
+  //       },
+  //       child: Column(
+  //         children: [
+  //           Container(
+  //             padding: EdgeInsets.symmetric(vertical: 10),
+  //             alignment: Alignment.center,
+  //             child: Text('Continue without logging in?',
+  //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+  //           ),
+  //         ],
+  //       ));
+  // }
 
   Widget _passwordReset(BuildContext context) {
     return GestureDetector(
@@ -337,25 +319,40 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _signup(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => SignUpPage()),
-            (Route<dynamic> route) => false,
-          );
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              child: Text('Click here to Sign Up',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ),
-          ],
-        ));
+  // Widget _signup(BuildContext context) {
+  //   return GestureDetector(
+  //       onTap: () {
+  //         Navigator.pushAndRemoveUntil(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => SignUpPage()),
+  //           (Route<dynamic> route) => false,
+  //         );
+  //       },
+  //       child: Column(
+  //         children: [
+  //           Container(
+  //             padding: EdgeInsets.symmetric(vertical: 10),
+  //             alignment: Alignment.center,
+  //             child: Text('Click here to Sign Up',
+  //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+  //           ),
+  //         ],
+  //       ));
+  // }
+
+  Widget _signupButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      heroTag: "btn2",
+      onPressed: () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => SignUpPage()),
+          (Route<dynamic> route) => false,
+        );
+      },
+      label: Text('SIGN UP'),
+      icon: Icon(Icons.app_registration),
+    );
   }
 
   Widget _logo(BuildContext context) {

@@ -182,25 +182,18 @@ class _PasswordPageState extends State<PasswordPage> {
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Email',
-                  fillColor: Color(0xfff3f3f4),
+                  //fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
     );
   }
 
-  Widget _submitButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        if (emailController.text.isEmpty) {
-          _buildErrorDialog(context, "Email is empty");
-        } else {
-          final valid = await emailCheck(emailController.text);
-
-          if (valid) {
-            setState(() {
-              _emailExist = false;
-            });
+    Widget _resetButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () async {
+          if (emailController.text.isEmpty) {
+            _buildErrorDialog(context, "Email is empty");
           } else {
             await Provider.of<AuthService>(context, listen: false)
                 .resetPassword(emailController.text);
@@ -216,27 +209,10 @@ class _PasswordPageState extends State<PasswordPage> {
                   context, "A password reset link has been sent to $email");
             });
           }
-        }
-      },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  offset: Offset(0, 3),
-                  blurRadius: 3,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                colors: [Color(0xff2193b0), Color(0xff6dd5ed)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight)),
-        child: Text("RESET"),
-      ),
+        },
+      label: Text('RESET'),
+      icon: Icon(Icons.lock),
+
     );
   }
 

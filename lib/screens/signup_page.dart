@@ -4,6 +4,7 @@ import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:disc/screens/home.dart';
+import 'package:disc/screens/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'dart:async';
@@ -137,12 +138,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   Column(
                     children: <Widget>[
                       _logo(context),
-                      SizedBox(height: 20.0),
-                      _textFieldWidget(),
-                      SizedBox(height: 20.0),
-                      _submitButton(context),
-                      SizedBox(height: 20.0),
-                      _continue(context),
+                        SizedBox(height: 20.0),
+                        _textFieldWidget(),
+                        SizedBox(height: 20.0),
+                        _signupButton(context),
+                        _continue(context),
+                        // SizedBox(height: 20.0),
+                        // _continue(context),
                     ],
                   ),
                 ],
@@ -202,7 +204,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       : null,
                   border: InputBorder.none,
                   hintText: 'Enter Username',
-                  fillColor: Color(0xfff3f3f4),
                   filled: true))
         ],
       ),
@@ -225,7 +226,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   height: 10,
                 ),
                 TextFormField(
-                    //autofocus: true,
                     textInputAction: TextInputAction.next,
                     validator: (val) => !EmailValidator.validate(val, true)
                         ? 'Not a valid email or username.'
@@ -242,7 +242,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Enter Email',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )
@@ -282,7 +281,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Enter Password',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )
@@ -324,7 +322,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : null,
                         border: InputBorder.none,
                         hintText: 'Confirm Password',
-                        fillColor: Color(0xfff3f3f4),
                         filled: true))
               ],
             )
@@ -332,9 +329,9 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _submitButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
+  Widget _signupButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () async {
         final form = _formKey.currentState;
         form.save();
 
@@ -375,25 +372,8 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         }
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  offset: Offset(0, 3),
-                  blurRadius: 3,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                colors: [Color(0xff2193b0), Color(0xff6dd5ed)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight)),
-        child: Text("SIGN UP"),
-      ),
+      label: Text('SIGN UP'),
+      icon: Icon(Icons.app_registration),
     );
   }
 
@@ -402,7 +382,7 @@ class _SignUpPageState extends State<SignUpPage> {
         onTap: () {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomePage()),
+            MaterialPageRoute(builder: (context) => LoginPage()),
             (Route<dynamic> route) => false,
           );
         },
@@ -411,7 +391,7 @@ class _SignUpPageState extends State<SignUpPage> {
             Container(
               padding: EdgeInsets.symmetric(vertical: 10),
               alignment: Alignment.center,
-              child: Text('Continue without logging in?',
+              child: Text('Back to Login Page',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
             ),
           ],

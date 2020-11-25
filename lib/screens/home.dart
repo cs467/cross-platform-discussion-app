@@ -165,15 +165,21 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Home Page'),
-        leading: widget.title != null
-            ? Padding(
-                padding: EdgeInsets.only(left: 0),
-                child: Icon(
-                  Icons.bolt,
-                  color: Color(0xff00e676),
-                ),
-              )
-            : Container(),
+        leading: widget.title != null ? Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Icon(
+            Icons.brightness_1_sharp,
+            size: 7,
+            color: Color(0xff00e676),
+            ),
+        ) : Padding(
+          padding: EdgeInsets.only(left: 0),
+          child: Icon(
+            Icons.brightness_1_sharp,
+            size: 7,
+            color: Theme.of(context).primaryColor,
+            ),
+        ),
         ),
         endDrawer: (string == "Offline")
           ? null

@@ -9,6 +9,7 @@ import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:disc/models/post.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'home.dart';
 
 const timeout = const Duration(seconds: 3);
@@ -25,6 +26,11 @@ class _PromptProposalState extends State<PromptProposal> {
   bool rSelected = true, lSelected = false;
   String sort = "timeStamp";
   TextEditingController postController = new TextEditingController();
+
+//   Future<void> deleteProposals() async {
+//   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
+//   final results = await callable();
+// }
 
 String string, timedString;
   var timer;
