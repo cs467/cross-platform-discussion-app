@@ -148,20 +148,6 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: (string == "Offline")
-          ? null
-          : FloatingActionButton.extended(
-              label: Text('Submit a Prompt'),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PromptProposal(user: widget.title)
-                  ),
-                );
-              },
-            ),
       appBar: AppBar(
         centerTitle: true,
         title: Text('Home Page'),
