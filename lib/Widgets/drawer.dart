@@ -4,7 +4,7 @@ import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:disc/screens/home.dart';
+import 'package:disc/screens/login_page.dart';
 import 'package:disc/Widgets/auth.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -75,7 +75,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             setState(() {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (Route<dynamic> route) => false,
               );
               _successfulSignout(context);

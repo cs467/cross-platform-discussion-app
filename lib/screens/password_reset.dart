@@ -54,7 +54,7 @@ class _PasswordPageState extends State<PasswordPage> {
                         SizedBox(height: 20.0),
                          _emailField("Email"),
                         SizedBox(height: 20.0),
-                        _submitButton(context),
+                        _resetButton(context),
                       ],
                     ),
                   ],
@@ -99,9 +99,9 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
-  Widget _submitButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
+    Widget _resetButton(BuildContext context) {
+    return FloatingActionButton.extended(
+      onPressed: () async {
           if (emailController.text.isEmpty) {
             _buildErrorDialog(context, "Email is empty");
           } else {
@@ -127,25 +127,8 @@ class _PasswordPageState extends State<PasswordPage> {
             }
           }
         },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.symmetric(vertical: 15),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  offset: Offset(0, 3),
-                  blurRadius: 3,
-                  spreadRadius: 2)
-            ],
-            gradient: LinearGradient(
-                colors: [Color(0xff2193b0), Color(0xff6dd5ed)],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight)),
-        child: Text("RESET"),
-      ),
+      label: Text('RESET'),
+      icon: Icon(Icons.lock),
     );
   }
 
