@@ -45,7 +45,7 @@ class _PromptState extends State<Prompt> {
   }
 
   Widget build(BuildContext context) {
-    dynamic startsWith =
+    String startsWith =
         DateTime(now.year, now.month, now.day).toUtc().toString();
 
     return GestureDetector(
@@ -66,6 +66,13 @@ class _PromptState extends State<Prompt> {
                   .orderBy(sort, descending: true)
                   .where(sort, isGreaterThan: startsWith)
                   .snapshots(),
+                  //rSelected == true ?
+                  // FirebaseFirestore.instance
+                  // .collection('posts${widget.promptNumber}')
+                  // .orderBy('timeStamp', descending: true)
+                  // .where('timeStamp', isGreaterThan: startsWith)
+                  // .orderBy('likes', descending: true)
+                  // .snapshots(),
               builder: (content, snapshot) {
                 if (snapshot.hasData && snapshot.data.documents != null) {
                   return Column(
@@ -112,7 +119,6 @@ class _PromptState extends State<Prompt> {
                                 child: GestureDetector(
                               onTap: () {
                                 sort = "timeStamp";
-                                //print(sort);
                                 rSelected = true;
                                 lSelected = false;
                                 setState(() {});
@@ -137,7 +143,7 @@ class _PromptState extends State<Prompt> {
                             Expanded(
                                 child: GestureDetector(
                               onTap: () {
-                                //sort = "likes";
+                                sort = "likes";
                                 rSelected = false;
                                 lSelected = true;
                                 setState(() {});

@@ -4,6 +4,7 @@ import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:disc/models/post.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class PromptProposal extends StatefulWidget {
   PromptProposal({Key key, @required this.user}) : super(key: key);
@@ -16,6 +17,11 @@ class _PromptProposalState extends State<PromptProposal> {
   bool rSelected = true, lSelected = false;
   String sort = "timeStamp";
   TextEditingController postController = new TextEditingController();
+
+//   Future<void> deleteProposals() async {
+//   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
+//   final results = await callable();
+// }
 
   @override
   Widget build(BuildContext context) {

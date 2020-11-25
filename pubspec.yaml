@@ -34,8 +34,8 @@ dependencies:
   timeago: ^2.0.28
   email_validator: ^1.0.6
   profanity_filter: ^1.0.4
+  cloud_functions: ^0.7.0+1
   flutter_slidable:
-  
   
   dynamic_theme: ^1.0.1
   provider: ^4.3.2+2
