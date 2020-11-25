@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
-import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 import 'package:disc/singleton/app_connectivity.dart';
@@ -22,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selected = 0;
+  int cSelect = 1;
 
   String string, timedString;
   var timer;
@@ -70,9 +70,6 @@ class _HomePageState extends State<HomePage> {
 
   final ScrollController _scrollController = ScrollController();
 
-  void _scrollToSelectedContent(
-      bool isExpanded, double previousOffset, int index, GlobalKey myKey) {}
-
   List<Widget> _buildExpansionTileChildren(int index) => [
         Padding(
           padding: const EdgeInsets.all(15.0),
@@ -94,24 +91,6 @@ class _HomePageState extends State<HomePage> {
               }),
         ),
         SizedBox(height: 15),
-        FloatingActionButton.extended(
-          heroTag: null,
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Prompt(
-                      user: widget.title ?? "Disc ${index + 1}",
-                      promptNumber: "${index + 1}",
-                      text: "Disc ${index + 1}")),
-            );
-          },
-          label: widget.title != null
-              ? Text('Join Discussion')
-              : Text('Read Discussion'),
-          icon: Icon(Icons.insert_comment),
-        ),
-        SizedBox(height: 25),
       ];
 
   Card _buildExpansionTile(int index) {
@@ -124,6 +103,7 @@ class _HomePageState extends State<HomePage> {
           onExpansionChanged: ((newState) {
             if (newState)
               setState(() {
+                cSelect = index + 1;
                 Duration(seconds: 20000);
                 selected = index;
               });
@@ -155,6 +135,28 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        label: Row(
+          children: [
+            Icon(Icons.insert_comment),
+            SizedBox(
+              width: 5,
+            ),
+            Text('Join Discussion'),
+          ],
+        ),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Prompt(
+                    user: widget.title ?? "Disc $cSelect",
+                    promptNumber: "$cSelect",
+                    text: "Disc $cSelect")),
+          );
+        },
+      ),
       appBar: AppBar(
         centerTitle: true,
         title: Text('Home Page'),
