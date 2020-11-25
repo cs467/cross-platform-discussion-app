@@ -144,7 +144,7 @@ class _PasswordPageState extends State<PasswordPage> {
                               SizedBox(height: 20.0),
                               _emailField("Email"),
                               SizedBox(height: 20.0),
-                              _submitButton(context),
+                              _resetButton(context),
                             ],
                           ),
                         ],
