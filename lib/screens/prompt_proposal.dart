@@ -566,7 +566,7 @@ class _PromptProposalState extends State<PromptProposal> {
                 }
               },
             ),
-            hintText: 'Submit Your Prompt Here...',
+            hintText: 'Submit a Prompt Here...',
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent, width: 2.0),
             ),
