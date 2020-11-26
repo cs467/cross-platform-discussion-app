@@ -193,7 +193,7 @@ class _PasswordPageState extends State<PasswordPage> {
     return FloatingActionButton.extended(
       onPressed: () async {
           if (emailController.text.isEmpty) {
-            _buildErrorDialog(context, "Email is empty");
+            _buildErrorDialog(context, "Email is empty", "Error Message");
           } else {
             await Provider.of<AuthService>(context, listen: false)
                 .resetPassword(emailController.text);
@@ -206,7 +206,7 @@ class _PasswordPageState extends State<PasswordPage> {
               );
               email = emailController.text;
               _buildErrorDialog(
-                  context, "A password reset link has been sent to $email");
+                  context, "A password reset link has been sent to $email", "Email Sent!");
             });
           }
         },
@@ -216,16 +216,16 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
-  Future _buildErrorDialog(BuildContext context, _message) {
+  Future _buildErrorDialog(BuildContext context, _message, _header) {
     return showDialog(
       builder: (context) {
         return AlertDialog(
-          title: Text('Email Sent!'),
+          title: Text(_header),
           content: SingleChildScrollView(child: Text(_message)),
           actions: <Widget>[
             FlatButton(
                 child: Text('Proceed'),
-                color: Color(0xff2193b0),
+                color: Theme.of(context).accentColor,
                 onPressed: () {
                   Navigator.of(context).pop();
                 })
