@@ -100,6 +100,7 @@ class _PromptProposalState extends State<PromptProposal> {
     if (string != timedString) {
       string = timedString;
     }
+    //
 
     return GestureDetector(
       onTap: () {
@@ -116,6 +117,7 @@ class _PromptProposalState extends State<PromptProposal> {
           leading: (string == "Offline")
               ? null
               : GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -125,6 +127,8 @@ class _PromptProposalState extends State<PromptProposal> {
                     );
                   },
                   child: Container(
+                    height: 25,
+                    width: 25,
                     child: Icon(
                       Icons.keyboard_arrow_left,
                     ),
