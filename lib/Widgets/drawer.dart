@@ -95,7 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 title: const Text('Log In or Sign Up'),
                 onTap: () async {
                   setState(() {
-                    Navigator.pushReplacementNamed(context, 'loginpage');
+                    Navigator.pushReplacementNamed(context, 'originpage');
                   });
                 },
               )
@@ -118,7 +118,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       MaterialPageRoute(builder: (context) => LoginPage()),
                       (Route<dynamic> route) => false,
                     );
-                    _successfulSignout(context);
+                    //_successfulSignout(context);
                   });
                 },
               )

@@ -123,8 +123,9 @@ class _PromptState extends State<Prompt> {
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: Text('${widget.text}'),
+            title: Text('Prompt ${widget.promptNumber}'),
             leading: (string == "Offline")
+
                 ? null
                 : GestureDetector(
                     behavior: HitTestBehavior.translucent,
