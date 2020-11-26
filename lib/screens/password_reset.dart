@@ -239,7 +239,7 @@ class _PasswordPageState extends State<PasswordPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/flutter.png', width: 100.0),
+      child: Image.asset('assets/images/day-origin.png', width: 200.0),
     );
   }
 }
