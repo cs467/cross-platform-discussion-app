@@ -4,7 +4,7 @@ import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:disc/screens/home.dart';
-import 'package:disc/screens/login_page.dart';
+import 'package:disc/screens/origin.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'dart:async';
@@ -45,7 +45,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void handleTimeout() async {
-
     ConnectivityResult result = await (Connectivity().checkConnectivity());
 
     switch (result) {
@@ -60,12 +59,12 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if ((previousResult != result) && mounted) {
-        setState(() {});
+      setState(() {});
     }
 
     previousResult = result;
   }
-  
+
   @override
   void dispose() {
     emailController.dispose();
@@ -95,13 +94,14 @@ class _SignUpPageState extends State<SignUpPage> {
 
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         string = "Offline";
@@ -112,53 +112,71 @@ class _SignUpPageState extends State<SignUpPage> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
     }
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Register"),
-      ),
-      body: (string == "Offline")
-      ? NoInternetAccess()
-      : Align(
-        child: SafeArea(
-          child: Container(
-            padding: EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      _logo(context),
-                        SizedBox(height: 20.0),
-                        _textFieldWidget(),
-                        SizedBox(height: 20.0),
-                        _signupButton(context),
-                        _continue(context),
-                        // SizedBox(height: 20.0),
-                        // _continue(context),
-                    ],
+        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(""),
+          leading: (string == "Offline")
+              ? null
+              : GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => OriginPage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  child: Container(
+                    height: 25,
+                    width: 25,
+                    child: Icon(
+                      Icons.keyboard_arrow_left,
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
         ),
-      )
-    );
+        body: (string == "Offline")
+            ? NoInternetAccess()
+            : Align(
+                child: SafeArea(
+                  child: Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              SizedBox(height: 20.0),
+                              _logo(context),
+                              SizedBox(height: 20.0),
+                              _textFieldWidget(),
+                              SizedBox(height: 20.0),
+                              _signupButton(context),
+                              // SizedBox(height: 20.0),
+                              // _continue(context),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ));
   }
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/flutter.png', width: 100.0),
+      child: Image.asset('assets/images/day-origin.png', width: 200.0),
     );
   }
 
@@ -376,7 +394,7 @@ class _SignUpPageState extends State<SignUpPage> {
       icon: Icon(Icons.app_registration),
     );
   }
-
+/*
   Widget _continue(BuildContext context) {
     return GestureDetector(
         onTap: () {
@@ -397,6 +415,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         ));
   }
+  */
 
   Future _buildErrorDialog(BuildContext context, _message) {
     return showDialog(

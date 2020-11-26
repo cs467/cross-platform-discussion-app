@@ -125,6 +125,7 @@ class _PromptProposalState extends State<PromptProposal> {
           leading: (string == "Offline")
               ? null
               : GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -134,6 +135,8 @@ class _PromptProposalState extends State<PromptProposal> {
                     );
                   },
                   child: Container(
+                    height: 25,
+                    width: 25,
                     child: Icon(
                       Icons.keyboard_arrow_left,
                     ),
@@ -550,7 +553,10 @@ class _PromptProposalState extends State<PromptProposal> {
             int maxLength,
             bool isFocused,
           }) {
-            return Text('${maxLength - currentLength}');
+            if (isFocused)
+              return Text('${maxLength - currentLength}');
+            else
+              return Container(height: 17);
           },
           decoration: InputDecoration(
             suffixIcon: IconButton(
@@ -569,7 +575,7 @@ class _PromptProposalState extends State<PromptProposal> {
                 }
               },
             ),
-            hintText: 'Submit Your Prompt Here',
+            hintText: 'Submit a Prompt Here...',
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent, width: 2.0),
             ),
@@ -669,7 +675,7 @@ class _PromptProposalState extends State<PromptProposal> {
 String validateProfanity(String value) {
   final filter = ProfanityFilter();
   if (filter.hasProfanity(value) == true) {
-    return "Remove Profanity to Post a Response";
+    return "Remove Profanity to Submit a Prompt";
   }
   return null;
 }

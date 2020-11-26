@@ -11,6 +11,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:disc/singleton/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/screens/signup_page.dart';
+import 'package:disc/screens/origin.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 
@@ -115,7 +116,26 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Login Page"),
+        title: Text(""),
+        leading: (string == "Offline")
+            ? null
+            : GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => OriginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: Container(
+                  height: 25,
+                  width: 25,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                  ),
+                ),
+              ),
       ),
       body: (string == "Offline")
           ? NoInternetAccess()
@@ -129,15 +149,16 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         Column(
                           children: <Widget>[
+                            SizedBox(height: 20.0),
                             _logo(context),
-                        SizedBox(height: 20.0),
-                        _emailPasswordWidget(),
-                        SizedBox(height: 20.0),
-                        _loginButton(context),
-                        _passwordReset(context),
-                        //_continue(context),
-                        SizedBox(height: 20.0),
-                        _signupButton(context)
+                            SizedBox(height: 20.0),
+                            _emailPasswordWidget(),
+                            SizedBox(height: 40.0),
+                            _loginButton(context),
+                            SizedBox(height: 40.0),
+                            _passwordReset(context),
+                            //_continue(context),
+                            SizedBox(height: 20.0),
                           ],
                         ),
                       ],
@@ -248,7 +269,7 @@ class _LoginPageState extends State<LoginPage> {
             await Provider.of<AuthService>(context, listen: false).loginUser(
                 email: emailController.text, password: passwordController.text);
             setState(() {
-              _successfulLogin(context);
+              //_successfulLogin(context);
 
               Provider.of<AuthService>(context, listen: false).getUser().then(
                   (currentUser) => FirebaseFirestore.instance
@@ -315,7 +336,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/flutter.png', width: 100.0),
+      child: Image.asset('assets/images/day-origin.png', width: 200.0),
     );
   }
 }

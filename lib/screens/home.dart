@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:disc/screens/prompt.dart';
-import 'package:disc/screens/prompt_proposal.dart';
 import 'package:disc/Widgets/drawer.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 import 'package:disc/singleton/app_connectivity.dart';
@@ -21,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int selected = 0;
+  int cSelect = 1;
 
   String string, timedString;
   var timer;
@@ -34,7 +35,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _connectivity.initialise();
     _connectivity.myStream.listen((source) {
-      setState(() { _source = source;});
+      setState(() {
+        _source = source;
+      });
     });
   }
 
@@ -45,7 +48,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleTimeout() async {
-
     ConnectivityResult result = await (Connectivity().checkConnectivity());
 
     switch (result) {
@@ -60,16 +62,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     if ((previousResult != result) && mounted) {
-        setState(() {});
+      setState(() {});
     }
 
     previousResult = result;
   }
 
   final ScrollController _scrollController = ScrollController();
-
-  void _scrollToSelectedContent(
-      bool isExpanded, double previousOffset, int index, GlobalKey myKey) {}
 
   List<Widget> _buildExpansionTileChildren(int index) => [
         Padding(
@@ -92,39 +91,27 @@ class _HomePageState extends State<HomePage> {
               }),
         ),
         SizedBox(height: 15),
-        FloatingActionButton.extended(
-          heroTag: null,
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Prompt(
-                      user: widget.title ?? "Disc ${index + 1}",
-                      promptNumber: "${index + 1}",
-                      text: "Disc ${index + 1}")),
-            );
-          },
-          label: widget.title != null
-              ? Text('Join Discussion')
-              : Text('Read Discussion'),
-          icon: Icon(Icons.insert_comment),
-        ),
-        SizedBox(height: 25),
       ];
 
-  ExpansionTile _buildExpansionTile(int index) {
-    final GlobalKey expansionTileKey = GlobalKey();
-    double previousOffset;
-
-    return ExpansionTile(
-      key: expansionTileKey,
-      onExpansionChanged: (isExpanded) {
-        if (isExpanded) previousOffset = _scrollController.offset;
-        _scrollToSelectedContent(
-            isExpanded, previousOffset, index, expansionTileKey);
-      },
-      title: Text('Prompt ${index + 1}'),
-      children: _buildExpansionTileChildren(index),
+  Card _buildExpansionTile(int index) {
+    return Card(
+      child: ExpansionTile(
+          key: Key(index.toString()),
+          initiallyExpanded: index == selected,
+          title: Text('Prompt ${index + 1}'),
+          children: _buildExpansionTileChildren(index),
+          onExpansionChanged: ((newState) {
+            if (newState)
+              setState(() {
+                cSelect = index + 1;
+                Duration(seconds: 20000);
+                selected = index;
+              });
+            else
+              setState(() {
+                selected = -1;
+              });
+          })),
     );
   }
 
@@ -140,7 +127,7 @@ class _HomePageState extends State<HomePage> {
       case ConnectivityResult.wifi:
         string = "WiFi: Online";
     }
-    
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
@@ -148,45 +135,38 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: (string == "Offline")
-          ? null
-          : FloatingActionButton.extended(
-              label: Text('Submit a Prompt'),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PromptProposal(user: widget.title)
-                  ),
-                );
-              },
+      floatingActionButtonLocation: (string == "Offline") ? null : FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: (string == "Offline") ? null : FloatingActionButton.extended(
+        label: Row(
+          children: [
+            Icon(Icons.insert_comment),
+            SizedBox(
+              width: 5,
             ),
+            Text('Join Discussion'),
+          ],
+        ),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Prompt(
+                    user: widget.title ?? "Disc $cSelect",
+                    promptNumber: "$cSelect",
+                    text: "Disc $cSelect")),
+          );
+        },
+      ),
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Home Page'),
-        leading: widget.title != null ? Padding(
-          padding: EdgeInsets.only(left: 0),
-          child: Icon(
-            Icons.brightness_1_sharp,
-            size: 7,
-            color: Color(0xff00e676),
-            ),
-        ) : Padding(
-          padding: EdgeInsets.only(left: 0),
-          child: Icon(
-            Icons.brightness_1_sharp,
-            size: 7,
-            color: Theme.of(context).primaryColor,
-            ),
-        ),
-        ),
-        endDrawer: (string == "Offline")
-          ? null
-          : DrawerWidget(title: widget.title),
-        body: (string == "Offline")
+        title: Text('Daychat'),
+      ),
+      endDrawer:
+          (string == "Offline") ? null : DrawerWidget(title: widget.title),
+      body: (string == "Offline")
           ? NoInternetAccess()
           : ListView.builder(
+              key: Key('builder ${selected.toString()}'),
               controller: _scrollController,
               itemCount: 5,
               itemBuilder: (BuildContext context, int index) =>
