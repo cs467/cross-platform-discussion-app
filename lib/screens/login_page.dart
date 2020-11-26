@@ -157,7 +157,6 @@ class _LoginPageState extends State<LoginPage> {
                             _loginButton(context),
                             SizedBox(height: 40.0),
                             _passwordReset(context),
-                            //_continue(context),
                             SizedBox(height: 20.0),
                           ],
                         ),
@@ -265,9 +264,8 @@ class _LoginPageState extends State<LoginPage> {
 
         if (form.validate() || _usernameExist == false) {
           try {
-            emailController.text = result;
             await Provider.of<AuthService>(context, listen: false).loginUser(
-                email: emailController.text, password: passwordController.text);
+                email: result == "None" ? emailController.text : result, password: passwordController.text);
             setState(() {
               //_successfulLogin(context);
 
@@ -319,20 +317,20 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _signupButton(BuildContext context) {
-    return FloatingActionButton.extended(
-      heroTag: "btn2",
-      onPressed: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => SignUpPage()),
-          (Route<dynamic> route) => false,
-        );
-      },
-      label: Text('SIGN UP'),
-      icon: Icon(Icons.app_registration),
-    );
-  }
+  // Widget _signupButton(BuildContext context) {
+  //   return FloatingActionButton.extended(
+  //     heroTag: "btn2",
+  //     onPressed: () {
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => SignUpPage()),
+  //         (Route<dynamic> route) => false,
+  //       );
+  //     },
+  //     label: Text('SIGN UP'),
+  //     icon: Icon(Icons.app_registration),
+  //   );
+  // }
 
   Widget _logo(BuildContext context) {
     return Container(
@@ -405,6 +403,7 @@ Future<String> usernameCheck(String username) async {
     if (username.contains('@')) {
       email = username;
     } else {
+      // Must return something.
       email = "None";
     }
   }
