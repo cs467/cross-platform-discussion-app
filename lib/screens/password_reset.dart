@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:disc/screens/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const timeout = const Duration(seconds: 3);
 const ms = const Duration(milliseconds: 1);
@@ -195,6 +196,7 @@ class _PasswordPageState extends State<PasswordPage> {
           if (emailController.text.isEmpty) {
             _buildErrorDialog(context, "Email is empty", "Error Message");
           } else {
+            try {
             await Provider.of<AuthService>(context, listen: false)
                 .resetPassword(emailController.text);
 
@@ -208,8 +210,14 @@ class _PasswordPageState extends State<PasswordPage> {
               _buildErrorDialog(
                   context, "A password reset link has been sent to $email", "Email Sent!");
             });
+          
+          } on FirebaseAuthException catch (error) {
+            return _buildErrorDialog(context, error.message, "Error Message");
+          } on Exception catch (error) {
+            return _buildErrorDialog(context, error.toString(), "Error Message");
           }
-        },
+        }
+      },
       label: Text('RESET'),
       icon: Icon(Icons.lock),
 
