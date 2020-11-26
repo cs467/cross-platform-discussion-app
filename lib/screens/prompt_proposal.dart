@@ -23,14 +23,23 @@ class PromptProposal extends StatefulWidget {
 }
 
 class _PromptProposalState extends State<PromptProposal> {
+  
+  Future<void> getFiveProposals() async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getFiveProposals');
+    final results = await callable();
+  }
+
+
+  Future<void> deleteProposals() async {
+  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
+  final results = await callable();
+}
+  
+
   bool rSelected = true, lSelected = false;
   String sort = "timeStamp";
   TextEditingController postController = new TextEditingController();
-
-//   Future<void> deleteProposals() async {
-//   HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
-//   final results = await callable();
-// }
 
   String string, timedString;
   var timer;
@@ -635,9 +644,8 @@ class _PromptProposalState extends State<PromptProposal> {
           SizedBox(width: 15),
           Expanded(
               child: GestureDetector(
-            onTap: () {
+            onTap: () async {
               sort = "likes";
-              //print(sort);
               rSelected = false;
               lSelected = true;
               setState(() {});

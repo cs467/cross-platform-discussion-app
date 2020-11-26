@@ -22,5 +22,19 @@
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.0"
   },
-  "private": true
+  "private": true,
+  "emulators": {
+    "ui": {
+      "enabled": true,
+      "host": "localhost",
+      "port": 4000
+    },
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "host": "0.0.0.0", 
+      "port": 8080
+    }
+}
 }

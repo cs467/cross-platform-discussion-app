@@ -125,6 +125,7 @@ class _PromptState extends State<Prompt> {
             centerTitle: true,
             title: Text('Prompt ${widget.promptNumber}'),
             leading: (string == "Offline")
+
                 ? null
                 : GestureDetector(
                     behavior: HitTestBehavior.translucent,

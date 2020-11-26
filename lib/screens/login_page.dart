@@ -300,27 +300,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Widget _continue(BuildContext context) {
-  //   return GestureDetector(
-  //       onTap: () {
-  //         Navigator.pushAndRemoveUntil(
-  //           context,
-  //           MaterialPageRoute(builder: (context) => HomePage()),
-  //           (Route<dynamic> route) => false,
-  //         );
-  //       },
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //             padding: EdgeInsets.symmetric(vertical: 10),
-  //             alignment: Alignment.center,
-  //             child: Text('Continue without logging in?',
-  //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-  //           ),
-  //         ],
-  //       ));
-  // }
-
   Widget _passwordReset(BuildContext context) {
     return GestureDetector(
         onTap: () {
@@ -339,27 +318,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ));
   }
-
-  // Widget _signup(BuildContext context) {
-  //   return GestureDetector(
-  //       onTap: () {
-  //         Navigator.pushAndRemoveUntil(
-  //           context,
-  //           MaterialPageRoute(builder: (context) => SignUpPage()),
-  //           (Route<dynamic> route) => false,
-  //         );
-  //       },
-  //       child: Column(
-  //         children: [
-  //           Container(
-  //             padding: EdgeInsets.symmetric(vertical: 10),
-  //             alignment: Alignment.center,
-  //             child: Text('Click here to Sign Up',
-  //                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-  //           ),
-  //         ],
-  //       ));
-  // }
 
   Widget _signupButton(BuildContext context) {
     return FloatingActionButton.extended(
