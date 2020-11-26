@@ -18,7 +18,7 @@ class _SplashPageState extends State<SplashPage> {
         .getUser()
         .then((currentUser) => {
               if (currentUser == null)
-                {Navigator.pushReplacementNamed(context, "loginpage")}
+                {Navigator.pushReplacementNamed(context, "originpage")}
               else
                 {
                   FirebaseFirestore.instance

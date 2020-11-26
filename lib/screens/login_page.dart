@@ -117,23 +117,25 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(""),
-        actions: [
-          FlatButton(
-            textColor: Colors.white,
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => SignUpPage()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Text("Sign Up"),
-            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-          ),
-          SizedBox(
-            width: 15,
-          )
-        ],
+        leading: (string == "Offline")
+            ? null
+            : GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => OriginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: Container(
+                  height: 25,
+                  width: 25,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                  ),
+                ),
+              ),
       ),
       body: (string == "Offline")
           ? NoInternetAccess()
@@ -149,13 +151,14 @@ class _LoginPageState extends State<LoginPage> {
                           children: <Widget>[
                             SizedBox(height: 20.0),
                             _logo(context),
-                            SizedBox(height: 24.0),
+                            SizedBox(height: 20.0),
                             _emailPasswordWidget(),
                             SizedBox(height: 40.0),
                             _loginButton(context),
                             SizedBox(height: 40.0),
                             _passwordReset(context),
                             //_continue(context),
+                            SizedBox(height: 20.0),
                           ],
                         ),
                       ],
@@ -375,7 +378,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/daychat-sun.png', width: 200.0),
+      child: Image.asset('assets/images/day-origin.png', width: 200.0),
     );
   }
 }
