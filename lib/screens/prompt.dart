@@ -107,6 +107,8 @@ class _PromptState extends State<Prompt> {
         string = "WiFi: Online";
     }
 
+    //
+
     startTimeout();
     if (string != timedString) {
       string = timedString;
@@ -127,6 +129,7 @@ class _PromptState extends State<Prompt> {
             leading: (string == "Offline")
                 ? null
                 : GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
@@ -136,6 +139,8 @@ class _PromptState extends State<Prompt> {
                       );
                     },
                     child: Container(
+                      height: 25,
+                      width: 25,
                       child: Icon(
                         Icons.keyboard_arrow_left,
                       ),
