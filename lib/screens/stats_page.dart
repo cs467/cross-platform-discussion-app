@@ -107,23 +107,25 @@ class _StatsPageState extends State<StatsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: (string == "Offline")
-          ? null
-          : GestureDetector(
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomePage(title: username)
+            ? null
+            : GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => HomePage(title: username)),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                child: Container(
+                  height: 25,
+                  width: 25,
+                  child: Icon(
+                    Icons.keyboard_arrow_left,
+                  ),
                 ),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Container(
-              child: Icon(
-                Icons.keyboard_arrow_left,
               ),
-            ),
-          ),
         centerTitle: true,
         title: Text('Hi, ' + username),
       ),

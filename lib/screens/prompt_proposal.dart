@@ -100,7 +100,6 @@ class _PromptProposalState extends State<PromptProposal> {
     if (string != timedString) {
       string = timedString;
     }
-    //
 
     return GestureDetector(
       onTap: () {
