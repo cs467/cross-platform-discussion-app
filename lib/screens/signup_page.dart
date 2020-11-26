@@ -4,7 +4,7 @@ import 'package:disc/singleton/app_connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:disc/screens/home.dart';
-import 'package:disc/screens/login_page.dart';
+import 'package:disc/screens/origin.dart';
 import 'package:provider/provider.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'dart:async';
@@ -131,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   onTap: () {
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => OriginPage()),
                       (Route<dynamic> route) => false,
                     );
                   },
@@ -176,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/daychat-sun.png', width: 200.0),
+      child: Image.asset('assets/images/day-origin.png', width: 200.0),
     );
   }
 

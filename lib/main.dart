@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:disc/screens/home.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/screens/login_page.dart';
+import 'package:disc/screens/origin.dart';
 import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/stats_page.dart';
 import 'package:disc/screens/splash.dart';
@@ -24,6 +25,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   static final routes = {
+    OriginPage.routeName: (context) => OriginPage(),
     LoginPage.routeName: (context) => LoginPage(),
     HomePage.routeName: (context) => HomePage(),
     SignUpPage.routeName: (context) => SignUpPage(),

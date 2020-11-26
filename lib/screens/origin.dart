@@ -133,7 +133,7 @@ class _OriginPageState extends State<OriginPage> {
                             _loginButton(context),
 
                             //_continue(context),
-                            SizedBox(height: 80.0),
+                            SizedBox(height: 60.0),
                             _signupButton(context)
                           ],
                         ),

@@ -95,7 +95,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 title: const Text('Log In or Sign Up'),
                 onTap: () async {
                   setState(() {
-                    Navigator.pushReplacementNamed(context, 'loginpage');
+                    Navigator.pushReplacementNamed(context, 'originpage');
                   });
                 },
               )
