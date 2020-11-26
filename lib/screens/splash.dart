@@ -18,27 +18,22 @@ class _SplashPageState extends State<SplashPage> {
         .getUser()
         .then((currentUser) => {
               if (currentUser == null)
-              {
-                Navigator.pushReplacementNamed(context, "loginpage")
-              }
+                {Navigator.pushReplacementNamed(context, "loginpage")}
               else
-              {
-                FirebaseFirestore.instance
-                  .collection("users")
-                  .doc(currentUser.uid)
-                  .get()
-                  .then((DocumentSnapshot result) =>
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(
-                          title: result["username"],
-                        )
-                      )
-                    )
-                  )
-                  .catchError((err) => print(err))
-              }
+                {
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(currentUser.uid)
+                      .get()
+                      .then((DocumentSnapshot result) =>
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage(
+                                        title: result["username"],
+                                      ))))
+                      .catchError((err) => print(err))
+                }
             })
         .catchError((err) => print(err));
     super.initState();
