@@ -118,7 +118,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       MaterialPageRoute(builder: (context) => LoginPage()),
                       (Route<dynamic> route) => false,
                     );
-                    _successfulSignout(context);
+                    //_successfulSignout(context);
                   });
                 },
               )
