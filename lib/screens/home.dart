@@ -135,8 +135,8 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation: (string == "Offline") ? null : FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: (string == "Offline") ? null : FloatingActionButton.extended(
         label: Row(
           children: [
             Icon(Icons.insert_comment),

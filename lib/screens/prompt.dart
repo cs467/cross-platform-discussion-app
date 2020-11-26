@@ -107,8 +107,6 @@ class _PromptState extends State<Prompt> {
         string = "WiFi: Online";
     }
 
-    //
-
     startTimeout();
     if (string != timedString) {
       string = timedString;
