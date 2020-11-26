@@ -426,7 +426,7 @@ class _SignUpPageState extends State<SignUpPage> {
           actions: <Widget>[
             FlatButton(
                 child: Text('Cancel'),
-                color: Color(0xff2193b0),
+                color: Theme.of(context).accentColor,
                 onPressed: () {
                   Navigator.of(context).pop();
                 })
