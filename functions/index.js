@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
 
-exports.getFiveProposals = functions.https.onCall((data, context) => {
+exports.getFiveProposals = functions.pubsub.topic('replaceFivePrompts').onPublish((data, context) => {
   var list = [];
   db.collection('proposal').orderBy('likes', 'desc').limit(5).get().then(snapshot => {
     if (snapshot.empty) {
@@ -21,16 +21,26 @@ exports.getFiveProposals = functions.https.onCall((data, context) => {
       return;
     }
 
+    // If list[i] is null, set the prompt equal to the original one. 
+    // Perhaps in the future we can have a preloaded set of prompts to
+    // pull from when we run into a situation where five prompt proposals
+    // are not available.
     snapshot.docs.forEach(function (value, i) {
       value.ref.update({
-        prompt: list[i]
+        prompt: list[i] ? list[i] : value.data().prompt
       });
     })
+    return;
+  }).catch(error => {
+    console.log('Error message' + error);
   })
+  return;
+  }).catch(error => {
+    console.log('Error message' + error);
   });
 });
 
-exports.deleteProposals = functions.https.onCall((data, context) => {
+exports.deleteProposals = functions.pubsub.topic('deleteProposals').onPublish((data, context) => {
   deleteCollection(db);
 });
 

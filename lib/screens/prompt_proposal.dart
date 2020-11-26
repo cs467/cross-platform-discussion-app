@@ -640,8 +640,6 @@ class _PromptProposalState extends State<PromptProposal> {
               child: GestureDetector(
             onTap: () async {
               sort = "likes";
-              //getFiveProposals();
-              //deleteProposals();
               rSelected = false;
               lSelected = true;
               setState(() {});
