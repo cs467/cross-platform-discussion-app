@@ -152,7 +152,7 @@ class _PromptState extends State<Prompt> {
                   stream: FirebaseFirestore.instance
                       .collection('posts${widget.promptNumber}')
                       .where(sort, isGreaterThan: startsWith)
-                      .orderBy(sort, descending: false)
+                      .orderBy(sort, descending: true)
                       .snapshots(),
                   //rSelected == true ?
                   // FirebaseFirestore.instance
