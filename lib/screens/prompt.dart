@@ -191,8 +191,6 @@ class _PromptState extends State<Prompt> {
                                               snapshot.data.docs[int.parse(
                                                       widget.promptNumber) -
                                                   1]['prompt'],
-                                              style: TextStyle(
-                                                  height: 5, fontSize: 10),
                                               textAlign: TextAlign.justify,
                                             );
                                           }

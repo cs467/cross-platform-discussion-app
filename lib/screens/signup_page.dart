@@ -147,27 +147,25 @@ class _SignUpPageState extends State<SignUpPage> {
         body: (string == "Offline")
             ? NoInternetAccess()
             : Align(
-                child: SafeArea(
-                  child: Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: Form(
-                      key: _formKey,
-                      child: ListView(
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              SizedBox(height: 20.0),
-                              _logo(context),
-                              SizedBox(height: 20.0),
-                              _textFieldWidget(),
-                              SizedBox(height: 20.0),
-                              _signupButton(context),
-                              // SizedBox(height: 20.0),
-                              // _continue(context),
-                            ],
-                          ),
-                        ],
-                      ),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            SizedBox(height: 20.0),
+                            _logo(context),
+                            SizedBox(height: 20.0),
+                            _textFieldWidget(),
+                            SizedBox(height: 20.0),
+                            _signupButton(context),
+                            // SizedBox(height: 20.0),
+                            // _continue(context),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
