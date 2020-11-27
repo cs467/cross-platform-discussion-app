@@ -155,7 +155,7 @@ class _PromptState extends State<Prompt> {
                       .orderBy(sort, descending: false)
                       .snapshots(),
                   //rSelected == true ?
-                  // FirebaseFirestore.instanceS
+                  // FirebaseFirestore.instance
                   // .collection('posts${widget.promptNumber}')
                   // .orderBy('timeStamp', descending: true)
                   // .where('timeStamp', isGreaterThan: startsWith)
