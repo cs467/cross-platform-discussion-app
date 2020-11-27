@@ -192,6 +192,8 @@ class _PromptState extends State<Prompt> {
                                               snapshot.data.docs[int.parse(
                                                       widget.promptNumber) -
                                                   1]['prompt'],
+                                              style: TextStyle(
+                                                  height: 5, fontSize: 10),
                                               textAlign: TextAlign.justify,
                                             );
                                           }
@@ -322,7 +324,8 @@ class _PromptState extends State<Prompt> {
                           .snapshots(),
                       builder: (context, snapshot) {
                         //flag filter number
-                        if (info.flags < 1) {
+                        if (info.flags < 10 &&
+                            !info.flaggedBy.contains(widget.user)) {
                           if (snapshot.hasData &&
                               snapshot.data.documents != null &&
                               snapshot.data.documents.length > 0) {
