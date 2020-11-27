@@ -6,7 +6,7 @@
     <!-- You can insert your own image assets here -->
     <item>
         <bitmap
-            android:gravity=""
-            android:src="@drawable/daychat" />
+            android:gravity="center_vertical"
+            android:src="@drawable/logo" />
     </item>
 </layer-list>
