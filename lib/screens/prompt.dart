@@ -125,7 +125,6 @@ class _PromptState extends State<Prompt> {
             centerTitle: true,
             title: Text('Prompt ${widget.promptNumber}'),
             leading: (string == "Offline")
-
                 ? null
                 : GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -151,9 +150,9 @@ class _PromptState extends State<Prompt> {
               : StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('posts${widget.promptNumber}')
-                      .where(sort, isGreaterThan: startsWith)
                       .orderBy(sort, descending: true)
                       .snapshots(),
+
                   //rSelected == true ?
                   // FirebaseFirestore.instance
                   // .collection('posts${widget.promptNumber}')
@@ -192,8 +191,6 @@ class _PromptState extends State<Prompt> {
                                               snapshot.data.docs[int.parse(
                                                       widget.promptNumber) -
                                                   1]['prompt'],
-                                              style: TextStyle(
-                                                  height: 5, fontSize: 10),
                                               textAlign: TextAlign.justify,
                                             );
                                           }
@@ -297,7 +294,12 @@ class _PromptState extends State<Prompt> {
         child: ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              if (snapshot.data.documents.length > 0) {
+              DateTime startsWith =
+                  DateTime(now.year, now.month, now.day).toUtc();
+              DateTime todayDate =
+                  DateTime.parse(snapshot.data.documents[index]['timeStamp']);
+              if (snapshot.data.documents.length > 0 &&
+                  startsWith.isBefore(todayDate)) {
                 var post = snapshot.data.documents[index];
                 var info = PromptPost();
                 info.name = post['name'];
@@ -311,8 +313,6 @@ class _PromptState extends State<Prompt> {
                 // final Map<String, dynamic> Function() map = ds.data;
 
                 //print(snapshot.data);
-
-                DateTime todayDate = DateTime.parse(post['timeStamp']);
 
                 return Semantics(
                   button: true,

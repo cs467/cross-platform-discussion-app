@@ -116,29 +116,27 @@ class _OriginPageState extends State<OriginPage> {
       body: (string == "Offline")
           ? NoInternetAccess()
           : Align(
-              child: SafeArea(
-                child: Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            SizedBox(height: 60.0),
-                            _logo(context),
-                            SizedBox(height: 60.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          SizedBox(height: 60.0),
+                          _logo(context),
+                          SizedBox(height: 60.0),
 
-                            SizedBox(height: 20.0),
-                            _loginButton(context),
+                          SizedBox(height: 20.0),
+                          _loginButton(context),
 
-                            //_continue(context),
-                            SizedBox(height: 60.0),
-                            _signupButton(context)
-                          ],
-                        ),
-                      ],
-                    ),
+                          //_continue(context),
+                          SizedBox(height: 30.0),
+                          _signupButton(context)
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
