@@ -1,3 +1,6 @@
+// Screen to display a prompt and its responses
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'package:connectivity/connectivity.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 import 'package:disc/screens/home.dart';

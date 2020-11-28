@@ -1,3 +1,5 @@
+// Model to represent a single user
+
 class User {
   String uid;
   String username;

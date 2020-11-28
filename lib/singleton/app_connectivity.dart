@@ -1,3 +1,7 @@
+// Singleton which is served as a listener of internet connectivity.
+// The instance is used to check connectivity across the app.
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 import 'dart:io';
 

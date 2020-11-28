@@ -1,3 +1,5 @@
+// Model to represent each response posted by users
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PromptPost {

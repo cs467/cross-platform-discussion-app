@@ -1,3 +1,8 @@
+// Screen to display the user's stats (level, # of posts, likes, etc.) and all user ranking.
+// source 1: https://stackoverflow.com/questions/57242651/using-fractionallysizedbox-in-a-row
+// source 2: https://medium.com/flutter-community/flutter-expansion-collapse-view-fde9c51ac438
+// source 3: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
