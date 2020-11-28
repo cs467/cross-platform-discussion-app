@@ -154,7 +154,7 @@ class _OriginPageState extends State<OriginPage> {
           (Route<dynamic> route) => false,
         );
       },
-      label: Text('LOGIN'),
+      label: Text('SIGN IN'),
       icon: Icon(Icons.login),
     );
   }
