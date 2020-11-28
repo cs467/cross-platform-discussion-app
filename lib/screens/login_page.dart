@@ -292,7 +292,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         } else {}
       },
-      label: Text('LOGIN'),
+      label: Text('SIGN IN'),
       icon: Icon(Icons.login),
     );
   }

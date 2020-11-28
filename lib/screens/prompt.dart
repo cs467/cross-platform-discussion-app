@@ -191,7 +191,7 @@ class _PromptState extends State<Prompt> {
                                               snapshot.data.docs[int.parse(
                                                       widget.promptNumber) -
                                                   1]['prompt'],
-                                              textAlign: TextAlign.justify,
+                                              textAlign: TextAlign.left,
                                             );
                                           }
                                           return CircularProgressIndicator();
@@ -540,103 +540,106 @@ class _PromptState extends State<Prompt> {
                                                 });
                                               });
                                             } else {
-                                              if(info.flags < 9) {
-                                                FirebaseFirestore.instance
-                                                  .collection(
-                                                      "posts${widget.promptNumber}")
-                                                  .doc(post.documentID)
-                                                  .get()
-                                                  .then((value) {
+                                              if (info.flags < 9) {
                                                 FirebaseFirestore.instance
                                                     .collection(
                                                         "posts${widget.promptNumber}")
                                                     .doc(post.documentID)
-                                                    .update({
-                                                  "flags": info.flags + 1,
-                                                  "flaggedBy":
-                                                      FieldValue.arrayUnion(
-                                                          [widget.user]),
-                                                }).then((value) {
-                                                  postController.clear();
-                                                });
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .where('username',
-                                                        isEqualTo: info.name)
                                                     .get()
                                                     .then((value) {
-                                                  int curFlags = value.docs[0]
-                                                      .get('flags');
-                                                  String curUid =
-                                                      value.docs[0].get('uid');
                                                   FirebaseFirestore.instance
-                                                      .collection("users")
-                                                      .doc(curUid)
+                                                      .collection(
+                                                          "posts${widget.promptNumber}")
+                                                      .doc(post.documentID)
                                                       .update({
-                                                    "flags": curFlags + 1,
+                                                    "flags": info.flags + 1,
+                                                    "flaggedBy":
+                                                        FieldValue.arrayUnion(
+                                                            [widget.user]),
+                                                  }).then((value) {
+                                                    postController.clear();
+                                                  });
+                                                  FirebaseFirestore.instance
+                                                      .collection('users')
+                                                      .where('username',
+                                                          isEqualTo: info.name)
+                                                      .get()
+                                                      .then((value) {
+                                                    int curFlags = value.docs[0]
+                                                        .get('flags');
+                                                    String curUid = value
+                                                        .docs[0]
+                                                        .get('uid');
+                                                    FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(curUid)
+                                                        .update({
+                                                      "flags": curFlags + 1,
+                                                    });
                                                   });
                                                 });
-                                              });
-                                              } else if(info.flags == 9) {
-                                                FirebaseFirestore.instance
-                                                  .collection(
-                                                      "posts${widget.promptNumber}")
-                                                  .doc(post.documentID)
-                                                  .get()
-                                                  .then((value) {
-                                                int postLikes =
-                                                    value.data()['likes'];
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .where('username',
-                                                        isEqualTo: info.name)
-                                                    .get()
-                                                    .then((value) {
-                                                  int curLikes = value.docs[0]
-                                                      .get('likes');
-                                                  String curUid =
-                                                      value.docs[0].get('uid');
-                                                  FirebaseFirestore.instance
-                                                      .collection("users")
-                                                      .doc(curUid)
-                                                      .update({
-                                                    "likes":
-                                                        curLikes - postLikes,
-                                                  });
-                                                });
+                                              } else if (info.flags == 9) {
                                                 FirebaseFirestore.instance
                                                     .collection(
                                                         "posts${widget.promptNumber}")
                                                     .doc(post.documentID)
-                                                    .update({
-                                                  "flags": info.flags + 1,
-                                                  "flaggedBy":
-                                                      FieldValue.arrayUnion(
-                                                          [widget.user]),
-                                                }).then((value) {
-                                                  postController.clear();
-                                                });
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .where('username',
-                                                        isEqualTo: info.name)
                                                     .get()
                                                     .then((value) {
-                                                  int curFlags = value.docs[0]
-                                                      .get('flags');
-                                                  int curPosts = value.docs[0]
-                                                      .get('posts');
-                                                  String curUid =
-                                                      value.docs[0].get('uid');
+                                                  int postLikes =
+                                                      value.data()['likes'];
                                                   FirebaseFirestore.instance
-                                                      .collection("users")
-                                                      .doc(curUid)
+                                                      .collection('users')
+                                                      .where('username',
+                                                          isEqualTo: info.name)
+                                                      .get()
+                                                      .then((value) {
+                                                    int curLikes = value.docs[0]
+                                                        .get('likes');
+                                                    String curUid = value
+                                                        .docs[0]
+                                                        .get('uid');
+                                                    FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(curUid)
+                                                        .update({
+                                                      "likes":
+                                                          curLikes - postLikes,
+                                                    });
+                                                  });
+                                                  FirebaseFirestore.instance
+                                                      .collection(
+                                                          "posts${widget.promptNumber}")
+                                                      .doc(post.documentID)
                                                       .update({
-                                                    "flags": curFlags + 1,
-                                                    "posts": curPosts - 1,
+                                                    "flags": info.flags + 1,
+                                                    "flaggedBy":
+                                                        FieldValue.arrayUnion(
+                                                            [widget.user]),
+                                                  }).then((value) {
+                                                    postController.clear();
+                                                  });
+                                                  FirebaseFirestore.instance
+                                                      .collection('users')
+                                                      .where('username',
+                                                          isEqualTo: info.name)
+                                                      .get()
+                                                      .then((value) {
+                                                    int curFlags = value.docs[0]
+                                                        .get('flags');
+                                                    int curPosts = value.docs[0]
+                                                        .get('posts');
+                                                    String curUid = value
+                                                        .docs[0]
+                                                        .get('uid');
+                                                    FirebaseFirestore.instance
+                                                        .collection("users")
+                                                        .doc(curUid)
+                                                        .update({
+                                                      "flags": curFlags + 1,
+                                                      "posts": curPosts - 1,
+                                                    });
                                                   });
                                                 });
-                                              });
                                               }
                                             }
                                           },
@@ -661,8 +664,7 @@ class _PromptState extends State<Prompt> {
 
   Widget response() {
     return Center(
-      child: 
-        Semantics(
+      child: Semantics(
           button: true,
           enabled: true,
           child: Padding(
@@ -728,8 +730,7 @@ class _PromptState extends State<Prompt> {
                   icon: Icon(Icons.send),
                   onPressed: () {
                     final filter = ProfanityFilter();
-                    String clean =
-                        filter.censor(postController.text).trim();
+                    String clean = filter.censor(postController.text).trim();
 
                     if (clean.length > 0) {
                       FirebaseFirestore.instance
@@ -769,13 +770,11 @@ class _PromptState extends State<Prompt> {
                 ),
                 hintText: 'Post a Reponse Here...',
                 enabledBorder: OutlineInputBorder(
-                  borderSide:
-                      BorderSide(color: Colors.transparent, width: 2.0),
+                  borderSide: BorderSide(color: Colors.transparent, width: 2.0),
                 ),
               ),
             ),
-          )
-        ),
+          )),
     );
   }
 }

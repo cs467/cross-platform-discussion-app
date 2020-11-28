@@ -26,11 +26,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: [
           Container(
               height: 50,
-              child: DrawerHeader(child: Text('Settings')),
+              child: DrawerHeader(child: Text('')),
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Colors.blueGrey, width: 1.0)))),
-          SwitchListTile(
+          /*SwitchListTile(
             title: const Text('Dark Mode'),
             value: _mode,
             onChanged: (bool value) {
@@ -39,24 +39,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 changeBrightness(context);
               });
             },
-          ),
-          ListTile(
-            title: const Text('See Your Stats'),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed('statspage', arguments: widget.title);
-            },
-          ),
-          ListTile(
-            title: const Text('Submit a Prompt'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PromptProposal(user: widget.title)),
-              );
-            },
-          ),
+          ),*/
           Container(
             color: Colors.blueGrey,
             child: ListTile(
@@ -80,6 +63,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
               ),
             ),
+          ),
+          ListTile(
+            title: const Text('See Your Stats'),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed('statspage', arguments: widget.title);
+            },
+          ),
+          ListTile(
+            title: const Text('Submit a Prompt'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PromptProposal(user: widget.title)),
+              );
+            },
           ),
           _signInSignOut(context),
         ],
