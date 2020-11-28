@@ -190,6 +190,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
+              key: Key('email'),
               controller: emailController,
               obscureText: isPassword,
               validator: (val) =>
@@ -229,6 +230,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
+              key: Key('password'),
               controller: passwordController,
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
