@@ -125,7 +125,6 @@ class _PromptState extends State<Prompt> {
             centerTitle: true,
             title: Text('Prompt ${widget.promptNumber}'),
             leading: (string == "Offline")
-
                 ? null
                 : GestureDetector(
                     behavior: HitTestBehavior.translucent,
@@ -152,8 +151,8 @@ class _PromptState extends State<Prompt> {
                   stream: FirebaseFirestore.instance
                       .collection('posts${widget.promptNumber}')
                       .orderBy(sort, descending: true)
-                      .where(sort, isGreaterThan: startsWith)
                       .snapshots(),
+
                   //rSelected == true ?
                   // FirebaseFirestore.instance
                   // .collection('posts${widget.promptNumber}')
@@ -295,7 +294,12 @@ class _PromptState extends State<Prompt> {
         child: ListView.builder(
             itemCount: snapshot.data.documents.length,
             itemBuilder: (context, index) {
-              if (snapshot.data.documents.length > 0) {
+              DateTime startsWith =
+                  DateTime(now.year, now.month, now.day).toUtc();
+              DateTime todayDate =
+                  DateTime.parse(snapshot.data.documents[index]['timeStamp']);
+              if (snapshot.data.documents.length > 0 &&
+                  startsWith.isBefore(todayDate)) {
                 var post = snapshot.data.documents[index];
                 var info = PromptPost();
                 info.name = post['name'];
@@ -310,8 +314,6 @@ class _PromptState extends State<Prompt> {
 
                 //print(snapshot.data);
 
-                DateTime todayDate = DateTime.parse(post['timeStamp']);
-
                 return Semantics(
                   button: true,
                   enabled: true,
@@ -322,7 +324,8 @@ class _PromptState extends State<Prompt> {
                           .snapshots(),
                       builder: (context, snapshot) {
                         //flag filter number
-                        if (info.flags < 1) {
+                        if (info.flags < 10 &&
+                            !info.flaggedBy.contains(widget.user)) {
                           if (snapshot.hasData &&
                               snapshot.data.documents != null &&
                               snapshot.data.documents.length > 0) {
@@ -453,14 +456,13 @@ class _PromptState extends State<Prompt> {
                                       ),
                                     ),
                                     secondaryActions: <Widget>[
-                                      if (info.name.contains(widget.user))
+                                      if (info.name == widget.user)
                                         IconSlideAction(
                                           caption: 'Delete',
                                           color: Colors.red[300],
                                           icon: Icons.delete,
                                           onTap: () {
-                                            if (info.name
-                                                .contains(widget.user)) {
+                                            if (info.name == widget.user) {
                                               FirebaseFirestore.instance
                                                   .collection(
                                                       "posts${widget.promptNumber}")
@@ -500,7 +502,7 @@ class _PromptState extends State<Prompt> {
                                             }
                                           },
                                         ),
-                                      if (!info.name.contains(widget.user))
+                                      if (info.name != widget.user)
                                         IconSlideAction(
                                           caption: 'Report',
                                           color: Colors.orange[300],
@@ -538,7 +540,45 @@ class _PromptState extends State<Prompt> {
                                                 });
                                               });
                                             } else {
-                                              FirebaseFirestore.instance
+                                              if(info.flags < 9) {
+                                                FirebaseFirestore.instance
+                                                  .collection(
+                                                      "posts${widget.promptNumber}")
+                                                  .doc(post.documentID)
+                                                  .get()
+                                                  .then((value) {
+                                                FirebaseFirestore.instance
+                                                    .collection(
+                                                        "posts${widget.promptNumber}")
+                                                    .doc(post.documentID)
+                                                    .update({
+                                                  "flags": info.flags + 1,
+                                                  "flaggedBy":
+                                                      FieldValue.arrayUnion(
+                                                          [widget.user]),
+                                                }).then((value) {
+                                                  postController.clear();
+                                                });
+                                                FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .where('username',
+                                                        isEqualTo: info.name)
+                                                    .get()
+                                                    .then((value) {
+                                                  int curFlags = value.docs[0]
+                                                      .get('flags');
+                                                  String curUid =
+                                                      value.docs[0].get('uid');
+                                                  FirebaseFirestore.instance
+                                                      .collection("users")
+                                                      .doc(curUid)
+                                                      .update({
+                                                    "flags": curFlags + 1,
+                                                  });
+                                                });
+                                              });
+                                              } else if(info.flags == 9) {
+                                                FirebaseFirestore.instance
                                                   .collection(
                                                       "posts${widget.promptNumber}")
                                                   .doc(post.documentID)
@@ -597,6 +637,7 @@ class _PromptState extends State<Prompt> {
                                                   });
                                                 });
                                               });
+                                              }
                                             }
                                           },
                                         )
@@ -620,17 +661,75 @@ class _PromptState extends State<Prompt> {
 
   Widget response() {
     return Center(
-      child: !widget.user.contains("Disc")
-          ? Semantics(
-              button: true,
-              enabled: true,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 15.0, right: 15, top: 8),
-                child: TextFormField(
-                  textInputAction: TextInputAction.send,
-                  onFieldSubmitted: (value) {
+      child: 
+        Semantics(
+          button: true,
+          enabled: true,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15.0, right: 15, top: 8),
+            child: TextFormField(
+              textInputAction: TextInputAction.send,
+              onFieldSubmitted: (value) {
+                final filter = ProfanityFilter();
+                String clean = filter.censor(postController.text).trim();
+
+                if (clean.length > 0) {
+                  FirebaseFirestore.instance
+                      .collection("posts${widget.promptNumber}")
+                      .add({
+                    "name": widget.user,
+                    "body": clean,
+                    "timeStamp": DateTime.now().toUtc().toString(),
+                    "likes": 0,
+                    "likedBy": [],
+                    "flags": 0,
+                    "flaggedBy": [],
+                  }).then((value) {
+                    postController.clear();
+                  });
+                  FirebaseFirestore.instance
+                      .collection('users')
+                      .where('username', isEqualTo: widget.user)
+                      .get()
+                      .then((value) {
+                    int curPosts = value.docs[0].get('posts');
+                    String curUid = value.docs[0].get('uid');
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(curUid)
+                        .update({
+                      "posts": curPosts + 1,
+                    });
+                  });
+                } else {}
+                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              controller: postController,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              maxLength: 525,
+              buildCounter: (
+                BuildContext context, {
+                int currentLength,
+                int maxLength,
+                bool isFocused,
+              }) {
+                if (isFocused)
+                  return Text('${maxLength - currentLength}');
+                else
+                  return Container(height: 17);
+              },
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
                     final filter = ProfanityFilter();
-                    String clean = filter.censor(postController.text).trim();
+                    String clean =
+                        filter.censor(postController.text).trim();
 
                     if (clean.length > 0) {
                       FirebaseFirestore.instance
@@ -645,19 +744,19 @@ class _PromptState extends State<Prompt> {
                         "flaggedBy": [],
                       }).then((value) {
                         postController.clear();
-                      });
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .where('username', isEqualTo: widget.user)
-                          .get()
-                          .then((value) {
-                        int curPosts = value.docs[0].get('posts');
-                        String curUid = value.docs[0].get('uid');
                         FirebaseFirestore.instance
-                            .collection("users")
-                            .doc(curUid)
-                            .update({
-                          "posts": curPosts + 1,
+                            .collection('users')
+                            .where('username', isEqualTo: widget.user)
+                            .get()
+                            .then((value) {
+                          int curPosts = value.docs[0].get('posts');
+                          String curUid = value.docs[0].get('uid');
+                          FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(curUid)
+                              .update({
+                            "posts": curPosts + 1,
+                          });
                         });
                       });
                     } else {}
@@ -667,75 +766,16 @@ class _PromptState extends State<Prompt> {
                       currentFocus.unfocus();
                     }
                   },
-                  controller: postController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 525,
-                  buildCounter: (
-                    BuildContext context, {
-                    int currentLength,
-                    int maxLength,
-                    bool isFocused,
-                  }) {
-                    if (isFocused)
-                      return Text('${maxLength - currentLength}');
-                    else
-                      return Container(height: 17);
-                  },
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.send),
-                      onPressed: () {
-                        final filter = ProfanityFilter();
-                        String clean =
-                            filter.censor(postController.text).trim();
-
-                        if (clean.length > 0) {
-                          FirebaseFirestore.instance
-                              .collection("posts${widget.promptNumber}")
-                              .add({
-                            "name": widget.user,
-                            "body": clean,
-                            "timeStamp": DateTime.now().toUtc().toString(),
-                            "likes": 0,
-                            "likedBy": [],
-                            "flags": 0,
-                            "flaggedBy": [],
-                          }).then((value) {
-                            postController.clear();
-                            FirebaseFirestore.instance
-                                .collection('users')
-                                .where('username', isEqualTo: widget.user)
-                                .get()
-                                .then((value) {
-                              int curPosts = value.docs[0].get('posts');
-                              String curUid = value.docs[0].get('uid');
-                              FirebaseFirestore.instance
-                                  .collection("users")
-                                  .doc(curUid)
-                                  .update({
-                                "posts": curPosts + 1,
-                              });
-                            });
-                            //print(value.id);
-                          });
-                        } else {}
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                      },
-                    ),
-                    hintText: 'Post a Reponse Here...',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.transparent, width: 2.0),
-                    ),
-                  ),
                 ),
-              ))
-          : Container(),
+                hintText: 'Post a Reponse Here...',
+                enabledBorder: OutlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Colors.transparent, width: 2.0),
+                ),
+              ),
+            ),
+          )
+        ),
     );
   }
 }

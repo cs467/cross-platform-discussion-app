@@ -140,28 +140,26 @@ class _LoginPageState extends State<LoginPage> {
       body: (string == "Offline")
           ? NoInternetAccess()
           : Align(
-              child: SafeArea(
-                child: Container(
-                  padding: EdgeInsets.all(20.0),
-                  child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            SizedBox(height: 20.0),
-                            _logo(context),
-                            SizedBox(height: 20.0),
-                            _emailPasswordWidget(),
-                            SizedBox(height: 40.0),
-                            _loginButton(context),
-                            SizedBox(height: 40.0),
-                            _passwordReset(context),
-                            SizedBox(height: 20.0),
-                          ],
-                        ),
-                      ],
-                    ),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          SizedBox(height: 20.0),
+                          _logo(context),
+                          SizedBox(height: 20.0),
+                          _emailPasswordWidget(),
+                          SizedBox(height: 40.0),
+                          _loginButton(context),
+                          SizedBox(height: 40.0),
+                          _passwordReset(context),
+                          SizedBox(height: 20.0),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -265,7 +263,8 @@ class _LoginPageState extends State<LoginPage> {
         if (form.validate() || _usernameExist == false) {
           try {
             await Provider.of<AuthService>(context, listen: false).loginUser(
-                email: result == "None" ? emailController.text : result, password: passwordController.text);
+                email: result == "None" ? emailController.text : result,
+                password: passwordController.text);
             setState(() {
               //_successfulLogin(context);
 

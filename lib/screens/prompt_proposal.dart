@@ -23,18 +23,18 @@ class PromptProposal extends StatefulWidget {
 }
 
 class _PromptProposalState extends State<PromptProposal> {
-  
-  Future<void> getFiveProposals() async {
-    HttpsCallable callable =
-        FirebaseFunctions.instance.httpsCallable('getFiveProposals');
-    final results = await callable();
-  }
 
+// Future<void> storePosts5() async {
+//     HttpsCallable callable =
+//         FirebaseFunctions.instance.httpsCallable('storePosts5');
+//     final results = await callable();
+//   }
 
-  Future<void> deleteProposals() async {
-  HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('deleteProposals');
-  final results = await callable();
-}
+// Future<void> deletePosts5() async {
+//     HttpsCallable callable =
+//         FirebaseFunctions.instance.httpsCallable('deletePosts5');
+//     final results = await callable();
+//   }
   
 
   bool rSelected = true, lSelected = false;
