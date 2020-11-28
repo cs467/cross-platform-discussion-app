@@ -1,3 +1,6 @@
+// Screen where the user logs in the app with username and password 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:provider/provider.dart';
@@ -10,7 +13,6 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:disc/singleton/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
-import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/origin.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
@@ -315,21 +317,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ));
   }
-
-  // Widget _signupButton(BuildContext context) {
-  //   return FloatingActionButton.extended(
-  //     heroTag: "btn2",
-  //     onPressed: () {
-  //       Navigator.pushAndRemoveUntil(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => SignUpPage()),
-  //         (Route<dynamic> route) => false,
-  //       );
-  //     },
-  //     label: Text('SIGN UP'),
-  //     icon: Icon(Icons.app_registration),
-  //   );
-  // }
 
   Widget _logo(BuildContext context) {
     return Container(

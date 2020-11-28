@@ -1,3 +1,6 @@
+// Home screen where the user first views after login or signup 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';

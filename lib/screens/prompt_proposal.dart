@@ -1,3 +1,6 @@
+// Screen where the user views and submits prompt candidates for the next day's discussion 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:connectivity/connectivity.dart';
@@ -9,7 +12,6 @@ import 'package:profanity_filter/profanity_filter.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:disc/models/post.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'home.dart';
 
 const timeout = const Duration(seconds: 3);
@@ -23,19 +25,6 @@ class PromptProposal extends StatefulWidget {
 }
 
 class _PromptProposalState extends State<PromptProposal> {
-
-// Future<void> storePosts5() async {
-//     HttpsCallable callable =
-//         FirebaseFunctions.instance.httpsCallable('storePosts5');
-//     final results = await callable();
-//   }
-
-// Future<void> deletePosts5() async {
-//     HttpsCallable callable =
-//         FirebaseFunctions.instance.httpsCallable('deletePosts5');
-//     final results = await callable();
-//   }
-  
 
   bool rSelected = true, lSelected = false;
   String sort = "timeStamp";
@@ -203,13 +192,8 @@ class _PromptProposalState extends State<PromptProposal> {
                 info.likedBy = post['likedBy'];
                 info.flags = post['flags'];
                 info.flaggedBy = post['flaggedBy'];
-                //print(post['timeStamp']);
 
                 DateTime todayDate = DateTime.parse(post['timeStamp']);
-
-                //print(todayDate);
-
-                //print(post.documentID);
 
                 return Semantics(
                   button: true,
@@ -607,7 +591,6 @@ class _PromptProposalState extends State<PromptProposal> {
           "posts": curPosts + 1,
         });
       });
-      //print(value.id);
     });
   }
 
@@ -621,7 +604,6 @@ class _PromptProposalState extends State<PromptProposal> {
               child: GestureDetector(
             onTap: () {
               sort = "timeStamp";
-              //print(sort);
               rSelected = true;
               lSelected = false;
               setState(() {});
@@ -679,69 +661,3 @@ String validateProfanity(String value) {
   }
   return null;
 }
-
-/*
-
- final ScrollController _scrollController = ScrollController();
-
-  void _scrollToSelectedContent(
-      bool isExpanded, double previousOffset, int index, GlobalKey myKey) {}
-
-Widget tiles(AsyncSnapshot<dynamic> snapshot) {
-    return ListView.builder(
-      controller: _scrollController,
-      shrinkWrap: true,
-      itemCount: snapshot.data.documents.length,
-      itemBuilder: (BuildContext context, int index) => _buildExpansionTile(
-        index,
-        _scrollController,
-      ),
-    );
-  }
-
-  ExpansionTile _buildExpansionTile(
-      int index, ScrollController _scrollController) {
-    final GlobalKey expansionTileKey = GlobalKey();
-    double previousOffset;
-
-    return ExpansionTile(
-      key: expansionTileKey,
-      onExpansionChanged: (isExpanded) {
-        if (isExpanded) previousOffset = _scrollController.offset;
-        _scrollToSelectedContent(
-            isExpanded, previousOffset, index, expansionTileKey);
-      },
-      title: Text('Proposal ${index + 1}'),
-      children: _buildExpansionTileChildren(index),
-    );
-  }
-
-  List<Widget> _buildExpansionTileChildren(int index) => [
-        StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection('proposal')
-                .orderBy(sort, descending: false)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData &&
-                  snapshot.data.documents != null &&
-                  snapshot.data.documents.length > 0) {
-                return Container(
-                  decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(
-                            color: Colors.grey[200],
-                            width: 2,
-                          ),
-                          top: BorderSide(
-                            color: Colors.grey[200],
-                            width: 2,
-                          ))),
-                  child: tileWork(context, index, snapshot),
-                );
-              }
-              return CircularProgressIndicator();
-            }),
-        //SizedBox(height: 25),
-      ];
-*/

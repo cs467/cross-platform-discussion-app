@@ -1,3 +1,6 @@
+// Landing page where the user who is not logged in starts with. 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';

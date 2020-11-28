@@ -1,3 +1,6 @@
+// Screen for the user registration page 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'package:connectivity/connectivity.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 import 'package:disc/singleton/app_connectivity.dart';
@@ -392,28 +395,6 @@ class _SignUpPageState extends State<SignUpPage> {
       icon: Icon(Icons.app_registration),
     );
   }
-/*
-  Widget _continue(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-            (Route<dynamic> route) => false,
-          );
-        },
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              alignment: Alignment.center,
-              child: Text('Back to Login Page',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-            ),
-          ],
-        ));
-  }
-  */
 
   Future _buildErrorDialog(BuildContext context, _message) {
     return showDialog(
