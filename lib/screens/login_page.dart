@@ -1,4 +1,4 @@
-// Screen where the user logs in the app with username and password 
+// Screen where the user logs in to the app by entering username and password 
 // source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
 
 import 'dart:async';
@@ -268,8 +268,6 @@ class _LoginPageState extends State<LoginPage> {
                 email: result == "None" ? emailController.text : result,
                 password: passwordController.text);
             setState(() {
-              //_successfulLogin(context);
-
               Provider.of<AuthService>(context, listen: false).getUser().then(
                   (currentUser) => FirebaseFirestore.instance
                       .collection("users")

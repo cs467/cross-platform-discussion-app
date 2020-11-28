@@ -1,4 +1,4 @@
-// Home screen where the user first views after login or signup 
+// Home screen displayed after login or signup. It shows a list of five prompts of the day. 
 // source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
 
 import 'dart:async';

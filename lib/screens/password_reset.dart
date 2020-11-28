@@ -193,7 +193,7 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
-    Widget _resetButton(BuildContext context) {
+  Widget _resetButton(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () async {
           if (emailController.text.isEmpty) {

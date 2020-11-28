@@ -16,7 +16,6 @@ class AuthService with ChangeNotifier {
   Future signout() async {
     var result = FirebaseAuth.instance.signOut();
     notifyListeners();
-    //checkUser();
     return result;
   }
 
@@ -35,7 +34,7 @@ class AuthService with ChangeNotifier {
             "streaks": 0,
             "flags": 0,
             "posts": 0,
-            "registrationDateTime": DateTime.now().toUtc(),//.toString(),
+            "registrationDateTime": DateTime.now().toUtc(),
           })
           );
       notifyListeners();
@@ -58,18 +57,5 @@ class AuthService with ChangeNotifier {
 
   Future<void> resetPassword(String email) async {
     await _auth.sendPasswordResetEmail(email: email);
-}
-
-// Used for Testing
-// Future checkUser() async {
-//     //notifyListeners();
-//     FirebaseAuth.instance.authStateChanges().listen((User user) {
-//       if (user == null) {
-//         print('User is currently signed out!');
-//       } else {
-//         print('User is signed in!');
-//       }
-//     });
-//   }
-
+  }
 }
