@@ -151,21 +151,19 @@ class _SignUpPageState extends State<SignUpPage> {
             ? NoInternetAccess()
             : Align(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * .05),
                   child: Form(
                     key: _formKey,
                     child: ListView(
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            SizedBox(height: 20.0),
+                            SizedBox(height: MediaQuery.of(context).size.height * .02),
                             _logo(context),
-                            SizedBox(height: 20.0),
+                            SizedBox(height: MediaQuery.of(context).size.height * .02),
                             _textFieldWidget(),
-                            SizedBox(height: 20.0),
+                            SizedBox(height: MediaQuery.of(context).size.height * .02),
                             _signupButton(context),
-                            // SizedBox(height: 20.0),
-                            // _continue(context),
                           ],
                         ),
                       ],
@@ -177,7 +175,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 200.0),
+      child: Image.asset('assets/images/day-origin.png', 
+      height: (MediaQuery.of(context).size.height) * .25),
     );
   }
 
@@ -194,7 +193,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _usernameField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * .01),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -203,8 +202,7 @@ class _SignUpPageState extends State<SignUpPage> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
           SizedBox(
-            height: 10,
-          ),
+            height: MediaQuery.of(context).size.height * .005),
           TextFormField(
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9\-//._]")),
@@ -231,10 +229,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: usernameController.text.length > 0 ||
-              emailController.text.length > 0
-          ? Column(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -242,8 +238,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
                 SizedBox(
-                  height: 10,
-                ),
+                  height: MediaQuery.of(context).size.height * .005),
                 TextFormField(
                     textInputAction: TextInputAction.next,
                     validator: (val) => !EmailValidator.validate(val, true)
@@ -264,16 +259,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : SizedBox(),
     );
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: emailController.text.length > 0 ||
-              passwordController.text.length > 0
-          ? Column(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -281,8 +273,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
                 SizedBox(
-                  height: 10,
-                ),
+                  height: MediaQuery.of(context).size.height * .005),
                 TextFormField(
                     maxLength: passwordController.text.length > 10 ? 15 : null,
                     textInputAction: TextInputAction.next,
@@ -303,16 +294,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : SizedBox(),
     );
   }
 
   Widget _confirmPasswordField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: passwordController.text.length > 0 ||
-              confirmPasswordController.text.length > 0
-          ? Column(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -320,8 +308,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
                 SizedBox(
-                  height: 10,
-                ),
+                  height: MediaQuery.of(context).size.height * .005),
                 TextFormField(
                     maxLength:
                         confirmPasswordController.text.length >= 15 ? 15 : null,
@@ -344,7 +331,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         filled: true))
               ],
             )
-          : SizedBox(),
     );
   }
 
