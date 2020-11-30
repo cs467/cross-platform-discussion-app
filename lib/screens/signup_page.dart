@@ -1,4 +1,4 @@
-// Screen for the user registration page 
+// Screen for the user registration page
 // source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
 
 import 'package:connectivity/connectivity.dart';
@@ -151,21 +151,26 @@ class _SignUpPageState extends State<SignUpPage> {
             ? NoInternetAccess()
             : Align(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * .05),
                   child: Form(
                     key: _formKey,
                     child: ListView(
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            SizedBox(height: 20.0),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .02),
                             _logo(context),
-                            SizedBox(height: 20.0),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .02),
                             _textFieldWidget(),
-                            SizedBox(height: 20.0),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * .02),
                             _signupButton(context),
-                            // SizedBox(height: 20.0),
-                            // _continue(context),
                           ],
                         ),
                       ],
@@ -177,7 +182,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/daychat-updated.png', width: 200.0),
+      child: Image.asset('assets/images/day-origin.png',
+          height: (MediaQuery.of(context).size.height) * .25),
     );
   }
 
@@ -194,7 +200,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _usernameField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * .01),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -202,9 +209,7 @@ class _SignUpPageState extends State<SignUpPage> {
             title,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
-          SizedBox(
-            height: 10,
-          ),
+          SizedBox(height: MediaQuery.of(context).size.height * .005),
           TextFormField(
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9\-//._]")),
@@ -231,121 +236,103 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _emailField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: usernameController.text.length > 0 ||
-              emailController.text.length > 0
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                    textInputAction: TextInputAction.next,
-                    validator: (val) => !EmailValidator.validate(val, true)
-                        ? 'Not a valid email or username.'
+        margin: EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * .005),
+            TextFormField(
+                textInputAction: TextInputAction.next,
+                validator: (val) => !EmailValidator.validate(val, true)
+                    ? 'Not a valid email or username.'
+                    : null,
+                controller: emailController,
+                obscureText: isPassword,
+                maxLength: emailController.text.length > 39 ? 50 : null,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                    suffixIcon: emailController.text.length > 0
+                        ? IconButton(
+                            onPressed: () => emailController.clear(),
+                            icon: Icon(Icons.clear, color: Colors.grey))
                         : null,
-                    controller: emailController,
-                    obscureText: isPassword,
-                    maxLength: emailController.text.length > 39 ? 50 : null,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                        suffixIcon: emailController.text.length > 0
-                            ? IconButton(
-                                onPressed: () => emailController.clear(),
-                                icon: Icon(Icons.clear, color: Colors.grey))
-                            : null,
-                        border: InputBorder.none,
-                        hintText: 'Enter Email',
-                        filled: true))
-              ],
-            )
-          : SizedBox(),
-    );
+                    border: InputBorder.none,
+                    hintText: 'Enter Email',
+                    filled: true))
+          ],
+        ));
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: emailController.text.length > 0 ||
-              passwordController.text.length > 0
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                    maxLength: passwordController.text.length > 10 ? 15 : null,
-                    textInputAction: TextInputAction.next,
-                    validator: (val) => val.length < 6
-                        ? 'Password must be between 6 and 15 characters'
+        margin: EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * .005),
+            TextFormField(
+                maxLength: passwordController.text.length > 10 ? 15 : null,
+                textInputAction: TextInputAction.next,
+                validator: (val) => val.length < 6
+                    ? 'Password must be between 6 and 15 characters'
+                    : null,
+                controller: passwordController,
+                obscureText: isPassword,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                    suffixIcon: passwordController.text.length > 0
+                        ? IconButton(
+                            onPressed: () => passwordController.clear(),
+                            icon: Icon(Icons.clear, color: Colors.grey))
                         : null,
-                    controller: passwordController,
-                    obscureText: isPassword,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                        suffixIcon: passwordController.text.length > 0
-                            ? IconButton(
-                                onPressed: () => passwordController.clear(),
-                                icon: Icon(Icons.clear, color: Colors.grey))
-                            : null,
-                        border: InputBorder.none,
-                        hintText: 'Enter Password',
-                        filled: true))
-              ],
-            )
-          : SizedBox(),
-    );
+                    border: InputBorder.none,
+                    hintText: 'Enter Password',
+                    filled: true))
+          ],
+        ));
   }
 
   Widget _confirmPasswordField(String title, {bool isPassword = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: passwordController.text.length > 0 ||
-              confirmPasswordController.text.length > 0
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                    maxLength:
-                        confirmPasswordController.text.length >= 15 ? 15 : null,
-                    textInputAction: TextInputAction.done,
-                    validator: (val) => val != passwordController.text
-                        ? 'Passwords do not match'
+        margin: EdgeInsets.symmetric(vertical: 5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * .005),
+            TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                maxLength:
+                    confirmPasswordController.text.length >= 15 ? 15 : null,
+                textInputAction: TextInputAction.done,
+                validator: (val) => val != passwordController.text
+                    ? 'Passwords do not match'
+                    : null,
+                controller: confirmPasswordController,
+                obscureText: isPassword,
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                    suffixIcon: confirmPasswordController.text.length > 0
+                        ? IconButton(
+                            onPressed: () => confirmPasswordController.clear(),
+                            icon: Icon(Icons.clear, color: Colors.grey))
                         : null,
-                    controller: confirmPasswordController,
-                    obscureText: isPassword,
-                    keyboardType: TextInputType.name,
-                    decoration: InputDecoration(
-                        suffixIcon: confirmPasswordController.text.length > 0
-                            ? IconButton(
-                                onPressed: () =>
-                                    confirmPasswordController.clear(),
-                                icon: Icon(Icons.clear, color: Colors.grey))
-                            : null,
-                        border: InputBorder.none,
-                        hintText: 'Confirm Password',
-                        filled: true))
-              ],
-            )
-          : SizedBox(),
-    );
+                    border: InputBorder.none,
+                    hintText: 'Confirm Password',
+                    filled: true))
+          ],
+        ));
   }
 
   Widget _signupButton(BuildContext context) {
@@ -353,6 +340,10 @@ class _SignUpPageState extends State<SignUpPage> {
       onPressed: () async {
         final form = _formKey.currentState;
         form.save();
+
+        setState(() {
+          _usernameExist = false;
+        });
 
         final valid = await usernameCheck(usernameController.text);
 
@@ -376,13 +367,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         )),
                 (Route<dynamic> route) => false,
               );
-              /******
-           * If I clear here, they clear before routing title to new page.
-           *****/
-              // usernameController.clear();
-              // emailController.clear();
-              // passwordController.clear();
-              //_successfulLogin(context);
             });
           } on FirebaseAuthException catch (error) {
             return _buildErrorDialog(context, error.message);
