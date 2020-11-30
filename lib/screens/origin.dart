@@ -161,7 +161,7 @@ class _OriginPageState extends State<OriginPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 300.0),
+      child: Image.asset('assets/images/daychat-updated.png', width: 300.0),
     );
   }
 }

@@ -333,7 +333,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 200.0),
+      child: Image.asset('assets/images/daychat-updated.png', width: 200.0),
     );
   }
 }
