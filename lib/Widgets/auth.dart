@@ -1,13 +1,12 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Use "as auth" on import if we end up using a User class.
   Future<User> getUser() async {
     User user = _auth.currentUser;
     return user;
@@ -22,21 +21,21 @@ class AuthService with ChangeNotifier {
   Future createUser({String username, String email, String password}) async {
     try {
       var result = FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((currentUser) => FirebaseFirestore.instance
-          .collection("users")
-          .doc(currentUser.user.uid)
-          .set({
-            "uid": currentUser.user.uid,
-            "username": username,
-            "email": email,
-            "likes": 0,
-            "streaks": 0,
-            "flags": 0,
-            "posts": 0,
-            "registrationDateTime": DateTime.now().toUtc(),
-          })
-          );
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((currentUser) => FirebaseFirestore.instance
+        .collection("users")
+        .doc(currentUser.user.uid)
+        .set({
+          "uid": currentUser.user.uid,
+          "username": username,
+          "email": email,
+          "likes": 0,
+          "streaks": 0,
+          "flags": 0,
+          "posts": 0,
+          "registrationDateTime": DateTime.now().toUtc(),
+        })
+        );
       notifyListeners();
       return result;
     } catch (e) {
