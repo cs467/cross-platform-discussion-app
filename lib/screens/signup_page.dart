@@ -182,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png',
+      child: Image.asset('assets/images/daychat-updated.png',
           height: (MediaQuery.of(context).size.height) * .25),
     );
   }
