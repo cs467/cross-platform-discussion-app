@@ -182,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png',
+      child: Image.asset('assets/images/daychat-updated.png',
           height: (MediaQuery.of(context).size.height) * .25),
     );
   }
@@ -211,10 +211,13 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * .005),
           TextFormField(
+            maxLengthEnforced: true,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9\-//._]")),
+                LengthLimitingTextInputFormatter(12)
               ],
               textInputAction: TextInputAction.next,
+              validator: (val) => val.length > 12 ? 'Username must be less than 12 characters' : null,
               controller: usernameController,
               obscureText: isPassword,
               keyboardType: TextInputType.text,
