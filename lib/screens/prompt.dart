@@ -156,14 +156,6 @@ class _PromptState extends State<Prompt> {
                         .collection('posts${widget.promptNumber}')
                         .orderBy(sort, descending: true)
                         .snapshots(),
-
-                    //rSelected == true ?
-                    // FirebaseFirestore.instance
-                    // .collection('posts${widget.promptNumber}')
-                    // .orderBy('timeStamp', descending: true)
-                    // .where('timeStamp', isGreaterThan: startsWith)
-                    // .orderBy('likes', descending: true)
-                    // .snapshots(),
                     builder: (content, snapshot) {
                       if (snapshot.hasData && snapshot.data.documents != null) {
                         return ListView(
@@ -327,11 +319,6 @@ class _PromptState extends State<Prompt> {
               info.likedBy = post['likedBy'];
               info.flags = post['flags'];
               info.flaggedBy = post['flaggedBy'];
-
-              // final AsyncSnapshot<dynamic> ds = snapshot.data;
-              // final Map<String, dynamic> Function() map = ds.data;
-
-              //print(snapshot.data);
 
               return Semantics(
                 button: true,
