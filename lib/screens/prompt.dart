@@ -96,8 +96,6 @@ class _PromptState extends State<Prompt> {
   }
 
   Widget build(BuildContext context) {
-    String startsWith =
-        DateTime(now.year, now.month, now.day).toUtc().toString();
 
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
@@ -273,19 +271,23 @@ class _PromptState extends State<Prompt> {
                         );
                       }
                     }),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border(
-                  top: BorderSide(
-                    color: Colors.grey[200],
-                    width: 2,
+            bottomNavigationBar: (string == "Offline")
+              ? null
+              : Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border(
+                      top: BorderSide(
+                        color: Colors.grey[200],
+                        width: 2,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              padding: MediaQuery.of(context).viewInsets,
-              child: response(),
-            )));
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: response(),
+                )
+        )
+    );
   }
 
   Widget showChat(AsyncSnapshot<dynamic> snapshot) {
