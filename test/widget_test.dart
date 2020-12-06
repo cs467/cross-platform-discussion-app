@@ -8,9 +8,6 @@
 import 'package:disc/screens/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:disc/screens/home.dart';
-// import 'package:flutter_driver/flutter_driver.dart';
-// import 'package:test/test.dart';
 
 void main() {
   Duration aLongWeekend = new Duration(seconds:7);
