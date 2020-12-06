@@ -1,3 +1,6 @@
+// Home screen displayed after login or signup. It shows a list of five prompts of the day. 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -84,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                     snapshot.data.documents.length > 0) {
                   return Text(
                     snapshot.data.docs[index]['prompt'],
-                    textAlign: TextAlign.justify,
+                    textAlign: TextAlign.left,
                   );
                 }
                 return CircularProgressIndicator();
@@ -135,28 +138,32 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      floatingActionButtonLocation: (string == "Offline") ? null : FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: (string == "Offline") ? null : FloatingActionButton.extended(
-        label: Row(
-          children: [
-            Icon(Icons.insert_comment),
-            SizedBox(
-              width: 5,
+      floatingActionButtonLocation: (string == "Offline")
+          ? null
+          : FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: (string == "Offline")
+          ? null
+          : FloatingActionButton.extended(
+              label: Row(
+                children: [
+                  Icon(Icons.insert_comment),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Text('Join Discussion'),
+                ],
+              ),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Prompt(
+                          user: widget.title ?? "Disc $cSelect",
+                          promptNumber: "$cSelect",
+                          text: "Disc $cSelect")),
+                );
+              },
             ),
-            Text('Join Discussion'),
-          ],
-        ),
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Prompt(
-                    user: widget.title ?? "Disc $cSelect",
-                    promptNumber: "$cSelect",
-                    text: "Disc $cSelect")),
-          );
-        },
-      ),
       appBar: AppBar(
         centerTitle: true,
         title: Text('Daychat'),

@@ -1,3 +1,5 @@
+// This widget is used when there is no internet connection to display the alternate screen.
+
 import 'package:flutter/material.dart';
 
 class NoInternetAccess extends StatelessWidget {

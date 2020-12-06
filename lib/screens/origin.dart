@@ -1,3 +1,6 @@
+// Landing page where the user who has not logged in starts with. 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -154,14 +157,14 @@ class _OriginPageState extends State<OriginPage> {
           (Route<dynamic> route) => false,
         );
       },
-      label: Text('LOGIN'),
+      label: Text('SIGN IN'),
       icon: Icon(Icons.login),
     );
   }
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 300.0),
+      child: Image.asset('assets/images/daychat-updated.png', width: 300.0),
     );
   }
 }

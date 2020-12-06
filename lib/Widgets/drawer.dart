@@ -16,7 +16,6 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  bool _mode = false;
   _DrawerWidgetState();
 
   @override
@@ -26,11 +25,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: [
           Container(
               height: 50,
-              child: DrawerHeader(child: Text('Settings')),
+              child: DrawerHeader(child: Text('')),
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: Colors.blueGrey, width: 1.0)))),
-          SwitchListTile(
+          /*SwitchListTile(
             title: const Text('Dark Mode'),
             value: _mode,
             onChanged: (bool value) {
@@ -39,24 +38,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 changeBrightness(context);
               });
             },
-          ),
-          ListTile(
-            title: const Text('See Your Stats'),
-            onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed('statspage', arguments: widget.title);
-            },
-          ),
-          ListTile(
-            title: const Text('Submit a Prompt'),
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PromptProposal(user: widget.title)),
-              );
-            },
-          ),
+          ),*/
           Container(
             color: Colors.blueGrey,
             child: ListTile(
@@ -80,6 +62,23 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 ),
               ),
             ),
+          ),
+          ListTile(
+            title: const Text('See Your Stats'),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed('statspage', arguments: widget.title);
+            },
+          ),
+          ListTile(
+            title: const Text('Submit a Prompt'),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PromptProposal(user: widget.title)),
+              );
+            },
           ),
           _signInSignOut(context),
         ],
@@ -156,26 +155,4 @@ changeBrightness(BuildContext context) {
       Theme.of(context).brightness == Brightness.dark
           ? Brightness.light
           : Brightness.dark);
-}
-
-Future _successfulSignout(BuildContext context) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Sign Out Success'),
-        content:
-            SingleChildScrollView(child: Text('You are no longer signed in.')),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Proceed'),
-              color: Color(0xff2193b0),
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
 }

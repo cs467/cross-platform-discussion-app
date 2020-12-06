@@ -1,3 +1,6 @@
+// Screen where the user logs in to the app by entering username and password 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'dart:async';
 
 import 'package:provider/provider.dart';
@@ -10,7 +13,6 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:disc/singleton/app_connectivity.dart';
 import 'package:disc/screens/home.dart';
-import 'package:disc/screens/signup_page.dart';
 import 'package:disc/screens/origin.dart';
 import 'package:disc/Widgets/auth.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
@@ -268,8 +270,6 @@ class _LoginPageState extends State<LoginPage> {
                 email: result == "None" ? emailController.text : result,
                 password: passwordController.text);
             setState(() {
-              //_successfulLogin(context);
-
               Provider.of<AuthService>(context, listen: false).getUser().then(
                   (currentUser) => FirebaseFirestore.instance
                       .collection("users")
@@ -294,7 +294,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         } else {}
       },
-      label: Text('LOGIN'),
+      label: Text('SIGN IN'),
       icon: Icon(Icons.login),
     );
   }
@@ -318,24 +318,9 @@ class _LoginPageState extends State<LoginPage> {
         ));
   }
 
-  // Widget _signupButton(BuildContext context) {
-  //   return FloatingActionButton.extended(
-  //     heroTag: "btn2",
-  //     onPressed: () {
-  //       Navigator.pushAndRemoveUntil(
-  //         context,
-  //         MaterialPageRoute(builder: (context) => SignUpPage()),
-  //         (Route<dynamic> route) => false,
-  //       );
-  //     },
-  //     label: Text('SIGN UP'),
-  //     icon: Icon(Icons.app_registration),
-  //   );
-  // }
-
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 200.0),
+      child: Image.asset('assets/images/daychat-updated.png', width: 200.0),
     );
   }
 }
@@ -350,28 +335,6 @@ Future _buildErrorDialog(BuildContext context, _message) {
           FlatButton(
               child: Text('Cancel'),
               color: Theme.of(context).accentColor,
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
-}
-
-Future _successfulLogin(BuildContext context) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Log In Success'),
-        content: SingleChildScrollView(
-            child: Text('Congrats, you have successfully Logged In!!')),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Proceed'),
-              color: Color(0xff2193b0),
               onPressed: () {
                 Navigator.of(context).pop();
               })

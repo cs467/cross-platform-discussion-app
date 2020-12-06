@@ -1,3 +1,6 @@
+// Screen where the user provides their email address to receive the password reset link 
+// source: https://stackoverflow.com/questions/55060998/how-to-continuously-check-internet-connect-or-not-on-flutter
+
 import 'package:connectivity/connectivity.dart';
 import 'package:disc/Widgets/no_internet_access.dart';
 import 'package:disc/singleton/app_connectivity.dart';
@@ -190,7 +193,7 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
-    Widget _resetButton(BuildContext context) {
+  Widget _resetButton(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () async {
           if (emailController.text.isEmpty) {
@@ -247,7 +250,7 @@ class _PasswordPageState extends State<PasswordPage> {
 
   Widget _logo(BuildContext context) {
     return Container(
-      child: Image.asset('assets/images/day-origin.png', width: 200.0),
+      child: Image.asset('assets/images/daychat-updated.png', width: 200.0),
     );
   }
 }

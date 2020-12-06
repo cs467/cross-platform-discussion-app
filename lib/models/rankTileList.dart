@@ -1,3 +1,5 @@
+// Model to represent all items (tiles) in the all user ranking on the stats page
+
 import 'rankTile.dart';
 
 class RankTileList {
