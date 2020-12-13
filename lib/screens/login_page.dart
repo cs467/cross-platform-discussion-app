@@ -192,6 +192,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
+              key: Key('email'),
               controller: emailController,
               obscureText: isPassword,
               validator: (val) =>
@@ -231,6 +232,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
+              key: Key('password'),
               controller: passwordController,
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
@@ -333,28 +335,6 @@ Future _buildErrorDialog(BuildContext context, _message) {
           FlatButton(
               child: Text('Cancel'),
               color: Theme.of(context).accentColor,
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
-}
-
-Future _successfulLogin(BuildContext context) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Log In Success'),
-        content: SingleChildScrollView(
-            child: Text('Congrats, you have successfully Logged In!!')),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Proceed'),
-              color: Color(0xff2193b0),
               onPressed: () {
                 Navigator.of(context).pop();
               })

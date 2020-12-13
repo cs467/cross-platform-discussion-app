@@ -16,7 +16,6 @@ class DrawerWidget extends StatefulWidget {
 }
 
 class _DrawerWidgetState extends State<DrawerWidget> {
-  bool _mode = false;
   _DrawerWidgetState();
 
   @override
@@ -156,26 +155,4 @@ changeBrightness(BuildContext context) {
       Theme.of(context).brightness == Brightness.dark
           ? Brightness.light
           : Brightness.dark);
-}
-
-Future _successfulSignout(BuildContext context) {
-  return showDialog(
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Sign Out Success'),
-        content:
-            SingleChildScrollView(child: Text('You are no longer signed in.')),
-        actions: <Widget>[
-          FlatButton(
-              child: Text('Proceed'),
-              color: Color(0xff2193b0),
-              onPressed: () {
-                Navigator.of(context).pop();
-              })
-        ],
-      );
-    },
-    context: context,
-    barrierColor: Colors.black54,
-  );
 }
