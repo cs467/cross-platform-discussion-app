@@ -205,7 +205,8 @@ class _PromptProposalState extends State<PromptProposal> {
                           .snapshots(),
                       builder: (context, snapshot) {
                         //flag filter number
-                        if (info.flags < 1) {
+                        if (info.flags < 10 &&
+                          !info.flaggedBy.contains(widget.user)) {
                           if (snapshot.hasData &&
                               snapshot.data.documents != null &&
                               snapshot.data.documents.length > 0) {
@@ -334,14 +335,13 @@ class _PromptProposalState extends State<PromptProposal> {
                                       ),
                                     ),
                                     secondaryActions: <Widget>[
-                                      if (info.name.contains(widget.user))
+                                      if (info.name == widget.user)
                                         IconSlideAction(
                                           caption: 'Delete',
                                           color: Colors.red[300],
                                           icon: Icons.delete,
                                           onTap: () {
-                                            if (info.name
-                                                .contains(widget.user)) {
+                                            if (info.name == widget.user) {
                                               FirebaseFirestore.instance
                                                   .collection("proposal")
                                                   .doc(post.documentID)
@@ -379,7 +379,7 @@ class _PromptProposalState extends State<PromptProposal> {
                                             }
                                           },
                                         ),
-                                      if (!info.name.contains(widget.user))
+                                      if (info.name != widget.user)
                                         IconSlideAction(
                                           caption: 'Report',
                                           color: Colors.orange[300],
@@ -416,6 +416,43 @@ class _PromptProposalState extends State<PromptProposal> {
                                                 });
                                               });
                                             } else {
+                                              if (info.flags < 9) {
+                                              FirebaseFirestore.instance
+                                                  .collection("proposal")
+                                                  .doc(post.documentID)
+                                                  .get()
+                                                  .then((value) {
+                                                FirebaseFirestore.instance
+                                                    .collection("proposal")
+                                                    .doc(post.documentID)
+                                                    .update({
+                                                  "flags": info.flags + 1,
+                                                  "flaggedBy":
+                                                      FieldValue.arrayUnion(
+                                                          [widget.user]),
+                                                }).then((value) {
+                                                  postController.clear();
+                                                });
+                                                FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .where('username',
+                                                        isEqualTo: info.name)
+                                                    .get()
+                                                    .then((value) {
+                                                  int curFlags = value.docs[0]
+                                                      .get('flags');
+                                                  String curUid = value
+                                                      .docs[0]
+                                                      .get('uid');
+                                                  FirebaseFirestore.instance
+                                                      .collection("users")
+                                                      .doc(curUid)
+                                                      .update({
+                                                    "flags": curFlags + 1,
+                                                  });
+                                                });
+                                              });
+                                            } else if (info.flags == 9) {
                                               FirebaseFirestore.instance
                                                   .collection("proposal")
                                                   .doc(post.documentID)
@@ -473,7 +510,7 @@ class _PromptProposalState extends State<PromptProposal> {
                                                   });
                                                 });
                                               });
-                                            }
+                                          }}
                                           },
                                         )
                                     ],
