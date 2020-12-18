@@ -34,6 +34,9 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
+  FocusNode emailNode;
+  FocusNode passwordNode;
+
   String string, timedString;
   var timer;
   var previousResult;
@@ -70,6 +73,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
+    emailNode.dispose();
+    passwordNode.dispose();
     emailController.dispose();
     passwordController.dispose();
     timer.cancel();
@@ -79,6 +84,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
+    emailNode = FocusNode();
+    passwordNode = FocusNode();
 
     emailController.addListener(() {
       setState(() {});
@@ -193,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               key: Key('email'),
+              focusNode: emailNode,
               controller: emailController,
               obscureText: isPassword,
               validator: (val) =>
@@ -200,6 +209,13 @@ class _LoginPageState extends State<LoginPage> {
                       ? 'Not a valid email or username'
                       : null,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (term) {
+                //passwordController.text = passwordController.text;
+                //passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
+                emailNode.unfocus();
+                FocusScope.of(context).requestFocus(passwordNode);
+              },
               decoration: InputDecoration(
                   errorText:
                       _emailExist ? "Email or username does not exist" : null,
@@ -219,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
+    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -233,9 +250,15 @@ class _LoginPageState extends State<LoginPage> {
           ),
           TextFormField(
               key: Key('password'),
+              focusNode: passwordNode,
               controller: passwordController,
               obscureText: isPassword,
               keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (term) {
+                passwordNode.unfocus();
+                _submitForm();
+              },
               decoration: InputDecoration(
                   suffixIcon: passwordController.text.length > 0
                       ? IconButton(
@@ -254,7 +277,15 @@ class _LoginPageState extends State<LoginPage> {
     return FloatingActionButton.extended(
       heroTag: "btn1",
       onPressed: () async {
-        var result;
+        _submitForm();
+      },
+      label: Text('SIGN IN'),
+      icon: Icon(Icons.login),
+    );
+  }
+
+  Future<void> _submitForm() async {
+    var result;
         final form = _formKey.currentState;
         form.save();
 
@@ -293,10 +324,6 @@ class _LoginPageState extends State<LoginPage> {
             return _buildErrorDialog(context, error.toString());
           }
         } else {}
-      },
-      label: Text('SIGN IN'),
-      icon: Icon(Icons.login),
-    );
   }
 
   Widget _passwordReset(BuildContext context) {

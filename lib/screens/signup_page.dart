@@ -34,6 +34,11 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController usernameController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
 
+  FocusNode emailNode;
+  FocusNode passwordNode;
+  FocusNode usernameNode;
+  FocusNode confirmPasswordNode;
+
   String string, timedString;
   var timer;
   var previousResult;
@@ -70,6 +75,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
+    emailNode.dispose();
+    passwordNode.dispose();
+    usernameNode.dispose();
+    confirmPasswordNode.dispose();
     emailController.dispose();
     passwordController.dispose();
     usernameController.dispose();
@@ -81,6 +90,11 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
+
+    emailNode = FocusNode();
+    passwordNode = FocusNode();
+    usernameNode = FocusNode();
+    confirmPasswordNode = FocusNode();
 
     emailController.addListener(() {
       setState(() {});
@@ -211,17 +225,24 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * .005),
           TextFormField(
-            maxLengthEnforced: true,
+              focusNode: usernameNode,
+              maxLengthEnforced: true,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9\-//._]")),
                 LengthLimitingTextInputFormatter(12)
               ],
-              textInputAction: TextInputAction.next,
-              validator: (val) => val.length > 12 ? 'Username must be less than 12 characters' : null,
+              validator: (val) => val.length > 12
+                  ? 'Username must be less than 12 characters'
+                  : null,
               controller: usernameController,
               obscureText: isPassword,
               keyboardType: TextInputType.text,
               maxLength: usernameController.text.length > 8 ? 12 : null,
+              textInputAction: TextInputAction.next,
+              onFieldSubmitted: (term) {
+                usernameNode.unfocus();
+                FocusScope.of(context).requestFocus(emailNode);
+              },
               decoration: InputDecoration(
                   errorText: _usernameExist ? "Username already taken" : null,
                   suffixIcon: usernameController.text.length > 0
@@ -238,6 +259,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _emailField(String title, {bool isPassword = false}) {
+    emailController.selection = TextSelection.fromPosition(TextPosition(offset: emailController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -249,7 +271,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * .005),
             TextFormField(
-                textInputAction: TextInputAction.next,
+                focusNode: emailNode,
                 validator: (val) => !EmailValidator.validate(val, true)
                     ? 'Not a valid email or username.'
                     : null,
@@ -257,6 +279,11 @@ class _SignUpPageState extends State<SignUpPage> {
                 obscureText: isPassword,
                 maxLength: emailController.text.length > 39 ? 50 : null,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (term) {
+                  emailNode.unfocus();
+                  FocusScope.of(context).requestFocus(passwordNode);
+                },
                 decoration: InputDecoration(
                     suffixIcon: emailController.text.length > 0
                         ? IconButton(
@@ -271,6 +298,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
+    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -282,14 +310,19 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * .005),
             TextFormField(
+                focusNode: passwordNode,
                 maxLength: passwordController.text.length > 10 ? 15 : null,
-                textInputAction: TextInputAction.next,
                 validator: (val) => val.length < 6
                     ? 'Password must be between 6 and 15 characters'
                     : null,
                 controller: passwordController,
                 obscureText: isPassword,
                 keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (term) {
+                  passwordNode.unfocus();
+                  FocusScope.of(context).requestFocus(confirmPasswordNode);
+                },
                 decoration: InputDecoration(
                     suffixIcon: passwordController.text.length > 0
                         ? IconButton(
@@ -304,6 +337,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _confirmPasswordField(String title, {bool isPassword = false}) {
+    confirmPasswordController.selection = TextSelection.fromPosition(TextPosition(offset: confirmPasswordController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -315,16 +349,21 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * .005),
             TextFormField(
+                focusNode: confirmPasswordNode,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 maxLength:
                     confirmPasswordController.text.length >= 15 ? 15 : null,
-                textInputAction: TextInputAction.done,
                 validator: (val) => val != passwordController.text
                     ? 'Passwords do not match'
                     : null,
                 controller: confirmPasswordController,
                 obscureText: isPassword,
                 keyboardType: TextInputType.name,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (term) {
+                  passwordNode.unfocus();
+                  _submitForm();
+                },
                 decoration: InputDecoration(
                     suffixIcon: confirmPasswordController.text.length > 0
                         ? IconButton(
@@ -341,7 +380,15 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _signupButton(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () async {
-        final form = _formKey.currentState;
+        _submitForm();
+      },
+      label: Text('SIGN UP'),
+      icon: Icon(Icons.app_registration),
+    );
+  }
+
+  void _submitForm() async {
+    final form = _formKey.currentState;
         form.save();
 
         setState(() {
@@ -377,10 +424,6 @@ class _SignUpPageState extends State<SignUpPage> {
             return _buildErrorDialog(context, error.toString());
           }
         }
-      },
-      label: Text('SIGN UP'),
-      icon: Icon(Icons.app_registration),
-    );
   }
 
   Future _buildErrorDialog(BuildContext context, _message) {
