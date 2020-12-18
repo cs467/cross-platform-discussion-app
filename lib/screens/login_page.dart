@@ -211,6 +211,8 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               onFieldSubmitted: (term) {
+                //passwordController.text = passwordController.text;
+                //passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
                 emailNode.unfocus();
                 FocusScope.of(context).requestFocus(passwordNode);
               },
@@ -233,6 +235,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
+    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(

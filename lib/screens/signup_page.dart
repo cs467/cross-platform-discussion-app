@@ -259,6 +259,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _emailField(String title, {bool isPassword = false}) {
+    emailController.selection = TextSelection.fromPosition(TextPosition(offset: emailController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -297,6 +298,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _passwordField(String title, {bool isPassword = false}) {
+    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
@@ -335,6 +337,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Widget _confirmPasswordField(String title, {bool isPassword = false}) {
+    confirmPasswordController.selection = TextSelection.fromPosition(TextPosition(offset: confirmPasswordController.text.length));
     return Container(
         margin: EdgeInsets.symmetric(vertical: 5),
         child: Column(
